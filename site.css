@@ -88,7 +88,7 @@ body {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #c9503c; /* Red dot accent */
+  background: var(--gold);
   display: inline-block;
   margin: 0;
   transform: none;
@@ -148,25 +148,22 @@ body {
 .nav-list > li:hover > a,
 .nav-list > li:hover > button {
   opacity: 1;
-  background: rgba(201, 80, 60, 0.08); /* Modern red tint hover */
-  color: #a83d31;
+  background: rgba(184, 137, 58, 0.08);
 }
 
 /* Underline weg — wir nutzen jetzt Pill-Hover */
 .nav-list a::after,
 .nav-dropdown > button::after { display: none; }
 
-/* Aktiver Link: dezenter roter Hintergrund */
+/* Aktiver Link: dezenter Gold-Punkt links neben Label */
 .nav-list a.active {
   opacity: 1;
-  color: #a83d31;
-  background: rgba(201, 80, 60, 0.12); /* Modern red tint active */
-  font-weight: 600;
+  color: var(--ink);
+  background: rgba(184, 137, 58, 0.10);
 }
 .nav-list > li.is-active > button {
   opacity: 1;
-  color: #a83d31;
-  background: rgba(201, 80, 60, 0.12);
+  background: rgba(184, 137, 58, 0.10);
 }
 
 /* Caret-Chevron */
@@ -231,10 +228,9 @@ body {
 .submenu a::after { display: none; }
 .submenu a:hover {
   background: var(--bg-soft);
-  border-left-color: #c9503c; /* Modern red left border */
+  border-left-color: var(--gold);
   padding-left: 24px;
   opacity: 1;
-  color: #a83d31;
 }
 
 /* Page wrapper — schmale Lesespalte, mittig, kein Hero-Bild */
