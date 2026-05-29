@@ -4,6 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tinnitus — Chronischer Tinnitus ist kein Urteil</title>
+<meta name="description" content="Warum chronischer Tinnitus kein Urteil ist und wie man ihn ursächlich heilt.">
+<meta name="robots" content="noindex, nofollow">
+
+
 <link rel="stylesheet" href="site.css">
 </head>
 <body>
@@ -29,9 +33,22 @@
             <li><a href="medikamente.html">Medikamenten-/Gift-Tinnitus</a></li>
           </ul>
         </li>
-        <li><a href="loesung.html">Lösungsansatz</a></li>
-        <li><a href="quellen.html">Quellen</a></li>
+        <li class="nav-dropdown">
+          <button type="button" aria-haspopup="true" aria-expanded="false">Lösungsansatz<span class="nav-caret" aria-hidden="true"></span></button>
+          <ul class="submenu">
+            <li><a href="loesung.html">Mein Lösungsansatz</a></li>
+            <li><a href="produkte.html">Meine Produkte</a></li>
+          </ul>
+        </li>
+        <li class="nav-dropdown">
+          <button type="button" aria-haspopup="true" aria-expanded="false">Quellen<span class="nav-caret" aria-hidden="true"></span></button>
+          <ul class="submenu">
+            <li><a href="quellen.html">Wissenschaftliche Quellen</a></li>
+            <li><a href="maeuse.html">Der Mäuse-Irrtum</a></li>
+          </ul>
+        </li>
         <li><a href="erfahrungsberichte.html">Erfahrungsberichte</a></li>
+        <li class="lang-switch"><a href="en/index.html">EN</a></li>
       </ul>
     </nav>
     <button class="nav-burger" id="navBurger" type="button" aria-label="Menü" aria-expanded="false">
@@ -196,68 +213,7 @@
 </main>
 
 <footer class="site-footer">
-  <div>©2025 Dustin Mueller</div>
+  <div>©2025 Dustin Mueller · <a href="impressum.html">Impressum</a></div>
 </footer>
-
-<button class="back-to-top" id="backToTop" type="button" aria-label="Nach oben scrollen">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-</button>
-<script>
-(function () {
-  var btn = document.getElementById('backToTop');
-  if (!btn) return;
-  var onScroll = function () {
-    if (window.scrollY > 600) btn.classList.add('is-visible');
-    else btn.classList.remove('is-visible');
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-  onScroll();
-})();
-</script>
-
-<!-- Lightbox -->
-<div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Bildansicht">
-  <button class="lightbox-close" type="button" aria-label="Schließen">×</button>
-  <div class="lightbox-frame">
-    <img id="lightboxImg" alt="">
-    <div class="lightbox-caption" id="lightboxCaption"></div>
-  </div>
-</div>
-<script>
-(function () {
-  var overlay = document.getElementById('lightbox');
-  var img = document.getElementById('lightboxImg');
-  var cap = document.getElementById('lightboxCaption');
-  var closeBtn = overlay.querySelector('.lightbox-close');
-  var triggers = document.querySelectorAll('a[data-lightbox]');
-  function open(href, caption) {
-    img.src = href;
-    cap.textContent = caption || '';
-    overlay.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
-  }
-  function close() {
-    overlay.classList.remove('is-open');
-    document.body.style.overflow = '';
-    img.src = '';
-  }
-  triggers.forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      e.preventDefault();
-      open(a.getAttribute('href'), a.getAttribute('data-lightbox'));
-    });
-  });
-  overlay.addEventListener('click', function (e) {
-    if (e.target === overlay) close();
-  });
-  closeBtn.addEventListener('click', close);
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && overlay.classList.contains('is-open')) close();
-  });
-})();
-</script>
 </body>
 </html>
