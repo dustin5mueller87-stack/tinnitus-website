@@ -488,6 +488,8 @@ a:hover { text-decoration-thickness: 2px; }
   margin-bottom: 10px;
 }
 .compare-card .compare-thumb {
+  display: block;
+  cursor: pointer;
   aspect-ratio: 4/3;
   background-size: contain;
   background-position: center;
@@ -495,6 +497,12 @@ a:hover { text-decoration-thickness: 2px; }
   background-color: #fff;
   border: 1px solid var(--rule);
   margin-bottom: 12px;
+  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.compare-card .compare-thumb:hover {
+  opacity: 0.95;
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(60, 40, 10, 0.08);
 }
 .compare-card .compare-label {
   font-family: var(--serif);
