@@ -50,13 +50,16 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: #fdfbf6;                      /* fast-weiß mit Hauch Wärme */
-  border-bottom: 1px solid #e8e2d2;
-  transition: border-color 0.25s ease, padding 0.25s ease;
+  background: rgba(253, 251, 246, 0.85);   /* Translucent almost-white */
+  backdrop-filter: blur(12px);              /* Modern glassmorphism blur */
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(232, 226, 210, 0.5);
+  transition: border-color 0.25s ease, padding 0.25s ease, background 0.25s ease;
   padding: 16px 28px;
 }
 .site-header.is-scrolled {
-  border-bottom-color: #d8ceb6;
+  background: rgba(253, 251, 246, 0.92);
+  border-bottom-color: rgba(216, 206, 182, 0.7);
   padding: 10px 28px;
 }
 .nav-inner {
@@ -85,7 +88,7 @@ body {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--gold);
+  background: #c9503c; /* Red dot accent */
   display: inline-block;
   margin: 0;
   transform: none;
@@ -145,22 +148,25 @@ body {
 .nav-list > li:hover > a,
 .nav-list > li:hover > button {
   opacity: 1;
-  background: rgba(184, 137, 58, 0.08);
+  background: rgba(201, 80, 60, 0.08); /* Modern red tint hover */
+  color: #a83d31;
 }
 
 /* Underline weg — wir nutzen jetzt Pill-Hover */
 .nav-list a::after,
 .nav-dropdown > button::after { display: none; }
 
-/* Aktiver Link: dezenter Gold-Punkt links neben Label */
+/* Aktiver Link: dezenter roter Hintergrund */
 .nav-list a.active {
   opacity: 1;
-  color: var(--ink);
-  background: rgba(184, 137, 58, 0.10);
+  color: #a83d31;
+  background: rgba(201, 80, 60, 0.12); /* Modern red tint active */
+  font-weight: 600;
 }
 .nav-list > li.is-active > button {
   opacity: 1;
-  background: rgba(184, 137, 58, 0.10);
+  color: #a83d31;
+  background: rgba(201, 80, 60, 0.12);
 }
 
 /* Caret-Chevron */
@@ -225,9 +231,10 @@ body {
 .submenu a::after { display: none; }
 .submenu a:hover {
   background: var(--bg-soft);
-  border-left-color: var(--gold);
+  border-left-color: #c9503c; /* Modern red left border */
   padding-left: 24px;
   opacity: 1;
+  color: #a83d31;
 }
 
 /* Page wrapper — schmale Lesespalte, mittig, kein Hero-Bild */
