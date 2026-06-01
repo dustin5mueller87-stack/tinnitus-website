@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tinnitus — My Products</title>
+<link rel="stylesheet" href="../site.css">
+<link rel="alternate" hreflang="de" href="../produkte.html">
+<link rel="alternate" hreflang="en" href="produkte.html">
+</head>
+<body>
+<header class="site-header" id="siteHeader">
+  <div class="nav-inner">
+    <a class="brand" href="index.html" aria-label="Home">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
+    <nav aria-label="Main navigation">
+      <ul class="nav-list">
+        <li><a href="index.html">Home</a></li>
+        <li class="nav-dropdown">
+          <button type="button" aria-haspopup="true" aria-expanded="false">My Story<span class="nav-caret" aria-hidden="true"></span></button>
+          <ul class="submenu">
+            <li><a href="geschichte.html">My Tinnitus Crash (Short Story)</a></li>
+            <li><a href="bio-teil-1.html">Long Bio Part 1: The Descent</a></li>
+            <li><a href="bio-teil-2.html">Long Bio Part 2: The Stress Test</a></li>
+          </ul>
+        </li>
+        <li class="nav-dropdown">
+          <button type="button" aria-haspopup="true" aria-expanded="false">Causes<span class="nav-caret" aria-hidden="true"></span></button>
+          <ul class="submenu">
+            <li><a href="laerm.html">Noise-Induced Tinnitus</a></li>
+            <li><a href="stress.html">Stress-Related Tinnitus</a></li>
+            <li><a href="medikamente.html">Medication / Toxin Tinnitus</a></li>
+          </ul>
+        </li>
+        <li><a href="loesung.html">My Approach</a></li>
+        <li><a href="produkte.html" class="active">My Products</a></li>
+        <li><a href="quellen.html">Sources</a></li>
+        <li><a href="erfahrungsberichte.html">Testimonials</a></li>
+        <li><a href="kontakt.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="lang-switch" aria-label="Sprache / Language">
+      <a href="../produkte.html" hreflang="de">DE</a>
+      <span class="lang-sep" aria-hidden="true">/</span>
+      <a href="produkte.html" class="active" hreflang="en" aria-current="true">EN</a>
+    </div>
+    <button class="nav-burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+    </button>
+  </div>
+</header>
+<script>
+(function () {
+  var header = document.getElementById('siteHeader');
+  var burger = document.getElementById('navBurger');
+  var onScroll = function () {
+    if (window.scrollY > 8) header.classList.add('is-scrolled');
+    else header.classList.remove('is-scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  if (burger) {
+    burger.addEventListener('click', function () {
+      var open = header.classList.toggle('is-menu-open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+})();
+</script>
+
+<main>
+  <div class="eyebrow">Transparency</div>
+  <h1>My Products</h1>
+
+  <div class="ad-disclosure">
+    <span class="ad-label">Advertising</span>
+    <p>I am a registered distribution partner of <strong>PM International</strong> (brand: <strong>FitLine</strong>), whose products I link to on this page. I have personally been taking these products consistently since 2013 — I stand behind them.</p>
+    <p>When you order the products through my links, I receive a commission on your purchase. The price stays exactly the same for you — the products cost the same through my link as they do anywhere else.</p>
+    <p>The research, the content on this site, the concept behind it — all of this has cost me an enormous amount of time, energy, stress, and money over the years. If my content is useful to you and you want to head in a similar direction, I'd very much appreciate if it happened through my links — as a small thank-you for the work. But of course you're equally free to buy them through any other source.</p>
+    <p>Who I am and why I've stood behind these products since 2013 — you can read about that in <a href="bio-teil-1.html">my biography</a>.</p>
+    <p><strong>Note on returns:</strong> The company offers a 30-day money-back guarantee on the purchase price for its products. The exact terms are listed directly in the shop.</p>
+  </div>
+
+  <h2 class="section-title">My Stack</h2>
+  <p>These are the products I have used consistently since 2013 — already during my tinnitus years, and unchanged to this day. Listed in the order I take them throughout the day.</p>
+
+  <div class="product-list">
+    <div class="product-card">
+      <div class="product-num">1</div>
+      <div class="product-name">B-Vitamin Complex with Niacin <span class="product-type">(powder, dissolves in water)</span></div>
+      <div class="product-body">
+        <p>The product that, for me, typically produces the niacin flush after 10–15 minutes — a warmth that spreads through my skin and what I personally read as a noticeable boost. This experience has been consistent for me since 2013: sometimes stronger, sometimes milder, depending on how I'm feeling on a given day — but I always feel it. My morning product, taken right after waking up on an empty stomach.</p>
+        <p class="product-fineprint">This is my personal sensory experience and not a typical or scientifically established effect of this product.</p>
+        <a class="buy-btn" href="https://www.fitline.com/products/0708054?sponsor=6469333" target="_blank" rel="sponsored noopener" data-buy="produkt-1">Order here →</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-num">2</div>
+      <div class="product-name">Multi-Nutrient Base Complex <span class="product-type">(powder, dissolves in water)</span></div>
+      <div class="product-body">
+        <p>With fat-soluble vitamins, trace elements, and plant extracts. My everyday foundation. I take it in the morning, about 30 minutes after the B-complex.</p>
+        <a class="buy-btn" href="https://www.fitline.com/products/0705066?sponsor=6469333" target="_blank" rel="sponsored noopener" data-buy="produkt-2">Order here →</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-num">3</div>
+      <div class="product-name">Omega-3 Oil with Coenzyme Q10 <span class="product-type">(liquid)</span></div>
+      <div class="product-body">
+        <p>I take this in the morning together with the base complex. Fat-soluble ingredients need oil to be absorbed — so taking them together just makes sense to me.</p>
+        <a class="buy-btn" href="https://www.fitline.com/products/0712063?sponsor=6469333" target="_blank" rel="sponsored noopener" data-buy="produkt-3">Order here →</a>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-num">4</div>
+      <div class="product-name">Mineral Complex with Magnesium, Calcium, Potassium <span class="product-type">(powder, alkaline)</span></div>
+      <div class="product-body">
+        <p>My evening product. I take it about an hour before going to bed — part of my evening routine since 2013.</p>
+        <a class="buy-btn" href="https://www.fitline.com/products/0702037?sponsor=6469333" target="_blank" rel="sponsored noopener" data-buy="produkt-4">Order here →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="flush-box">
+    <span class="flush-eyebrow">Good to know</span>
+    <h3>The niacin flush — no need to panic</h3>
+    <p>When you take the B-Vitamin Complex with Niacin, the so-called <strong>niacin flush</strong> can set in after about 10–15 minutes: a warmth, often a slight tingling or reddening of the skin. This is a <strong>known, well-documented effect of niacin</strong> — it briefly widens the blood vessels and boosts circulation. <strong>Don't be alarmed</strong> — the effect is normal, harmless, and fades on its own after a short while.</p>
+    <p>For me, that exact sensation was an important signal: I read it as a sign that my body — and, the way I felt it, my ear too — was being especially well supplied with blood and nutrients in that moment.</p>
+    <div class="flush-tip">
+      <span class="flush-tip-label">Easing in</span>
+      <p>If you'd like to ease into the concept carefully, you can start with the B-complex alone — to experience the flush once for yourself while supporting your metabolism with the B-vitamins. And maybe, like me, you'll notice a tangible rise in energy over time.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Other products without commission relationship</h2>
+  <p>These two products are not affiliate recommendations — I'm not directly linking them here, just sharing them for your information, because they have been part of my recovery and maintenance routine — and still are today. You can find them at any drugstore, pharmacy, or online.</p>
+
+  <div class="product-list">
+    <div class="product-card no-affiliate">
+      <div class="product-num">5</div>
+      <div class="product-name">Lecithin <span class="product-type">(granules or powder)</span></div>
+      <div class="product-body">
+        <p>This played a significant role for me — see my <a href="bio-teil-2.html">Biography Part 2</a> for more context.</p>
+      </div>
+    </div>
+
+    <div class="product-card no-affiliate">
+      <div class="product-num">6</div>
+      <div class="product-name">Melatonin <span class="product-type">(as sleep support)</span></div>
+      <div class="product-body">
+        <p>I have regularly taken 3 mg melatonin in addition to the mineral complex in the evening for years. Please discuss the right dosage for you with your doctor — in Germany, melatonin is prescription-only above a certain dose; in the US it is available over the counter.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Background</h2>
+  <p>I describe how I use these products in my daily routine on my Approach page.</p>
+  <a class="arrow-link" href="loesung.html">→ To the Approach page →</a>
+
+  <p style="margin-top:20px;">Of course you are completely free to try out my overall concept — as I describe it on this website — with products from other companies as well.</p>
+  <p>Personally, I wouldn't currently switch to other products or other companies. I tried a lot back then — from Germany, from abroad, online, from health food stores — and burned through a serious amount of money in the process. Out of everything I tried, the products linked here are the ones that worked best for me by far.</p>
+  <p>But I can't claim to have an overview of the entire market, and other manufacturers may well have stepped up in recent years.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-links">
+    <a href="impressum.html">Imprint</a>
+    <a href="datenschutz.html">Privacy</a>
+  </div>
+  <div>©2025 Dustin Mueller</div>
+</footer>
+
+<button class="back-to-top" id="backToTop" type="button" aria-label="Scroll to top">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
+<script>
+(function () {
+  var btn = document.getElementById('backToTop');
+  if (!btn) return;
+  var onScroll = function () {
+    if (window.scrollY > 600) btn.classList.add('is-visible');
+    else btn.classList.remove('is-visible');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  btn.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  onScroll();
+})();
+</script>
+</body>
+</html>
