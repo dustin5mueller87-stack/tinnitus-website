@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chronic Tinnitus: How I Got Rid of It Twice</title>
+<title>Chronic Tinnitus: How I Got Rid of Mine, Twice</title>
 <link rel="stylesheet" href="../site.css">
-  <meta name="description" content="I am not a doctor – but I had chronic tinnitus twice, both times resolved and audiometrically documented. Here I share my journey.">
+  <meta name="description" content="I'm not a doctor — I had chronic tinnitus twice, both times it resolved, audiometry-documented. No cure promised: just my own story.">
   <link rel="canonical" href="https://tinnitusbioregulation.com/en/">
   <link rel="alternate" hreflang="de" href="https://tinnitusbioregulation.com/">
   <link rel="alternate" hreflang="en" href="https://tinnitusbioregulation.com/en/">
@@ -20,7 +20,7 @@
         <li class="nav-dropdown">
           <button type="button" aria-haspopup="true" aria-expanded="false">My Story<span class="nav-caret" aria-hidden="true"></span></button>
           <ul class="submenu">
-            <li><a href="/en/tinnitus-cured-experience-report">My Tinnitus Crash (Short Story)</a></li>
+            <li><a href="/en/tinnitus-recovery-my-story">My Tinnitus Crash (Short Story)</a></li>
             <li><a href="/en/my-story-part-1">Long Bio Part 1: The Descent</a></li>
             <li><a href="/en/my-story-part-2">Long Bio Part 2: The Stress Test</a></li>
           </ul>
@@ -75,7 +75,7 @@
 
   <p class="lede">I'm <strong>not a doctor</strong>. I'm someone who lived through hell — and on this site, I share how I got out.</p>
 
-  <p class="quick-jump">You can jump straight to <a href="/en/tinnitus-cured-experience-report">my story</a> or to <a href="/en/my-approach">my approach</a> — or just keep reading here.</p>
+  <p class="quick-jump">You can jump straight to <a href="/en/tinnitus-recovery-my-story">my story</a> or to <a href="/en/my-approach">my approach</a> — or just keep reading here.</p>
 
   <div class="callout intro-card">
     <p>My name is Dustin Müller. I'm writing this from Germany, where I went through my own tinnitus journey — twice. Both times it fully resolved. On top of that, I recovered from severe ME/CFS (Myalgic Encephalomyelitis / Chronic Fatigue Syndrome) that kept me bedridden for over a year. All documented. All measurable. Here, I share what I learned, what I lived through, and the approaches that worked for me — with no guarantee they will work for anyone else.</p>
@@ -224,7 +224,7 @@
     <a href="/en/imprint">Imprint</a>
     <a href="/en/privacy">Privacy</a>
   </div>
-  <div>©2025 Tinnitus Bioregulation – Dustin Müller</div>
+  <div>©2026 Tinnitus Bioregulation – Dustin Müller</div>
 </footer>
 
 <button class="back-to-top" id="backToTop" type="button" aria-label="Scroll to top">
@@ -246,46 +246,6 @@
 })();
 </script>
 
-<!-- Lightbox -->
-<div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Image view">
-  <button class="lightbox-close" type="button" aria-label="Close">×</button>
-  <div class="lightbox-frame">
-    <img id="lightboxImg" alt="">
-    <div class="lightbox-caption" id="lightboxCaption"></div>
-  </div>
-</div>
-<script>
-(function () {
-  var overlay = document.getElementById('lightbox');
-  var img = document.getElementById('lightboxImg');
-  var cap = document.getElementById('lightboxCaption');
-  var closeBtn = overlay.querySelector('.lightbox-close');
-  var triggers = document.querySelectorAll('a[data-lightbox]');
-  function open(href, caption) {
-    img.src = href;
-    cap.textContent = caption || '';
-    overlay.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
-  }
-  function close() {
-    overlay.classList.remove('is-open');
-    document.body.style.overflow = '';
-    img.src = '';
-  }
-  triggers.forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      e.preventDefault();
-      open(a.getAttribute('href'), a.getAttribute('data-lightbox'));
-    });
-  });
-  overlay.addEventListener('click', function (e) {
-    if (e.target === overlay) close();
-  });
-  closeBtn.addEventListener('click', close);
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && overlay.classList.contains('is-open')) close();
-  });
-})();
-</script>
+<script src="../site.js"></script>
 </body>
 </html>

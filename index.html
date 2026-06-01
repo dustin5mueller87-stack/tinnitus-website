@@ -174,8 +174,8 @@
 
   <h3>Meine vollständige Geschichte</h3>
   <p>Mein Weg vom ersten Hörsturz über vier erfolglose HNO-Besuche, den Absturz ins CFS und schließlich die Rückkehr ins Leben – komplett, unzensiert und mit allen Rückschlägen.</p>
-  <a class="arrow-link" href="/tinnitus-geheilt-erfahrungsbericht">→ Biografie Teil 1: Der erste Tinnitus und wie ich mich selbst herausholte →</a><br>
-  <a class="arrow-link" href="/tinnitus-geheilt-erfahrungsbericht">→ Biografie Teil 2: Der System-Crash, CFS und der bewusste zweite Tinnitus →</a>
+  <a class="arrow-link" href="/meine-geschichte-teil-1">→ Biografie Teil 1: Der erste Tinnitus und wie ich mich selbst herausholte →</a><br>
+  <a class="arrow-link" href="/meine-geschichte-teil-2">→ Biografie Teil 2: Der System-Crash, CFS und der bewusste zweite Tinnitus →</a>
 
   <h2 class="section-title" style="margin-top:48px;">Tinnitus verstehen: Die drei Hauptursachen</h2>
   <p>Tinnitus ist nicht gleich Tinnitus. Nach meiner Erfahrung und Recherche gibt es drei grundlegend verschiedene Auslöser – und jeder erfordert einen anderen Ansatz.</p>
@@ -222,7 +222,7 @@
     <a href="/impressum">Impressum</a>
     <a href="/datenschutz">Datenschutz</a>
   </div>
-  <div>©2025 Tinnitus Bioregulation – Dustin Müller</div>
+  <div>©2026 Tinnitus Bioregulation – Dustin Müller</div>
 </footer>
 
 <button class="back-to-top" id="backToTop" type="button" aria-label="Nach oben scrollen">
@@ -244,46 +244,6 @@
 })();
 </script>
 
-<!-- Lightbox -->
-<div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Bildansicht">
-  <button class="lightbox-close" type="button" aria-label="Schließen">×</button>
-  <div class="lightbox-frame">
-    <img id="lightboxImg" alt="">
-    <div class="lightbox-caption" id="lightboxCaption"></div>
-  </div>
-</div>
-<script>
-(function () {
-  var overlay = document.getElementById('lightbox');
-  var img = document.getElementById('lightboxImg');
-  var cap = document.getElementById('lightboxCaption');
-  var closeBtn = overlay.querySelector('.lightbox-close');
-  var triggers = document.querySelectorAll('a[data-lightbox]');
-  function open(href, caption) {
-    img.src = href;
-    cap.textContent = caption || '';
-    overlay.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
-  }
-  function close() {
-    overlay.classList.remove('is-open');
-    document.body.style.overflow = '';
-    img.src = '';
-  }
-  triggers.forEach(function (a) {
-    a.addEventListener('click', function (e) {
-      e.preventDefault();
-      open(a.getAttribute('href'), a.getAttribute('data-lightbox'));
-    });
-  });
-  overlay.addEventListener('click', function (e) {
-    if (e.target === overlay) close();
-  });
-  closeBtn.addEventListener('click', close);
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && overlay.classList.contains('is-open')) close();
-  });
-})();
-</script>
+<script src="site.js"></script>
 </body>
 </html>
