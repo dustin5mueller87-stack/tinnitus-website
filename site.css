@@ -16,8 +16,6 @@ body.cluster-loesung   { --accent: #6b8265; }  /* Salbei: Lösungsansatz */
 body.cluster-erfahrungen { --accent: #a86a4a; } /* Terrakotta: Erfahrungsberichte */
 body.cluster-quellen   { --accent: #6e6a5e; }  /* Schiefer: Quellen */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&family=Inter:wght@400;500;600;700&display=swap');
-
 :root {
   --bg: #f3ecdc;          /* warmes Cream */
   --bg-card: #faf4e6;     /* etwas heller für Karten */
@@ -26,12 +24,12 @@ body.cluster-quellen   { --accent: #6e6a5e; }  /* Schiefer: Quellen */
   --body: #3a2f24;
   --muted: #6b6256;
   --rule: #d8ceb6;
-  --gold: #b8893a;        /* warmer Gold-Akzent (Labels, Border-Akzent) */
-  --gold-soft: #c9a05a;
+  --gold: #8a6424;        /* dunkler Gold-Akzent mit besserem Kontrast */
+  --gold-soft: #9b7431;
   --maxw: 620px;          /* schmale Lesespalte wie im Original */
   --maxw-wide: 920px;     /* breite Spalte für Belege, Karten, Galerien */
-  --serif: "Fraunces", "Cormorant Garamond", Georgia, "Times New Roman", serif;
-  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -118,11 +116,21 @@ body {
 .lang-switch a:hover { opacity: 1; background: rgba(184, 137, 58, 0.12); }
 .lang-switch a.active {
   opacity: 1;
-  color: #fff;
+  color: #fdfbf6;
   background: var(--accent, var(--gold));
 }
 .lang-switch .lang-sep { display: none; }
-@media (max-width: 1080px) {
+@media (max-width: 1250px) {
+  .nav-inner { gap: 12px; }
+  .nav-list { margin-right: clamp(8px, 2vw, 24px); }
+  .nav-list a,
+  .nav-dropdown > button {
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 14px;
+  }
+}
+@media (max-width: 1250px) {
   .lang-switch { margin-left: auto; margin-right: 6px; }
 }
 
@@ -1366,7 +1374,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
 }
 
 /* Mobile */
-@media (max-width: 1080px) {
+@media (max-width: 1250px) {
   .site-header { padding: 14px 18px; }
   .nav-inner { display: flex; justify-content: space-between; }
   .nav-spacer { display: none; }
@@ -1494,14 +1502,14 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
 .side-figure.right {
   float: right;
   /* weiter in den Außenrand schieben, damit Luft zum Text bleibt */
-  margin-right: calc(-1 * (400px + 140px));
-  margin-left: 80px;
+  margin-right: -300px;
+  margin-left: 64px;
   shape-outside: margin-box;
 }
 .side-figure.left {
   float: left;
-  margin-left: calc(-1 * (400px + 140px));
-  margin-right: 80px;
+  margin-left: -300px;
+  margin-right: 64px;
   shape-outside: margin-box;
 }
 .side-figure img {
@@ -1534,7 +1542,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
 }
 
 /* Mobile / engere Viewports: Float aufheben, inline darstellen */
-@media (max-width: 1100px) {
+@media (max-width: 1280px) {
   .side-figure,
   .side-figure.right,
   .side-figure.left {
@@ -1625,8 +1633,8 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   clear: right;
   width: 150px;
   /* nochmal ~25 % weiter in den Außenrand */
-  margin-right: calc(-150px - 200px);
-  margin-left: 80px;
+  margin-right: -260px;
+  margin-left: 64px;
   margin-top: 4px;
   margin-bottom: 16px;
   padding-left: 14px;
@@ -1647,7 +1655,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   font-weight: 600;
   margin-bottom: 4px;
 }
-@media (max-width: 1100px) {
+@media (max-width: 1280px) {
   .margin-note {
     float: none;
     width: auto;

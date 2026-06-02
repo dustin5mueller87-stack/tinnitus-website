@@ -1,0 +1,17 @@
+{
+  "name": "Tinnitus Bioregulation",
+  "short_name": "Tinnitus",
+  "description": "Dustin Muellers persoenlicher Erfahrungsbericht zu chronischem Tinnitus, Bioregulation und wissenschaftlichen Quellen.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f3ecdc",
+  "theme_color": "#2f4364",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
