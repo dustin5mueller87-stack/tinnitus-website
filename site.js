@@ -2,6 +2,40 @@
    HTML-Hülle wird automatisch eingefügt, wenn sie noch nicht existiert.
    Jeder <a data-lightbox="…" href="…/bild.png"> öffnet das Bild im Overlay. */
 (function () {
+  function initNavDropdownAria() {
+    var dropdowns = document.querySelectorAll('.nav-dropdown');
+
+    dropdowns.forEach(function (dropdown) {
+      var button = dropdown.querySelector('button[aria-expanded]');
+      var submenu = dropdown.querySelector('.submenu');
+
+      if (!button || !submenu) return;
+
+      function submenuIsVisible() {
+        var style = window.getComputedStyle(submenu);
+        return dropdown.matches(':hover, :focus-within') ||
+          (style.visibility !== 'hidden' &&
+          style.opacity !== '0' &&
+          style.pointerEvents !== 'none');
+      }
+
+      function syncExpanded() {
+        button.setAttribute('aria-expanded', submenuIsVisible() ? 'true' : 'false');
+      }
+
+      function scheduleSync() {
+        window.requestAnimationFrame(syncExpanded);
+      }
+
+      dropdown.addEventListener('mouseenter', scheduleSync);
+      dropdown.addEventListener('mouseleave', scheduleSync);
+      dropdown.addEventListener('focusin', scheduleSync);
+      dropdown.addEventListener('focusout', scheduleSync);
+      window.addEventListener('resize', scheduleSync);
+      scheduleSync();
+    });
+  }
+
   function injectOverlay() {
     if (document.getElementById('lightbox')) return;
     var overlay = document.createElement('div');
@@ -57,8 +91,12 @@
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', function () {
+      initNavDropdownAria();
+      init();
+    });
   } else {
+    initNavDropdownAria();
     init();
   }
 })();
