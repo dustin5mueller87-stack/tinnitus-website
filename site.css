@@ -1082,7 +1082,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
 .back-to-top {
   position: fixed;
   bottom: 24px;
-  right: max(24px, calc(50% - 450px));
+  right: max(24px, calc(25% - 177px));
   width: 44px;
   height: 44px;
   background: var(--bg-card);
