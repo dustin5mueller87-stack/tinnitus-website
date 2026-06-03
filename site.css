@@ -1575,7 +1575,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
 }
 
 /* Mobile / engere Viewports: Float aufheben, inline darstellen */
-@media (max-width: 1100px) {
+@media (max-width: 1700px) {
   .side-figure,
   .side-figure.right,
   .side-figure.left {
@@ -1688,7 +1688,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   font-weight: 600;
   margin-bottom: 4px;
 }
-@media (max-width: 1100px) {
+@media (max-width: 1400px) {
   .margin-note {
     float: none;
     width: auto;
