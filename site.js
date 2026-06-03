@@ -36,6 +36,23 @@
     });
   }
 
+  function initBackToTop() {
+    var btn = document.getElementById('backToTop');
+    if (!btn || btn.dataset.backToTopBound) return;
+    btn.dataset.backToTopBound = '1';
+
+    function onScroll() {
+      if (window.scrollY > 600) btn.classList.add('is-visible');
+      else btn.classList.remove('is-visible');
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    btn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    onScroll();
+  }
+
   function injectOverlay() {
     if (document.getElementById('lightbox')) return;
     var overlay = document.createElement('div');
@@ -93,10 +110,12 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
       initNavDropdownAria();
+      initBackToTop();
       init();
     });
   } else {
     initNavDropdownAria();
+    initBackToTop();
     init();
   }
 })();
