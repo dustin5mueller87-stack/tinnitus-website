@@ -2115,6 +2115,10 @@ details.studien > .evidence-card:first-of-type { margin-top: 14px; }
 
 /* Voiceflow Chat Widget - Smooth Fade-In */
 #voiceflow-chat {
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  z-index: 999999 !important;
   animation: vf-fade-in 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
   opacity: 0;
 }

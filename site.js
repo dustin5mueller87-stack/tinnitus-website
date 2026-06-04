@@ -122,6 +122,46 @@
 
 /* Voiceflow Chat Widget Integration */
 (function() {
+  // Prevent Voiceflow widget from yanking the viewport/scrolling the parent page on focus/load
+  try {
+    const originalFocus = HTMLElement.prototype.focus;
+    HTMLElement.prototype.focus = function(options) {
+      var el = this;
+      var insideVoiceflow = false;
+      while (el) {
+        if (el.id === 'voiceflow-chat') {
+          insideVoiceflow = true;
+          break;
+        }
+        el = el.parentNode || (el.getRootNode && el.getRootNode().host);
+      }
+      if (insideVoiceflow) {
+        if (!options) options = {};
+        options.preventScroll = true;
+      }
+      return originalFocus.call(this, options);
+    };
+
+    const originalScrollIntoView = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function(arg) {
+      var el = this;
+      var insideVoiceflow = false;
+      while (el) {
+        if (el.id === 'voiceflow-chat') {
+          insideVoiceflow = true;
+          break;
+        }
+        el = el.parentNode || (el.getRootNode && el.getRootNode().host);
+      }
+      if (insideVoiceflow) {
+        return; // Suppress scrolling for internal widget elements
+      }
+      return originalScrollIntoView.apply(this, arguments);
+    };
+  } catch (e) {
+    console.warn('Focus/Scroll override omitted:', e);
+  }
+
   var voiceflowLoaded = false;
   var timeoutId = null;
   var shadowInterval = null;
@@ -137,17 +177,48 @@
         '.vfrc-proactive {',
         '  animation: proactive-fade-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;',
         '  opacity: 0;',
+        '  margin-bottom: 6px !important;',
         '}',
         '.vfrc-proactive__card {',
-        '  border-radius: 16px !important;',
-        '  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12) !important;',
-        '  border: 1px solid rgba(0, 0, 0, 0.06) !important;',
+        '  position: relative !important;',
+        '  border-radius: 18px 18px 2px 18px !important;', /* Rounded bubble with sharp bottom-right corner */
+        '  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12) !important;',
+        '  border: 1px solid rgba(0, 0, 0, 0.08) !important;',
         '  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;',
-        '  font-size: 14.5px !important;',
-        '  line-height: 1.5 !important;',
+        '  font-size: 14px !important;',
+        '  line-height: 1.45 !important;',
         '  background: #ffffff !important;',
         '  color: #1d1d1f !important;',
-        '  padding: 14px 18px !important;',
+        '  padding: 12px 16px !important;',
+        '  max-width: 260px !important;', /* Narrower, bubble-like width */
+        '  word-wrap: break-word !important;',
+        '}',
+        /* Asymmetric double pseudo-element triangular tail */
+        '.vfrc-proactive__card::before {',
+        '  content: "" !important;',
+        '  position: absolute !important;',
+        '  bottom: -7px !important;',
+        '  right: 19px !important;',
+        '  border-width: 7px 7px 0 !important;',
+        '  border-style: solid !important;',
+        '  border-color: rgba(0, 0, 0, 0.08) transparent !important;',
+        '  display: block !important;',
+        '  width: 0 !important;',
+        '  height: 0 !important;',
+        '  z-index: 1 !important;',
+        '}',
+        '.vfrc-proactive__card::after {',
+        '  content: "" !important;',
+        '  position: absolute !important;',
+        '  bottom: -6px !important;',
+        '  right: 20px !important;',
+        '  border-width: 6px 6px 0 !important;',
+        '  border-style: solid !important;',
+        '  border-color: #ffffff transparent !important;',
+        '  display: block !important;',
+        '  width: 0 !important;',
+        '  height: 0 !important;',
+        '  z-index: 2 !important;',
         '}',
         '@keyframes proactive-fade-in {',
         '  from { opacity: 0; transform: translateY(12px) scale(0.94); }',
@@ -238,26 +309,39 @@
     }
   };
 
-  // 1. Try to set up IntersectionObserver for precise trigger
-  var targetEl = findTargetElement();
-  if (targetEl && typeof IntersectionObserver === 'function') {
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          initVoiceflow();
-          observer.disconnect();
-        }
-      });
-    }, {
-      rootMargin: '0px 0px -10% 0px' // Triggers when the element enters the lower part of screen
-    });
-    observer.observe(targetEl);
-  } else {
-    // 2. Fallback to scroll position
-    window.addEventListener('scroll', handleScrollOrTimeout, { passive: true });
-    setTimeout(handleScrollOrTimeout, 100);
-  }
+  // Determine if we are on the homepage (prevent subpages with trailing slashes from matching)
+  var pathname = window.location.pathname.toLowerCase();
+  var isHomepage = pathname === '/' || 
+                   pathname === '/index.html' || 
+                   pathname === '/en/' || 
+                   pathname === '/en/index.html' || 
+                   pathname === '/en' || 
+                   pathname.endsWith('/index.html');
 
-  // 3. Backup timeout: load after 25 seconds anyway
-  timeoutId = setTimeout(initVoiceflow, 25000);
+  if (isHomepage) {
+    // 1. Try to set up IntersectionObserver for precise trigger on the homepage
+    var targetEl = findTargetElement();
+    if (targetEl && typeof IntersectionObserver === 'function') {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            initVoiceflow();
+            observer.disconnect();
+          }
+        });
+      }, {
+        rootMargin: '0px 0px -10% 0px' // Triggers when the element enters the lower part of screen
+      });
+      observer.observe(targetEl);
+    } else {
+      // 2. Fallback to scroll position
+      window.addEventListener('scroll', handleScrollOrTimeout, { passive: true });
+      setTimeout(handleScrollOrTimeout, 100);
+    }
+    // 3. Backup timeout for homepage: load after 25 seconds anyway
+    timeoutId = setTimeout(initVoiceflow, 25000);
+  } else {
+    // On all other subpages, load after a clean 15-second delay to prevent scroll jumps
+    timeoutId = setTimeout(initVoiceflow, 15000);
+  }
 })();
