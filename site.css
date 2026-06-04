@@ -1481,7 +1481,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
     transform: none;
     opacity: 1;
     visibility: visible;
-    pointer-events: auto;
+    pointer-events: inherit;
     min-width: 0;
     padding: 0 0 12px;
     background: var(--bg-soft);
