@@ -121,4 +121,32 @@
 })();
 
 /* Voiceflow Chat Widget Integration */
-(function(d,t){var v=d.createElement(t),s=d.getElementsByTagName(t)[0];v.onload=function(){window.voiceflow.chat.load({verify:{projectID:'6a0977f2a62d285256e0577a'},url:'https://general-runtime.voiceflow.com',voice:{url:'https://runtime-api.voiceflow.com'}})};v.src='https://cdn.voiceflow.com/widget-next/bundle.mjs';v.type='text/javascript';s.parentNode.insertBefore(v,s)})(document,'script');
+(function(d,t){
+  var v=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  v.onload=function(){
+    setTimeout(function(){
+      window.voiceflow.chat.load({
+        verify:{projectID:'6a0977f2a62d285256e0577a'},
+        url:'https://general-runtime.voiceflow.com',
+        voice:{url:'https://runtime-api.voiceflow.com'}
+      });
+      setTimeout(function(){
+        if(window.voiceflow && window.voiceflow.chat && typeof window.voiceflow.chat.proactive === 'object'){
+          var isEn = window.location.pathname.indexOf('/en/') !== -1;
+          var messageText = isEn 
+            ? "Tinnitus is not a life sentence. Got questions about my recovery path or the nutrient protocol?"
+            : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+          window.voiceflow.chat.proactive.push({
+            type: 'text',
+            payload: {
+              message: messageText
+            }
+          });
+        }
+      }, 1000);
+    }, 7000);
+  };
+  v.src='https://cdn.voiceflow.com/widget-next/bundle.mjs';
+  v.type='text/javascript';
+  s.parentNode.insertBefore(v,s);
+})(document,'script');
