@@ -121,32 +121,65 @@
 })();
 
 /* Voiceflow Chat Widget Integration */
-(function(d,t){
-  var v=d.createElement(t),s=d.getElementsByTagName(t)[0];
-  v.onload=function(){
-    setTimeout(function(){
-      window.voiceflow.chat.load({
-        verify:{projectID:'6a0977f2a62d285256e0577a'},
-        url:'https://general-runtime.voiceflow.com',
-        voice:{url:'https://runtime-api.voiceflow.com'}
-      });
-      setTimeout(function(){
-        if(window.voiceflow && window.voiceflow.chat && typeof window.voiceflow.chat.proactive === 'object'){
-          var isEn = window.location.pathname.indexOf('/en/') !== -1;
-          var messageText = isEn 
-            ? "Tinnitus is not a life sentence. Got questions about my recovery path or the nutrient protocol?"
-            : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
-          window.voiceflow.chat.proactive.push({
-            type: 'text',
-            payload: {
-              message: messageText
-            }
-          });
-        }
-      }, 1000);
-    }, 7000);
+(function() {
+  var voiceflowLoaded = false;
+  var timeoutId = null;
+
+  var initVoiceflow = function() {
+    if (voiceflowLoaded) return;
+    voiceflowLoaded = true;
+
+    // Clean up event listeners and timers
+    window.removeEventListener('scroll', handleScrollOrTimeout);
+    if (timeoutId) clearTimeout(timeoutId);
+
+    // Load Voiceflow script bundle
+    (function(d,t){
+      var v=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      v.onload=function(){
+        window.voiceflow.chat.load({
+          verify:{projectID:'6a0977f2a62d285256e0577a'},
+          url:'https://general-runtime.voiceflow.com',
+          voice:{url:'https://runtime-api.voiceflow.com'}
+        });
+        // Show proactive speech bubble after a tiny delay
+        setTimeout(function(){
+          if(window.voiceflow && window.voiceflow.chat && typeof window.voiceflow.chat.proactive === 'object'){
+            var isEn = window.location.pathname.indexOf('/en/') !== -1;
+            var messageText = isEn 
+              ? "Tinnitus is not a life sentence. Got questions about my recovery path or the nutrient protocol?"
+              : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+            window.voiceflow.chat.proactive.push({
+              type: 'text',
+              payload: {
+                message: messageText
+              }
+            });
+          }
+        }, 1000);
+      };
+      v.src='https://cdn.voiceflow.com/widget-next/bundle.mjs';
+      v.type='text/javascript';
+      s.parentNode.insertBefore(v,s);
+    })(document,'script');
   };
-  v.src='https://cdn.voiceflow.com/widget-next/bundle.mjs';
-  v.type='text/javascript';
-  s.parentNode.insertBefore(v,s);
-})(document,'script');
+
+  var handleScrollOrTimeout = function() {
+    var scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+    var totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+
+    // Trigger if scrolled past 450px, or past 35% of the page height on shorter pages
+    if (scrollY > 450 || (totalHeight > 0 && (scrollY / totalHeight) > 0.35)) {
+      initVoiceflow();
+    }
+  };
+
+  // Listen to scroll
+  window.addEventListener('scroll', handleScrollOrTimeout, { passive: true });
+
+  // Also check immediately in case page is already scrolled down on load
+  setTimeout(handleScrollOrTimeout, 100);
+
+  // Backup timeout: load after 25 seconds anyway
+  timeoutId = setTimeout(initVoiceflow, 25000);
+})();
