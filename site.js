@@ -122,6 +122,46 @@
 
 /* Voiceflow Chat Widget Integration */
 (function() {
+  // Prevent Voiceflow widget from yanking the viewport/scrolling the parent page on focus/load
+  try {
+    const originalFocus = HTMLElement.prototype.focus;
+    HTMLElement.prototype.focus = function(options) {
+      var el = this;
+      var insideVoiceflow = false;
+      while (el) {
+        if (el.id === 'voiceflow-chat') {
+          insideVoiceflow = true;
+          break;
+        }
+        el = el.parentNode || (el.getRootNode && el.getRootNode().host);
+      }
+      if (insideVoiceflow) {
+        if (!options) options = {};
+        options.preventScroll = true;
+      }
+      return originalFocus.call(this, options);
+    };
+
+    const originalScrollIntoView = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function(arg) {
+      var el = this;
+      var insideVoiceflow = false;
+      while (el) {
+        if (el.id === 'voiceflow-chat') {
+          insideVoiceflow = true;
+          break;
+        }
+        el = el.parentNode || (el.getRootNode && el.getRootNode().host);
+      }
+      if (insideVoiceflow) {
+        return; // Suppress scrolling for internal widget elements
+      }
+      return originalScrollIntoView.apply(this, arguments);
+    };
+  } catch (e) {
+    console.warn('Focus/Scroll override omitted:', e);
+  }
+
   var voiceflowLoaded = false;
   var timeoutId = null;
   var shadowInterval = null;
@@ -238,12 +278,14 @@
     }
   };
 
-  // Determine if we are on the homepage
-  var isHomepage = window.location.pathname === '/' || 
-                   window.location.pathname === '/index.html' ||
-                   window.location.pathname === '/en/' ||
-                   window.location.pathname === '/en/index.html' ||
-                   window.location.pathname.endsWith('/');
+  // Determine if we are on the homepage (prevent subpages with trailing slashes from matching)
+  var pathname = window.location.pathname.toLowerCase();
+  var isHomepage = pathname === '/' || 
+                   pathname === '/index.html' || 
+                   pathname === '/en/' || 
+                   pathname === '/en/index.html' || 
+                   pathname === '/en' || 
+                   pathname.endsWith('/index.html');
 
   if (isHomepage) {
     // 1. Try to set up IntersectionObserver for precise trigger on the homepage
