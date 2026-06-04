@@ -134,7 +134,10 @@
           description: 'Entfessle den Phönix in dir',
           image: '/img/phoenix.png',
           color: '#FF6B00',
-          launcher: '/img/phoenix.png'
+          launcher: {
+            type: 'icon',
+            imageUrl: '/img/phoenix.png'
+          }
         }
       });
     }, 5000);
