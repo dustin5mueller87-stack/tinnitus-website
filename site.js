@@ -238,26 +238,37 @@
     }
   };
 
-  // 1. Try to set up IntersectionObserver for precise trigger
-  var targetEl = findTargetElement();
-  if (targetEl && typeof IntersectionObserver === 'function') {
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          initVoiceflow();
-          observer.disconnect();
-        }
-      });
-    }, {
-      rootMargin: '0px 0px -10% 0px' // Triggers when the element enters the lower part of screen
-    });
-    observer.observe(targetEl);
-  } else {
-    // 2. Fallback to scroll position
-    window.addEventListener('scroll', handleScrollOrTimeout, { passive: true });
-    setTimeout(handleScrollOrTimeout, 100);
-  }
+  // Determine if we are on the homepage
+  var isHomepage = window.location.pathname === '/' || 
+                   window.location.pathname === '/index.html' ||
+                   window.location.pathname === '/en/' ||
+                   window.location.pathname === '/en/index.html' ||
+                   window.location.pathname.endsWith('/');
 
-  // 3. Backup timeout: load after 25 seconds anyway
-  timeoutId = setTimeout(initVoiceflow, 25000);
+  if (isHomepage) {
+    // 1. Try to set up IntersectionObserver for precise trigger on the homepage
+    var targetEl = findTargetElement();
+    if (targetEl && typeof IntersectionObserver === 'function') {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            initVoiceflow();
+            observer.disconnect();
+          }
+        });
+      }, {
+        rootMargin: '0px 0px -10% 0px' // Triggers when the element enters the lower part of screen
+      });
+      observer.observe(targetEl);
+    } else {
+      // 2. Fallback to scroll position
+      window.addEventListener('scroll', handleScrollOrTimeout, { passive: true });
+      setTimeout(handleScrollOrTimeout, 100);
+    }
+    // 3. Backup timeout for homepage: load after 25 seconds anyway
+    timeoutId = setTimeout(initVoiceflow, 25000);
+  } else {
+    // On all other subpages, load after a clean 15-second delay to prevent scroll jumps
+    timeoutId = setTimeout(initVoiceflow, 15000);
+  }
 })();
