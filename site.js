@@ -285,112 +285,8 @@
 
 /* Voiceflow Chat Widget Integration */
 (function() {
-  // Prevent Voiceflow widget from yanking the viewport/scrolling the parent page on focus/load
-  try {
-    const originalFocus = HTMLElement.prototype.focus;
-    HTMLElement.prototype.focus = function(options) {
-      var el = this;
-      var insideVoiceflow = false;
-      while (el) {
-        if (el.id === 'voiceflow-chat') {
-          insideVoiceflow = true;
-          break;
-        }
-        el = el.parentNode || (el.getRootNode && el.getRootNode().host);
-      }
-      if (insideVoiceflow) {
-        if (!options) options = {};
-        options.preventScroll = true;
-      }
-      return originalFocus.call(this, options);
-    };
-
-    const originalScrollIntoView = Element.prototype.scrollIntoView;
-    Element.prototype.scrollIntoView = function(arg) {
-      var el = this;
-      var insideVoiceflow = false;
-      while (el) {
-        if (el.id === 'voiceflow-chat') {
-          insideVoiceflow = true;
-          break;
-        }
-        el = el.parentNode || (el.getRootNode && el.getRootNode().host);
-      }
-      if (insideVoiceflow) {
-        return; // Suppress scrolling for internal widget elements
-      }
-      return originalScrollIntoView.apply(this, arguments);
-    };
-  } catch (e) {
-    console.warn('Focus/Scroll override omitted:', e);
-  }
-
   var voiceflowLoaded = false;
   var timeoutId = null;
-  var shadowInterval = null;
-
-  var injectShadowStyles = function() {
-    var shadowHost = document.getElementById('voiceflow-chat');
-    if (shadowHost && shadowHost.shadowRoot) {
-      if (shadowHost.shadowRoot.querySelector('#custom-vf-styles')) return;
-
-      var style = document.createElement('style');
-      style.id = 'custom-vf-styles';
-      style.textContent = [
-        '.vfrc-proactive {',
-        '  animation: proactive-fade-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;',
-        '  opacity: 0;',
-        '  margin-bottom: 6px !important;',
-        '}',
-        '.vfrc-proactive__card {',
-        '  position: relative !important;',
-        '  border-radius: 18px 18px 2px 18px !important;', /* Rounded bubble with sharp bottom-right corner */
-        '  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12) !important;',
-        '  border: 1px solid rgba(0, 0, 0, 0.08) !important;',
-        '  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;',
-        '  font-size: 14px !important;',
-        '  line-height: 1.45 !important;',
-        '  background: #ffffff !important;',
-        '  color: #1d1d1f !important;',
-        '  padding: 12px 16px !important;',
-        '  max-width: 260px !important;', /* Narrower, bubble-like width */
-        '  word-wrap: break-word !important;',
-        '}',
-        /* Asymmetric double pseudo-element triangular tail */
-        '.vfrc-proactive__card::before {',
-        '  content: "" !important;',
-        '  position: absolute !important;',
-        '  bottom: -7px !important;',
-        '  right: 19px !important;',
-        '  border-width: 7px 7px 0 !important;',
-        '  border-style: solid !important;',
-        '  border-color: rgba(0, 0, 0, 0.08) transparent !important;',
-        '  display: block !important;',
-        '  width: 0 !important;',
-        '  height: 0 !important;',
-        '  z-index: 1 !important;',
-        '}',
-        '.vfrc-proactive__card::after {',
-        '  content: "" !important;',
-        '  position: absolute !important;',
-        '  bottom: -6px !important;',
-        '  right: 20px !important;',
-        '  border-width: 6px 6px 0 !important;',
-        '  border-style: solid !important;',
-        '  border-color: #ffffff transparent !important;',
-        '  display: block !important;',
-        '  width: 0 !important;',
-        '  height: 0 !important;',
-        '  z-index: 2 !important;',
-        '}',
-        '@keyframes proactive-fade-in {',
-        '  from { opacity: 0; transform: translateY(12px) scale(0.94); }',
-        '  to { opacity: 1; transform: translateY(0) scale(1); }',
-        '}'
-      ].join('\n');
-      shadowHost.shadowRoot.appendChild(style);
-    }
-  };
 
   var initVoiceflow = function() {
     if (voiceflowLoaded) return;
@@ -410,16 +306,6 @@
           voice:{url:'https://runtime-api.voiceflow.com'}
         });
         
-        // Listen for shadow host creation to inject styles
-        shadowInterval = setInterval(function() {
-          var shadowHost = document.getElementById('voiceflow-chat');
-          if (shadowHost && shadowHost.shadowRoot) {
-            injectShadowStyles();
-            clearInterval(shadowInterval);
-          }
-        }, 50);
-        setTimeout(function() { if (shadowInterval) clearInterval(shadowInterval); }, 8000);
-
         // Show proactive speech bubble after a tiny delay
         setTimeout(function(){
           if(window.voiceflow && window.voiceflow.chat && typeof window.voiceflow.chat.proactive === 'object'){
