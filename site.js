@@ -63,6 +63,8 @@
     overlay.setAttribute('aria-label', 'Bildansicht');
     overlay.innerHTML =
       '<button class="lightbox-close" type="button" aria-label="Schließen">×</button>' +
+      '<button class="lightbox-nav lightbox-prev" type="button" aria-label="Vorheriges Bild" style="position: absolute; left: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">‹</button>' +
+      '<button class="lightbox-nav lightbox-next" type="button" aria-label="Nächstes Bild" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">›</button>' +
       '<div class="lightbox-frame">' +
       '  <img id="lightboxImg" alt="">' +
       '  <div class="lightbox-caption" id="lightboxCaption"></div>' +
@@ -76,18 +78,73 @@
     var img = document.getElementById('lightboxImg');
     var cap = document.getElementById('lightboxCaption');
     var closeBtn = overlay.querySelector('.lightbox-close');
+    var prevBtn = overlay.querySelector('.lightbox-prev');
+    var nextBtn = overlay.querySelector('.lightbox-next');
     var triggers = document.querySelectorAll('a[data-lightbox]');
+
+    // Erstelle eine Liste von Triggern mit eindeutigen hrefs
+    var uniqueTriggers = [];
+    var seenHrefs = {};
+    triggers.forEach(function (a) {
+      var href = a.getAttribute('href');
+      if (!seenHrefs[href]) {
+        seenHrefs[href] = true;
+        uniqueTriggers.push(a);
+      }
+    });
+
+    var currentIdx = -1;
+
+    // Zoom- und Drag-Status
+    var scale = 1;
+    var translateX = 0;
+    var translateY = 0;
+    var isDragging = false;
+    var startX = 0;
+    var startY = 0;
+
+    function updateTransform() {
+      img.style.transform = 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + scale + ')';
+    }
+
+    function resetZoom() {
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+      img.style.transform = '';
+      img.style.cursor = 'zoom-in';
+    }
 
     function open(href, caption) {
       img.src = href;
       cap.textContent = caption || '';
       overlay.classList.add('is-open');
       document.body.style.overflow = 'hidden';
+      resetZoom();
+
+      // Zeige Navigationspfeile nur an, wenn es mehr als ein eindeutiges Bild gibt
+      if (uniqueTriggers.length > 1) {
+        prevBtn.style.display = 'flex';
+        nextBtn.style.display = 'flex';
+      } else {
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+      }
     }
+
     function close() {
       overlay.classList.remove('is-open');
       document.body.style.overflow = '';
       img.src = '';
+      resetZoom();
+    }
+
+    function updateImage() {
+      if (currentIdx < 0 || currentIdx >= uniqueTriggers.length) return;
+      var trigger = uniqueTriggers[currentIdx];
+      img.src = trigger.getAttribute('href');
+      cap.textContent = trigger.getAttribute('data-lightbox') || '';
+      resetZoom();
     }
 
     triggers.forEach(function (a) {
@@ -95,15 +152,121 @@
       a.dataset.lbBound = '1';
       a.addEventListener('click', function (e) {
         e.preventDefault();
-        open(a.getAttribute('href'), a.getAttribute('data-lightbox'));
+        var href = a.getAttribute('href');
+
+        // Finde den Index in der uniqueTriggers-Liste
+        currentIdx = -1;
+        for (var i = 0; i < uniqueTriggers.length; i++) {
+          if (uniqueTriggers[i].getAttribute('href') === href) {
+            currentIdx = i;
+            break;
+          }
+        }
+
+        open(href, a.getAttribute('data-lightbox'));
       });
     });
+
     overlay.addEventListener('click', function (e) {
       if (e.target === overlay) close();
     });
+
     closeBtn.addEventListener('click', close);
+
+    // Klick auf Prev/Next Buttons
+    prevBtn.addEventListener('click', function (e) {
+      e.stopPropagation(); // Verhindert das Schließen des Overlays
+      if (uniqueTriggers.length <= 1) return;
+      currentIdx = (currentIdx - 1 + uniqueTriggers.length) % uniqueTriggers.length;
+      updateImage();
+    });
+
+    nextBtn.addEventListener('click', function (e) {
+      e.stopPropagation(); // Verhindert das Schließen des Overlays
+      if (uniqueTriggers.length <= 1) return;
+      currentIdx = (currentIdx + 1) % uniqueTriggers.length;
+      updateImage();
+    });
+
+    // Tastatursteuerung (Pfeiltasten links/rechts + Escape)
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && overlay.classList.contains('is-open')) close();
+      if (!overlay.classList.contains('is-open')) return;
+      if (e.key === 'Escape') {
+        close();
+      } else if (e.key === 'ArrowRight' && uniqueTriggers.length > 1) {
+        currentIdx = (currentIdx + 1) % uniqueTriggers.length;
+        updateImage();
+      } else if (e.key === 'ArrowLeft' && uniqueTriggers.length > 1) {
+        currentIdx = (currentIdx - 1 + uniqueTriggers.length) % uniqueTriggers.length;
+        updateImage();
+      }
+    });
+
+    // Hover-Effekt für Navigations-Buttons
+    var navButtons = [prevBtn, nextBtn];
+    navButtons.forEach(function (btn) {
+      btn.addEventListener('mouseenter', function () {
+        btn.style.background = 'rgba(20, 18, 14, 0.7)';
+        btn.style.borderColor = '#f3ecdc';
+      });
+      btn.addEventListener('mouseleave', function () {
+        btn.style.background = 'rgba(20, 18, 14, 0.4)';
+        btn.style.borderColor = 'rgba(243, 236, 220, 0.3)';
+      });
+    });
+
+    // Mausrad-Zoom
+    overlay.addEventListener('wheel', function (e) {
+      if (!overlay.classList.contains('is-open')) return;
+      e.preventDefault(); // Verhindert das Scrollen der Hintergrundseite
+
+      var zoomIntensity = 0.15;
+      var newScale = scale + (e.deltaY < 0 ? zoomIntensity : -zoomIntensity);
+      newScale = Math.max(1, Math.min(5, newScale)); // Zoombereich: 1.0x bis 5.0x
+
+      if (newScale === 1) {
+        resetZoom();
+      } else {
+        scale = newScale;
+        img.style.cursor = 'grab';
+        updateTransform();
+      }
+    }, { passive: false });
+
+    // Panning (Verschieben durch Ziehen mit der Maus)
+    img.addEventListener('mousedown', function (e) {
+      if (scale <= 1) return;
+      e.preventDefault(); // Verhindert das Standard-Verhalten der Bild-Vorschau
+      isDragging = true;
+      startX = e.clientX - translateX;
+      startY = e.clientY - translateY;
+      img.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', function (e) {
+      if (!isDragging) return;
+      translateX = e.clientX - startX;
+      translateY = e.clientY - startY;
+      updateTransform();
+    });
+
+    window.addEventListener('mouseup', function () {
+      if (isDragging) {
+        isDragging = false;
+        img.style.cursor = 'grab';
+      }
+    });
+
+    // Doppel-Klick-Zoom als zusätzliche Premium-Geste
+    img.addEventListener('dblclick', function (e) {
+      e.preventDefault();
+      if (scale > 1) {
+        resetZoom();
+      } else {
+        scale = 2.5;
+        img.style.cursor = 'grab';
+        updateTransform();
+      }
     });
   }
 
