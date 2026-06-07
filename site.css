@@ -2113,4 +2113,10 @@ details.studien > .evidence-card:first-of-type { margin-top: 14px; }
   .term-note p { font-size: 16px; }
 }
 
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 84px !important;
+  }
+}
+
 
