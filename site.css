@@ -2119,4 +2119,28 @@ details.studien > .evidence-card:first-of-type { margin-top: 14px; }
   }
 }
 
+/* === Medizinischer Hinweis (Produktseite) === */
+.medical-disclaimer {
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent, var(--gold));
+  padding: 22px 26px;
+  margin: 40px 0 8px;
+}
+.medical-disclaimer .md-label {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent, var(--gold));
+  border: 1px solid var(--accent, var(--gold));
+  border-radius: 999px;
+  padding: 3px 12px;
+  margin-bottom: 14px;
+}
+.medical-disclaimer p { font-size: 16px; line-height: 1.7; margin: 0 0 12px; }
+.medical-disclaimer p:last-child { margin-bottom: 0; }
+
 
