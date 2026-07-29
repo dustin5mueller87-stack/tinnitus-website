@@ -153,7 +153,7 @@ body {
   background: var(--accent, var(--gold));
 }
 .lang-switch .lang-sep { display: none; }
-@media (max-width: 1080px) {
+@media (max-width: 1100px) {
   .lang-switch { margin-left: auto; margin-right: 6px; }
 }
 
@@ -1407,7 +1407,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
 }
 
 /* Mobile */
-@media (max-width: 1080px) {
+@media (max-width: 1100px) {
   .site-header { padding: 14px 18px; }
   .nav-inner { display: flex; justify-content: space-between; }
   .nav-spacer { display: none; }
@@ -2144,3 +2144,18 @@ details.studien > .evidence-card:first-of-type { margin-top: 14px; }
 .medical-disclaimer p:last-child { margin-bottom: 0; }
 
 
+
+/* ------------------------------------------------------------------
+   Mehrsprachigkeit: Platz im Kopfbereich
+   Ab drei Sprachen wird der Umschalter breiter. In dem Fenster
+   zwischen Burger-Breakpoint (1080px) und komfortabler Breite
+   ruecken Navigation und Umschalter enger zusammen, damit die
+   Kopfzeile nicht ueber den Bildschirmrand laeuft.
+   Bei allen anderen Breiten aendert sich nichts.
+------------------------------------------------------------------ */
+@media (min-width: 1101px) and (max-width: 1560px) {
+  .nav-list { margin-right: 10px; gap: 1px; }
+  .nav-list a,
+  .nav-dropdown > button { padding: 9px 10px; font-size: 14px; }
+  .lang-switch a { padding: 5px 8px; font-size: 12px; }
+}
