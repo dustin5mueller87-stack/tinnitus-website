@@ -153,7 +153,7 @@ body {
   background: var(--accent, var(--gold));
 }
 .lang-switch .lang-sep { display: none; }
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .lang-switch { margin-left: auto; margin-right: 6px; }
 }
 
@@ -1406,8 +1406,8 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   margin-bottom: 14px;
 }
 
-/* Mobile */
-@media (max-width: 1100px) {
+/* Mobile — Umschaltpunkt bei fuenf Sprachen von 1100 auf 1200 gehoben */
+@media (max-width: 1200px) {
   .site-header { padding: 14px 18px; }
   .nav-inner { display: flex; justify-content: space-between; }
   .nav-spacer { display: none; }
@@ -2153,9 +2153,63 @@ details.studien > .evidence-card:first-of-type { margin-top: 14px; }
    Kopfzeile nicht ueber den Bildschirmrand laeuft.
    Bei allen anderen Breiten aendert sich nichts.
 ------------------------------------------------------------------ */
-@media (min-width: 1101px) and (max-width: 1560px) {
+@media (min-width: 1201px) and (max-width: 1700px) {
   .nav-list { margin-right: 10px; gap: 1px; }
   .nav-list a,
   .nav-dropdown > button { padding: 9px 10px; font-size: 14px; }
   .lang-switch a { padding: 5px 8px; font-size: 12px; }
+}
+
+
+/* ------------------------------------------------------------------
+   FUENF SPRACHEN IM KOPF  (DE / EN / IT / FR / NL)
+   Mit dem fuenften Eintrag wurde der Umschalter so breit, dass
+     a) auf dem Handy der Burger-Knopf aus dem Bild geschoben wurde
+        (auf 360 px stand er bei x=398 — also unerreichbar), und
+     b) im Fenster zwischen 1101 und rund 1200 px der Umschalter
+        ueber den rechten Rand lief (bis zu 64 px).
+   Beides wird hier eingefangen, ohne das uebrige Layout anzufassen.
+   Gemessen mit Chromium bei 18 Breiten von 360 bis 1920 px.
+------------------------------------------------------------------ */
+
+/* a) Burger-Bereich: Umschalter schlanker, damit Marke, Schalter und
+      Burger auch auf 360 px zusammen Platz haben. */
+@media (max-width: 1200px) {
+  .lang-switch { gap: 0; margin-right: 4px; }
+  .lang-switch a { padding: 4px 7px; font-size: 12px; letter-spacing: 0.04em; }
+}
+@media (max-width: 400px) {
+  .lang-switch a { padding: 4px 5px; font-size: 11px; letter-spacing: 0.02em; }
+}
+
+/* b) Enges Desktop-Fenster: Navigation und Umschalter noch ein Stueck
+      dichter zusammen, damit der Umschalter im Bild bleibt. */
+@media (min-width: 1201px) and (max-width: 1700px) {
+  .nav-list { margin-right: 6px; gap: 0; }
+  .nav-list a,
+  .nav-dropdown > button { padding: 9px 7px; font-size: 13.5px; }
+  .lang-switch { gap: 0; }
+  .lang-switch a { padding: 5px 6px; font-size: 11.5px; letter-spacing: 0.04em; }
+}
+
+/* c) Sehr schmale Geraete (320–360 px, z. B. iPhone SE der ersten Reihe):
+      dort reicht auch der schlankere Umschalter nicht — der Burger-Knopf
+      wurde noch 32 px aus dem Bild geschoben. Kopfpolster und Schalter
+      werden hier zusaetzlich verkleinert. */
+@media (max-width: 360px) {
+  .site-header { padding-left: 8px; padding-right: 8px; }
+  .lang-switch { margin-right: 2px; padding: 2px; }
+  .lang-switch a { padding: 3px 4px; font-size: 10px; letter-spacing: 0; }
+}
+
+/* d) Lange zusammengesetzte Woerter in Ueberschriften ("Nahrungsergaenzungen",
+      "voedingssupplementen") passen auf sehr schmalen Bildschirmen nicht in
+      eine Zeile und koennen ohne Hilfe nicht umbrechen. Weil auf jeder Seite
+      <html lang="…"> steht, trennt der Browser sprachrichtig.
+      Betraf schon die deutsche Fassung, nicht erst die Sprachversionen. */
+@media (max-width: 480px) {
+  h1, h2, h3, .section-title {
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
 }

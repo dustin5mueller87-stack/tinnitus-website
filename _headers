@@ -32,3 +32,6 @@
 
 /fr/*
   X-Robots-Tag: noindex, follow
+
+/nl/*
+  X-Robots-Tag: noindex, follow
