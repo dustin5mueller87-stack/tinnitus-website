@@ -55,16 +55,28 @@
 
   function injectOverlay() {
     if (document.getElementById('lightbox')) return;
+    var isEnglish = document.documentElement.lang.toLowerCase().indexOf('en') === 0;
+    var labels = isEnglish ? {
+      viewer: 'Image viewer',
+      close: 'Close',
+      previous: 'Previous image',
+      next: 'Next image'
+    } : {
+      viewer: 'Bildansicht',
+      close: 'Schließen',
+      previous: 'Vorheriges Bild',
+      next: 'Nächstes Bild'
+    };
     var overlay = document.createElement('div');
     overlay.className = 'lightbox-overlay';
     overlay.id = 'lightbox';
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
-    overlay.setAttribute('aria-label', 'Bildansicht');
+    overlay.setAttribute('aria-label', labels.viewer);
     overlay.innerHTML =
-      '<button class="lightbox-close" type="button" aria-label="Schließen">×</button>' +
-      '<button class="lightbox-nav lightbox-prev" type="button" aria-label="Vorheriges Bild" style="position: absolute; left: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">‹</button>' +
-      '<button class="lightbox-nav lightbox-next" type="button" aria-label="Nächstes Bild" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">›</button>' +
+      '<button class="lightbox-close" type="button" aria-label="' + labels.close + '">×</button>' +
+      '<button class="lightbox-nav lightbox-prev" type="button" aria-label="' + labels.previous + '" style="position: absolute; left: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">‹</button>' +
+      '<button class="lightbox-nav lightbox-next" type="button" aria-label="' + labels.next + '" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">›</button>' +
       '<div class="lightbox-frame">' +
       '  <img id="lightboxImg" alt="">' +
       '  <div class="lightbox-caption" id="lightboxCaption"></div>' +
@@ -428,7 +440,7 @@
           if(window.voiceflow && window.voiceflow.chat && typeof window.voiceflow.chat.proactive === 'object'){
             var isEn = window.location.pathname.indexOf('/en/') !== -1;
             var messageText = isEn 
-              ? "Tinnitus is not a life sentence. Got questions about my recovery path or the nutrient protocol?"
+              ? "Tinnitus is not a life sentence. Do you have questions about my way out of tinnitus hell or the nutrient protocol?"
               : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
             window.voiceflow.chat.proactive.push({
               type: 'text',
