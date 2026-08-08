@@ -55,12 +55,17 @@
 
   function injectOverlay() {
     if (document.getElementById('lightbox')) return;
-    var isEnglish = document.documentElement.lang.toLowerCase().indexOf('en') === 0;
-    var labels = isEnglish ? {
+    var pageLang = document.documentElement.lang.toLowerCase();
+    var labels = pageLang.indexOf('en') === 0 ? {
       viewer: 'Image viewer',
       close: 'Close',
       previous: 'Previous image',
       next: 'Next image'
+    } : pageLang.indexOf('fr') === 0 ? {
+      viewer: 'Visionneuse d’images',
+      close: 'Fermer',
+      previous: 'Image précédente',
+      next: 'Image suivante'
     } : {
       viewer: 'Bildansicht',
       close: 'Schließen',
@@ -438,10 +443,12 @@
         // Show proactive speech bubble after a tiny delay
         setTimeout(function(){
           if(window.voiceflow && window.voiceflow.chat && typeof window.voiceflow.chat.proactive === 'object'){
-            var isEn = window.location.pathname.indexOf('/en/') !== -1;
-            var messageText = isEn 
+            var pageLang = document.documentElement.lang.toLowerCase();
+            var messageText = pageLang.indexOf('en') === 0
               ? "Tinnitus is not a life sentence. Do you have questions about my way out of tinnitus hell or the nutrient protocol?"
-              : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+              : pageLang.indexOf('fr') === 0
+                ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole nutritionnel ?"
+                : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
             window.voiceflow.chat.proactive.push({
               type: 'text',
               payload: {
