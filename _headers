@@ -14,9 +14,9 @@
 
 # ------------------------------------------------------------------
 # SPRACHSPERRE
-# Italienisch und Franzoesisch sind online abrufbar, sollen aber noch
-# NICHT bei Google auftauchen. Zusaetzlich zum noindex-Meta in jeder
-# Seite steht hier der Riegel auf Server-Ebene.
+# Die noch nicht vollstaendigen Sprachbereiche sind online abrufbar,
+# sollen aber noch NICHT bei Google auftauchen. Zusaetzlich zum
+# noindex-Meta in jeder Seite steht hier der Riegel auf Server-Ebene.
 #
 # ZUM FREISCHALTEN einer Sprache: den passenden Block hier loeschen
 # UND das Kuerzel in sprachmatrix.py aus GESPERRT entfernen, dann das
@@ -34,4 +34,7 @@
   X-Robots-Tag: noindex, follow
 
 /nl/*
+  X-Robots-Tag: noindex, follow
+
+/es/*
   X-Robots-Tag: noindex, follow

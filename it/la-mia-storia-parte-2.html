@@ -35,7 +35,7 @@
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/it/" aria-label="Home">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
-    <nav aria-label="Navigazione principale">
+    <nav id="primaryNav" aria-label="Navigazione principale">
       <ul class="nav-list">
         <li><a href="/it/">Home</a></li>
         <li class="nav-dropdown is-active">
@@ -61,18 +61,21 @@
         <li><a href="/it/contatti">Contatti</a></li>
       </ul>
     </nav>
-    <div class="lang-switch" aria-label="Lingua / Language">
-      <a href="/meine-geschichte-teil-2" hreflang="de">DE</a>
-      <span class="lang-sep" aria-hidden="true">/</span>
-      <a href="/en/my-story-part-2" hreflang="en">EN</a>
-      <span class="lang-sep" aria-hidden="true">/</span>
-      <a href="/it/la-mia-storia-parte-2" class="active" hreflang="it" aria-current="true">IT</a>
-      <span class="lang-sep" aria-hidden="true">/</span>
-      <a href="/fr/mon-histoire-partie-2" hreflang="fr">FR</a>
-      <span class="lang-sep" aria-hidden="true">/</span>
-      <a href="/nl/mijn-verhaal-deel-2" hreflang="nl">NL</a>
-    </div>
-    <button class="nav-burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false">
+    <details class="lang-switch">
+      <summary aria-label="Lingua: Italiano" title="Lingua: Italiano">
+        <span class="lang-current" aria-hidden="true">IT</span>
+        <span class="lang-switch-caret" aria-hidden="true"></span>
+      </summary>
+      <div class="lang-menu">
+        <a href="/meine-geschichte-teil-2" hreflang="de"><span class="lang-code">DE</span><span class="lang-name" lang="de">Deutsch</span></a>
+        <a href="/en/my-story-part-2" hreflang="en"><span class="lang-code">EN</span><span class="lang-name" lang="en">English</span></a>
+        <a href="/it/la-mia-storia-parte-2" hreflang="it" class="active" aria-current="page"><span class="lang-code">IT</span><span class="lang-name" lang="it">Italiano</span></a>
+        <a href="/fr/mon-histoire-partie-2" hreflang="fr"><span class="lang-code">FR</span><span class="lang-name" lang="fr">Français</span></a>
+        <a href="/nl/mijn-verhaal-deel-2" hreflang="nl"><span class="lang-code">NL</span><span class="lang-name" lang="nl">Nederlands</span></a>
+        <a href="/es/" hreflang="es"><span class="lang-code">ES</span><span class="lang-name" lang="es">Español</span></a>
+      </div>
+    </details>
+    <button class="nav-burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
     </button>
   </div>

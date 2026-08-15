@@ -36,6 +36,64 @@
     });
   }
 
+  function initHeaderControls() {
+    var header = document.getElementById('siteHeader');
+    var burger = document.getElementById('navBurger');
+    var primaryNav = document.getElementById('primaryNav');
+    var languageSwitch = document.querySelector('details.lang-switch');
+    var languageSummary = languageSwitch && languageSwitch.querySelector('summary');
+
+    function closeLanguageSwitch(returnFocus) {
+      if (!languageSwitch || !languageSwitch.open) return;
+      languageSwitch.open = false;
+      if (returnFocus && languageSummary) languageSummary.focus();
+    }
+
+    function closeMobileMenu(returnFocus) {
+      if (!header || !burger || !header.classList.contains('is-menu-open')) return;
+      header.classList.remove('is-menu-open');
+      burger.setAttribute('aria-expanded', 'false');
+      if (returnFocus) burger.focus();
+    }
+
+    document.addEventListener('click', function (event) {
+      if (languageSwitch && !languageSwitch.contains(event.target)) {
+        closeLanguageSwitch(false);
+      }
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape') return;
+      if (languageSwitch && languageSwitch.open) {
+        closeLanguageSwitch(true);
+        return;
+      }
+      closeMobileMenu(true);
+    });
+
+    if (primaryNav) {
+      primaryNav.addEventListener('click', function (event) {
+        if (event.target.closest('a')) closeMobileMenu(false);
+      });
+    }
+
+    if (burger) {
+      burger.addEventListener('click', function () {
+        closeLanguageSwitch(false);
+      });
+    }
+
+    if (languageSummary) {
+      languageSummary.addEventListener('click', function () {
+        closeMobileMenu(false);
+      });
+    }
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 1100) closeMobileMenu(false);
+    });
+  }
+
   function initBackToTop() {
     var btn = document.getElementById('backToTop');
     if (!btn || btn.dataset.backToTopBound) return;
@@ -66,6 +124,11 @@
       close: 'Fermer',
       previous: 'Image précédente',
       next: 'Image suivante'
+    } : pageLang.indexOf('es') === 0 ? {
+      viewer: 'Visor de imágenes',
+      close: 'Cerrar',
+      previous: 'Imagen anterior',
+      next: 'Imagen siguiente'
     } : {
       viewer: 'Bildansicht',
       close: 'Schließen',
@@ -290,11 +353,13 @@
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
       initNavDropdownAria();
+      initHeaderControls();
       initBackToTop();
       init();
     });
   } else {
     initNavDropdownAria();
+    initHeaderControls();
     initBackToTop();
     init();
   }

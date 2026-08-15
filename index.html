@@ -15,6 +15,7 @@
   <link rel="alternate" hreflang="it" href="https://tinnitusbioregulation.com/it/">
   <link rel="alternate" hreflang="fr" href="https://tinnitusbioregulation.com/fr/">
   <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/">
+  <link rel="alternate" hreflang="es" href="https://tinnitusbioregulation.com/es/">
   <link rel="alternate" hreflang="x-default" href="https://tinnitusbioregulation.com/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Chronischer Tinnitus: Wie ich ihn zweimal loswurde">
@@ -87,7 +88,7 @@
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/" aria-label="Startseite">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
-    <nav aria-label="Hauptnavigation">
+    <nav id="primaryNav" aria-label="Hauptnavigation">
       <ul class="nav-list">
         <li><a href="/" class="active">Start</a></li>
         <li class="nav-dropdown">
@@ -113,18 +114,21 @@
         <li><a href="/kontakt">Kontakt</a></li>
       </ul>
     </nav>
-    <div class="lang-switch" aria-label="Sprache / Language">
-      <a href="/" class="active" hreflang="de" aria-current="true">DE</a>
-      <span class="lang-sep" aria-hidden="true">/</span>
-      <a href="/en/" hreflang="en">EN</a>
-      <span class="lang-sep" aria-hidden="true">/</span>
-      <a href="/it/" hreflang="it">IT</a>
-      <span class="lang-sep" aria-hidden="true">/</span>
-      <a href="/fr/" hreflang="fr">FR</a>
-      <span class="lang-sep" aria-hidden="true">/</span>
-      <a href="/nl/" hreflang="nl">NL</a>
-    </div>
-    <button class="nav-burger" id="navBurger" type="button" aria-label="Menü" aria-expanded="false">
+    <details class="lang-switch">
+      <summary aria-label="Sprache: Deutsch" title="Sprache: Deutsch">
+        <span class="lang-current" aria-hidden="true">DE</span>
+        <span class="lang-switch-caret" aria-hidden="true"></span>
+      </summary>
+      <div class="lang-menu">
+        <a href="/" hreflang="de" class="active" aria-current="page"><span class="lang-code">DE</span><span class="lang-name" lang="de">Deutsch</span></a>
+        <a href="/en/" hreflang="en"><span class="lang-code">EN</span><span class="lang-name" lang="en">English</span></a>
+        <a href="/it/" hreflang="it"><span class="lang-code">IT</span><span class="lang-name" lang="it">Italiano</span></a>
+        <a href="/fr/" hreflang="fr"><span class="lang-code">FR</span><span class="lang-name" lang="fr">Français</span></a>
+        <a href="/nl/" hreflang="nl"><span class="lang-code">NL</span><span class="lang-name" lang="nl">Nederlands</span></a>
+        <a href="/es/" hreflang="es"><span class="lang-code">ES</span><span class="lang-name" lang="es">Español</span></a>
+      </div>
+    </details>
+    <button class="nav-burger" id="navBurger" type="button" aria-label="Menü" aria-expanded="false" aria-controls="primaryNav">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
     </button>
   </div>

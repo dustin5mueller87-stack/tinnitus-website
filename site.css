@@ -91,7 +91,7 @@ body {
   padding: 10px 28px;
 }
 .nav-inner {
-  max-width: 1180px;
+  max-width: 1440px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -123,37 +123,132 @@ body {
 }
 .brand:hover { text-decoration: none; }
 
-/* Sprachumschalter DE / EN — als erkennbarer Segment-Schalter mit Rahmen */
+/* Kompakte Sprachwahl — bleibt auch mit vielen Sprachen gleich breit. */
 .lang-switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
+  position: relative;
   flex: none;
   font-family: var(--sans);
-  padding: 2px;
+}
+.lang-switch summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 62px;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 7px 11px;
   border: 1px solid rgba(184, 137, 58, 0.35);
   border-radius: 999px;
   background: rgba(184, 137, 58, 0.04);
-}
-.lang-switch a {
+  color: var(--ink);
+  cursor: pointer;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.06em;
+  line-height: 1;
+  list-style: none;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.lang-switch summary::-webkit-details-marker { display: none; }
+.lang-switch summary::marker { content: ""; }
+.lang-switch summary:hover,
+.lang-switch[open] summary {
+  border-color: var(--accent, var(--gold));
+  background: rgba(184, 137, 58, 0.10);
+}
+.lang-switch summary:focus-visible {
+  outline: 2px solid var(--accent, var(--gold));
+  outline-offset: 3px;
+}
+.lang-switch-caret {
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.18s ease;
+  opacity: 0.7;
+}
+.lang-switch[open] .lang-switch-caret {
+  transform: translateY(2px) rotate(225deg);
+}
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 120;
+  display: grid;
+  gap: 2px;
+  min-width: 192px;
+  width: max-content;
+  max-width: calc(100vw - 24px);
+  max-height: min(70vh, 420px);
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--bg-card);
+  box-shadow: 0 14px 40px rgba(60, 40, 10, 0.12);
+}
+.lang-menu a {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 9px 11px;
+  border-radius: 9px;
   color: var(--ink);
   text-decoration: none;
-  opacity: 0.6;
-  padding: 5px 11px;
-  border-radius: 999px;
-  transition: opacity 0.15s ease, background 0.15s ease, color 0.15s ease;
+  font-size: 13px;
+  line-height: 1.3;
+  transition: background 0.15s ease, color 0.15s ease;
 }
-.lang-switch a:hover { opacity: 1; background: rgba(184, 137, 58, 0.12); }
-.lang-switch a.active {
-  opacity: 1;
-  color: #fff;
+.lang-menu a:hover { background: rgba(184, 137, 58, 0.10); }
+.lang-menu a:focus-visible {
+  outline: 2px solid var(--accent, var(--gold));
+  outline-offset: -2px;
+}
+.lang-menu a.active {
   background: var(--accent, var(--gold));
+  color: #fff;
 }
-.lang-switch .lang-sep { display: none; }
-@media (max-width: 1200px) {
+.lang-code { font-weight: 800; letter-spacing: 0.06em; }
+.lang-name { font-weight: 500; letter-spacing: 0; }
+
+/* Spanische Phase 1: Links auf noch nicht uebersetzte deutsche Seiten
+   werden sichtbar als Sprachwechsel gekennzeichnet. */
+html[lang^="es"] a[data-language-fallback="de"]::after {
+  content: "DE";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5em;
+  padding: 1px 5px 0;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.35;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  vertical-align: 0.16em;
+  opacity: 0.68;
+}
+html[lang^="es"] .cta-card[data-language-fallback="de"]::after {
+  position: absolute;
+  top: 10px;
+  right: 0;
+}
+html[lang^="es"] .page-nav a[data-language-fallback="de"]::after {
+  grid-column: 1 / -1;
+  justify-self: end;
+  margin-top: 3px;
+}
+@media (max-width: 1100px) {
   .lang-switch { margin-left: auto; margin-right: 6px; }
 }
 
@@ -177,6 +272,7 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
+  flex-wrap: nowrap;
   gap: clamp(4px, 0.6vw, 8px);
   align-items: center;
   justify-content: center;
@@ -204,6 +300,17 @@ body {
   gap: 6px;
   opacity: 0.78;
   transition: opacity 0.18s ease, background 0.18s ease, color 0.18s ease;
+  white-space: nowrap;
+}
+
+/* Zwischen Tablet und komfortabler Desktopbreite bleibt die volle Navigation
+   sichtbar, wird aber etwas kompakter. Der Sprachschalter braucht hier dank
+   Dropdown keinen Sonderplatz mehr. */
+@media (min-width: 1101px) and (max-width: 1450px) {
+  .nav-inner { gap: 12px; }
+  .nav-list { gap: 0; margin-right: 0; flex-wrap: nowrap; }
+  .nav-list > li > a,
+  .nav-dropdown > button { padding: 9px 6px; font-size: 13px; }
 }
 .nav-list a:hover,
 .nav-dropdown > button:hover,
@@ -1406,8 +1513,8 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   margin-bottom: 14px;
 }
 
-/* Mobile — Umschaltpunkt bei fuenf Sprachen von 1100 auf 1200 gehoben */
-@media (max-width: 1200px) {
+/* Mobile — erst auf Tablet-/Handybreite auf das Hamburger-Menue wechseln. */
+@media (max-width: 1100px) {
   .site-header { padding: 14px 18px; }
   .nav-inner { display: flex; justify-content: space-between; }
   .nav-spacer { display: none; }
@@ -1424,14 +1531,17 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
     border-top: 1px solid var(--rule);
     transform: translateY(-12px);
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.22s ease, transform 0.22s ease;
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0s linear 0.22s;
     overflow-y: auto;
   }
   .site-header.is-menu-open .nav-list {
     transform: translateY(0);
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
+    transition-delay: 0s;
   }
   .nav-list > li { width: 100%; border-bottom: 1px solid var(--rule); }
   .nav-list > li:last-child { border-bottom: 0; }
@@ -1441,6 +1551,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
     justify-content: space-between;
     padding: 18px 28px;
     font-size: 13px;
+    white-space: normal;
   }
   /* Dropdown-Eltern auf Mobile als Rubrik-Überschrift kennzeichnen
      (Untermenüs sind hier dauerhaft ausgeklappt – so wirkt der Eltern-
@@ -2145,61 +2256,13 @@ details.studien > .evidence-card:first-of-type { margin-top: 14px; }
 
 
 
-/* ------------------------------------------------------------------
-   Mehrsprachigkeit: Platz im Kopfbereich
-   Ab drei Sprachen wird der Umschalter breiter. In dem Fenster
-   zwischen Burger-Breakpoint (1080px) und komfortabler Breite
-   ruecken Navigation und Umschalter enger zusammen, damit die
-   Kopfzeile nicht ueber den Bildschirmrand laeuft.
-   Bei allen anderen Breiten aendert sich nichts.
------------------------------------------------------------------- */
-@media (min-width: 1201px) and (max-width: 1700px) {
-  .nav-list { margin-right: 10px; gap: 1px; }
-  .nav-list a,
-  .nav-dropdown > button { padding: 9px 10px; font-size: 14px; }
-  .lang-switch a { padding: 5px 8px; font-size: 12px; }
-}
-
-
-/* ------------------------------------------------------------------
-   FUENF SPRACHEN IM KOPF  (DE / EN / IT / FR / NL)
-   Mit dem fuenften Eintrag wurde der Umschalter so breit, dass
-     a) auf dem Handy der Burger-Knopf aus dem Bild geschoben wurde
-        (auf 360 px stand er bei x=398 — also unerreichbar), und
-     b) im Fenster zwischen 1101 und rund 1200 px der Umschalter
-        ueber den rechten Rand lief (bis zu 64 px).
-   Beides wird hier eingefangen, ohne das uebrige Layout anzufassen.
-   Gemessen mit Chromium bei 18 Breiten von 360 bis 1920 px.
------------------------------------------------------------------- */
-
-/* a) Burger-Bereich: Umschalter schlanker, damit Marke, Schalter und
-      Burger auch auf 360 px zusammen Platz haben. */
-@media (max-width: 1200px) {
-  .lang-switch { gap: 0; margin-right: 4px; }
-  .lang-switch a { padding: 4px 7px; font-size: 12px; letter-spacing: 0.04em; }
-}
-@media (max-width: 400px) {
-  .lang-switch a { padding: 4px 5px; font-size: 11px; letter-spacing: 0.02em; }
-}
-
-/* b) Enges Desktop-Fenster: Navigation und Umschalter noch ein Stueck
-      dichter zusammen, damit der Umschalter im Bild bleibt. */
-@media (min-width: 1201px) and (max-width: 1700px) {
-  .nav-list { margin-right: 6px; gap: 0; }
-  .nav-list a,
-  .nav-dropdown > button { padding: 9px 7px; font-size: 13.5px; }
-  .lang-switch { gap: 0; }
-  .lang-switch a { padding: 5px 6px; font-size: 11.5px; letter-spacing: 0.04em; }
-}
-
-/* c) Sehr schmale Geraete (320–360 px, z. B. iPhone SE der ersten Reihe):
-      dort reicht auch der schlankere Umschalter nicht — der Burger-Knopf
-      wurde noch 32 px aus dem Bild geschoben. Kopfpolster und Schalter
-      werden hier zusaetzlich verkleinert. */
+/* Sehr schmale Geraete: etwas weniger Kopfpolster, damit Marke,
+   Sprachwahl und Burger sicher nebeneinander bleiben. */
 @media (max-width: 360px) {
   .site-header { padding-left: 8px; padding-right: 8px; }
-  .lang-switch { margin-right: 2px; padding: 2px; }
-  .lang-switch a { padding: 3px 4px; font-size: 10px; letter-spacing: 0; }
+  .nav-inner { gap: 8px; }
+  .lang-switch { margin-right: 2px; }
+  .lang-switch summary { min-width: 54px; padding: 6px 8px; }
 }
 
 /* d) Lange zusammengesetzte Woerter in Ueberschriften ("Nahrungsergaenzungen",
