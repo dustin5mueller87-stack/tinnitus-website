@@ -129,6 +129,11 @@
       close: 'Cerrar',
       previous: 'Imagen anterior',
       next: 'Imagen siguiente'
+    } : pageLang.indexOf('tr') === 0 ? {
+      viewer: 'Görsel görüntüleyici',
+      close: 'Kapat',
+      previous: 'Önceki görsel',
+      next: 'Sonraki görsel'
     } : {
       viewer: 'Bildansicht',
       close: 'Schließen',
@@ -513,7 +518,9 @@
               ? "Tinnitus is not a life sentence. Do you have questions about my way out of tinnitus hell or the nutrient protocol?"
               : pageLang.indexOf('fr') === 0
                 ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole nutritionnel ?"
-                : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+                : pageLang.indexOf('tr') === 0
+                  ? "Tinnitus ömür boyu sürecek bir kader değildir. Tinnitus cehenneminden nasıl çıktığım ya da besin öğeleri protokolü hakkında soruların mı var?"
+                  : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
             window.voiceflow.chat.proactive.push({
               type: 'text',
               payload: {
@@ -541,7 +548,8 @@
     var paragraphs = document.querySelectorAll('p');
     for (var i = 0; i < paragraphs.length; i++) {
       if (paragraphs[i].textContent.indexOf('nachts wach zu liegen') !== -1 ||
-          paragraphs[i].textContent.indexOf('lying awake at night') !== -1) {
+          paragraphs[i].textContent.indexOf('lying awake at night') !== -1 ||
+          paragraphs[i].textContent.indexOf('Geceleri uyanık yatıp') !== -1) {
         return paragraphs[i];
       }
     }
@@ -549,7 +557,8 @@
     var headings = document.querySelectorAll('h2');
     for (var i = 0; i < headings.length; i++) {
       if (headings[i].textContent.indexOf('Warum diese Seite existiert') !== -1 ||
-          headings[i].textContent.indexOf('Why this site exists') !== -1) {
+          headings[i].textContent.indexOf('Why this site exists') !== -1 ||
+          headings[i].textContent.indexOf('Bu site neden var') !== -1) {
         return headings[i];
       }
     }
@@ -573,6 +582,8 @@
                    pathname === '/en/' || 
                    pathname === '/en/index.html' || 
                    pathname === '/en' || 
+                   pathname === '/tr/' || 
+                   pathname === '/tr' || 
                    pathname.endsWith('/index.html');
 
   if (isHomepage) {
