@@ -218,9 +218,10 @@ body {
 .lang-code { font-weight: 800; letter-spacing: 0.06em; }
 .lang-name { font-weight: 500; letter-spacing: 0; }
 
-/* Spanische Phase 1: Links auf noch nicht uebersetzte deutsche Seiten
-   werden sichtbar als Sprachwechsel gekennzeichnet. */
-html[lang^="es"] a[data-language-fallback="de"]::after {
+/* Noch nicht uebersetzte deutsche Ziele werden in den aktiven
+   Sprachphasen sichtbar als Sprachwechsel gekennzeichnet. */
+html[lang^="es"] a[data-language-fallback="de"]::after,
+html[lang^="tr"] a[data-language-fallback="de"]::after {
   content: "DE";
   display: inline-flex;
   align-items: center;
@@ -238,12 +239,14 @@ html[lang^="es"] a[data-language-fallback="de"]::after {
   vertical-align: 0.16em;
   opacity: 0.68;
 }
-html[lang^="es"] .cta-card[data-language-fallback="de"]::after {
+html[lang^="es"] .cta-card[data-language-fallback="de"]::after,
+html[lang^="tr"] .cta-card[data-language-fallback="de"]::after {
   position: absolute;
   top: 10px;
   right: 0;
 }
-html[lang^="es"] .page-nav a[data-language-fallback="de"]::after {
+html[lang^="es"] .page-nav a[data-language-fallback="de"]::after,
+html[lang^="tr"] .page-nav a[data-language-fallback="de"]::after {
   grid-column: 1 / -1;
   justify-self: end;
   margin-top: 3px;
@@ -821,6 +824,42 @@ a:hover { text-decoration-thickness: 2px; }
 .summary-body p {
   font-size: 16px;
   line-height: 1.7;
+}
+.evidence-translations {
+  margin-top: 26px;
+}
+.evidence-translations .translation-intro {
+  color: var(--muted);
+  font-size: 15px;
+}
+.evidence-translations .translation-document {
+  border-top: 1px solid var(--rule);
+  padding: 22px 0 4px;
+}
+.evidence-translations .translation-document:first-of-type {
+  border-top: 0;
+  padding-top: 8px;
+}
+.evidence-translations .translation-document h3 {
+  margin-top: 0;
+}
+.evidence-translations .translation-document h4 {
+  margin: 22px 0 8px;
+  font-size: 17px;
+}
+.evidence-translations .translation-document p,
+.evidence-translations .translation-document li {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.evidence-translations .translation-document ul {
+  margin-top: 8px;
+}
+.evidence-translations .translation-key {
+  background: rgba(255,255,255,.42);
+  border-left: 2px solid var(--gold);
+  padding: 12px 16px;
+  margin: 14px 0;
 }
 @media (max-width: 540px) {
   .summary-box > summary { grid-template-columns: 1fr auto; }
