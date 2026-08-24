@@ -156,7 +156,11 @@
       '<button class="lightbox-nav lightbox-prev" type="button" aria-label="' + labels.previous + '" style="position: absolute; left: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">‹</button>' +
       '<button class="lightbox-nav lightbox-next" type="button" aria-label="' + labels.next + '" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">›</button>' +
       '<div class="lightbox-frame">' +
-      '  <img id="lightboxImg" alt="">' +
+      '  <div class="lightbox-document-stage">' +
+      '    <img id="lightboxImg" alt="">' +
+      '    <div class="lightbox-translation-panel" id="lightboxTranslation" role="region" aria-label="Polskie tłumaczenie dokumentu" hidden></div>' +
+      '    <button class="lightbox-translation-toggle" id="lightboxTranslationToggle" type="button" aria-pressed="false" hidden></button>' +
+      '  </div>' +
       '  <div class="lightbox-caption" id="lightboxCaption"></div>' +
       '</div>';
     document.body.appendChild(overlay);
@@ -167,6 +171,9 @@
     var overlay = document.getElementById('lightbox');
     var img = document.getElementById('lightboxImg');
     var cap = document.getElementById('lightboxCaption');
+    var translationPanel = document.getElementById('lightboxTranslation');
+    var translationToggle = document.getElementById('lightboxTranslationToggle');
+    var documentStage = overlay.querySelector('.lightbox-document-stage');
     var closeBtn = overlay.querySelector('.lightbox-close');
     var prevBtn = overlay.querySelector('.lightbox-prev');
     var nextBtn = overlay.querySelector('.lightbox-next');
@@ -184,6 +191,10 @@
     });
 
     var currentIdx = -1;
+    var currentTrigger = null;
+    var translationMode = false;
+    var translationShowLabel = '';
+    var translationOriginalLabel = '';
 
     // Zoom- und Drag-Status
     var scale = 1;
@@ -205,9 +216,48 @@
       img.style.cursor = 'zoom-in';
     }
 
-    function open(href, caption) {
+    function setTranslationMode(showTranslation) {
+      translationMode = Boolean(showTranslation && currentTrigger);
+      translationPanel.hidden = !translationMode;
+      translationPanel.setAttribute('aria-hidden', translationMode ? 'false' : 'true');
+      translationToggle.setAttribute('aria-pressed', translationMode ? 'true' : 'false');
+      translationToggle.textContent = translationMode ? translationOriginalLabel : translationShowLabel;
+      translationPanel.scrollTop = 0;
+      resetZoom();
+    }
+
+    function prepareTranslation(trigger) {
+      currentTrigger = trigger || null;
+      translationMode = false;
+      translationPanel.hidden = true;
+      translationPanel.setAttribute('aria-hidden', 'true');
+      translationPanel.innerHTML = '';
+      translationToggle.hidden = true;
+      translationToggle.setAttribute('aria-pressed', 'false');
+      documentStage.classList.remove('has-translation');
+
+      if (!currentTrigger) return;
+
+      var sourceSelector = currentTrigger.getAttribute('data-lightbox-translation');
+      if (!sourceSelector) return;
+
+      var source = document.querySelector(sourceSelector);
+      if (!source) return;
+
+      var translatedDocument = source.cloneNode(true);
+      translatedDocument.removeAttribute('id');
+      translationPanel.appendChild(translatedDocument);
+      translationShowLabel = currentTrigger.getAttribute('data-translation-show') || 'Pokaż tłumaczenie';
+      translationOriginalLabel = currentTrigger.getAttribute('data-translation-original') || 'Pokaż oryginał';
+      translationToggle.textContent = translationShowLabel;
+      translationToggle.hidden = false;
+      documentStage.classList.add('has-translation');
+    }
+
+    function open(href, caption, trigger) {
       img.src = href;
       cap.textContent = caption || '';
+      prepareTranslation(trigger);
       overlay.classList.add('is-open');
       document.body.style.overflow = 'hidden';
       resetZoom();
@@ -226,6 +276,7 @@
       overlay.classList.remove('is-open');
       document.body.style.overflow = '';
       img.src = '';
+      prepareTranslation(null);
       resetZoom();
     }
 
@@ -234,6 +285,7 @@
       var trigger = uniqueTriggers[currentIdx];
       img.src = trigger.getAttribute('href');
       cap.textContent = trigger.getAttribute('data-lightbox') || '';
+      prepareTranslation(trigger);
       resetZoom();
     }
 
@@ -253,7 +305,7 @@
           }
         }
 
-        open(href, a.getAttribute('data-lightbox'));
+        open(href, a.getAttribute('data-lightbox'), a);
       });
     });
 
@@ -262,6 +314,11 @@
     });
 
     closeBtn.addEventListener('click', close);
+
+    translationToggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      setTranslationMode(!translationMode);
+    });
 
     // Klick auf Prev/Next Buttons
     prevBtn.addEventListener('click', function (e) {
@@ -308,6 +365,7 @@
     // Mausrad-Zoom
     overlay.addEventListener('wheel', function (e) {
       if (!overlay.classList.contains('is-open')) return;
+      if (!translationPanel.hidden && (e.target === translationPanel || translationPanel.contains(e.target))) return;
       e.preventDefault(); // Verhindert das Scrollen der Hintergrundseite
 
       var zoomIntensity = 0.15;
