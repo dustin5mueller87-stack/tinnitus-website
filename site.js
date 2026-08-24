@@ -134,6 +134,11 @@
       close: 'Kapat',
       previous: 'Önceki görsel',
       next: 'Sonraki görsel'
+    } : pageLang.indexOf('pl') === 0 ? {
+      viewer: 'Podgląd obrazów',
+      close: 'Zamknij',
+      previous: 'Poprzedni obraz',
+      next: 'Następny obraz'
     } : {
       viewer: 'Bildansicht',
       close: 'Schließen',
@@ -518,8 +523,10 @@
               ? "Tinnitus is not a life sentence. Do you have questions about my way out of tinnitus hell or the nutrient protocol?"
               : pageLang.indexOf('fr') === 0
                 ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole nutritionnel ?"
-                : pageLang.indexOf('tr') === 0
-                  ? "Tinnitus ömür boyu sürecek bir kader değildir. Tinnitus cehenneminden nasıl çıktığım ya da besin öğeleri protokolü hakkında soruların mı var?"
+              : pageLang.indexOf('tr') === 0
+                ? "Tinnitus ömür boyu sürecek bir kader değildir. Tinnitus cehenneminden nasıl çıktığım ya da besin öğeleri protokolü hakkında soruların mı var?"
+                : pageLang.indexOf('pl') === 0
+                  ? "Szumy uszne nie są wyrokiem. Masz pytania o moją drogę wyjścia z piekła szumów usznych albo o protokół oparty na składnikach odżywczych?"
                   : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
             window.voiceflow.chat.proactive.push({
               type: 'text',
@@ -549,7 +556,8 @@
     for (var i = 0; i < paragraphs.length; i++) {
       if (paragraphs[i].textContent.indexOf('nachts wach zu liegen') !== -1 ||
           paragraphs[i].textContent.indexOf('lying awake at night') !== -1 ||
-          paragraphs[i].textContent.indexOf('Geceleri uyanık yatıp') !== -1) {
+          paragraphs[i].textContent.indexOf('Geceleri uyanık yatıp') !== -1 ||
+          paragraphs[i].textContent.indexOf('leżeć nocą, nie mogąc zasnąć') !== -1) {
         return paragraphs[i];
       }
     }
@@ -558,7 +566,8 @@
     for (var i = 0; i < headings.length; i++) {
       if (headings[i].textContent.indexOf('Warum diese Seite existiert') !== -1 ||
           headings[i].textContent.indexOf('Why this site exists') !== -1 ||
-          headings[i].textContent.indexOf('Bu site neden var') !== -1) {
+          headings[i].textContent.indexOf('Bu site neden var') !== -1 ||
+          headings[i].textContent.indexOf('Dlaczego ta strona istnieje') !== -1) {
         return headings[i];
       }
     }
@@ -582,8 +591,10 @@
                    pathname === '/en/' || 
                    pathname === '/en/index.html' || 
                    pathname === '/en' || 
-                   pathname === '/tr/' || 
-                   pathname === '/tr' || 
+                   pathname === '/tr/' ||
+                   pathname === '/tr' ||
+                   pathname === '/pl/' ||
+                   pathname === '/pl' ||
                    pathname.endsWith('/index.html');
 
   if (isHomepage) {
