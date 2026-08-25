@@ -53,6 +53,7 @@
       if (!header || !burger || !header.classList.contains('is-menu-open')) return;
       header.classList.remove('is-menu-open');
       burger.setAttribute('aria-expanded', 'false');
+      if (burger.dataset.labelOpen) burger.setAttribute('aria-label', burger.dataset.labelOpen);
       if (returnFocus) burger.focus();
     }
 
@@ -151,6 +152,7 @@
     overlay.setAttribute('role', 'dialog');
     overlay.setAttribute('aria-modal', 'true');
     overlay.setAttribute('aria-label', labels.viewer);
+    overlay.setAttribute('aria-describedby', 'lightboxCaption');
     overlay.innerHTML =
       '<button class="lightbox-close" type="button" aria-label="' + labels.close + '">×</button>' +
       '<button class="lightbox-nav lightbox-prev" type="button" aria-label="' + labels.previous + '" style="position: absolute; left: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">‹</button>' +

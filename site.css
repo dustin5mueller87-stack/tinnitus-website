@@ -221,7 +221,8 @@ body {
 /* Noch nicht uebersetzte deutsche Ziele werden in den aktiven
    Sprachphasen sichtbar als Sprachwechsel gekennzeichnet. */
 html[lang^="es"] a[data-language-fallback="de"]::after,
-html[lang^="tr"] a[data-language-fallback="de"]::after {
+html[lang^="tr"] a[data-language-fallback="de"]::after,
+html[lang^="pl"] a[data-language-fallback="de"]::after {
   content: "DE";
   display: inline-flex;
   align-items: center;
@@ -240,13 +241,15 @@ html[lang^="tr"] a[data-language-fallback="de"]::after {
   opacity: 0.68;
 }
 html[lang^="es"] .cta-card[data-language-fallback="de"]::after,
-html[lang^="tr"] .cta-card[data-language-fallback="de"]::after {
+html[lang^="tr"] .cta-card[data-language-fallback="de"]::after,
+html[lang^="pl"] .cta-card[data-language-fallback="de"]::after {
   position: absolute;
   top: 10px;
   right: 0;
 }
 html[lang^="es"] .page-nav a[data-language-fallback="de"]::after,
-html[lang^="tr"] .page-nav a[data-language-fallback="de"]::after {
+html[lang^="tr"] .page-nav a[data-language-fallback="de"]::after,
+html[lang^="pl"] .page-nav a[data-language-fallback="de"]::after {
   grid-column: 1 / -1;
   justify-self: end;
   margin-top: 3px;
