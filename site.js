@@ -584,12 +584,24 @@
           } : {})
         });
         
+        function localizeEnglishLauncher(shadowRoot) {
+          var launcher = shadowRoot.querySelector('.vfrc-launcher');
+          if (!launcher) return false;
+          launcher.setAttribute('title', 'Tinnitus Assistant');
+          launcher.setAttribute('aria-label', 'Tinnitus Assistant');
+          var launcherLabel = launcher.querySelector('.vfrc-launcher__label');
+          if (launcherLabel) launcherLabel.textContent = 'Tinnitus Assistant';
+          return true;
+        }
+
         // Listen for shadow host creation to inject styles
         var shadowInterval = setInterval(function() {
           var shadowHost = document.getElementById('voiceflow-chat');
           if (shadowHost && shadowHost.shadowRoot) {
             injectShadowStyles();
-            clearInterval(shadowInterval);
+            if (!isEnglishBioPart1 || localizeEnglishLauncher(shadowHost.shadowRoot)) {
+              clearInterval(shadowInterval);
+            }
           }
         }, 50);
         setTimeout(function() { if (shadowInterval) clearInterval(shadowInterval); }, 8000);
