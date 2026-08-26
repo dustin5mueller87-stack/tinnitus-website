@@ -1,0 +1,16 @@
+{
+  "name": "Tinnitus Bioregulation",
+  "short_name": "Tinnitus",
+  "start_url": "/nl/",
+  "display": "standalone",
+  "background_color": "#f3ecdc",
+  "theme_color": "#2f4364",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

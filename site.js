@@ -140,12 +140,20 @@
       close: 'Zamknij',
       previous: 'Poprzedni obraz',
       next: 'Następny obraz'
+    } : pageLang.indexOf('nl') === 0 ? {
+      viewer: 'Afbeeldingsweergave',
+      close: 'Sluiten',
+      previous: 'Vorige afbeelding',
+      next: 'Volgende afbeelding'
     } : {
       viewer: 'Bildansicht',
       close: 'Schließen',
       previous: 'Vorheriges Bild',
       next: 'Nächstes Bild'
     };
+    var translationRegionLabel = pageLang.indexOf('nl') === 0
+      ? 'Nederlandse vertaling van het document'
+      : 'Polskie tłumaczenie dokumentu';
     var overlay = document.createElement('div');
     overlay.className = 'lightbox-overlay';
     overlay.id = 'lightbox';
@@ -160,7 +168,7 @@
       '<div class="lightbox-frame">' +
       '  <div class="lightbox-document-stage">' +
       '    <img id="lightboxImg" alt="">' +
-      '    <div class="lightbox-translation-panel" id="lightboxTranslation" role="region" aria-label="Polskie tłumaczenie dokumentu" hidden></div>' +
+      '    <div class="lightbox-translation-panel" id="lightboxTranslation" role="region" aria-label="' + translationRegionLabel + '" hidden></div>' +
       '    <button class="lightbox-translation-toggle" id="lightboxTranslationToggle" type="button" aria-pressed="false" hidden></button>' +
       '  </div>' +
       '  <div class="lightbox-caption" id="lightboxCaption"></div>' +
@@ -170,6 +178,7 @@
 
   function init() {
     injectOverlay();
+    var pageLang = document.documentElement.lang.toLowerCase();
     var overlay = document.getElementById('lightbox');
     var img = document.getElementById('lightboxImg');
     var cap = document.getElementById('lightboxCaption');
@@ -249,14 +258,18 @@
       var translatedDocument = source.cloneNode(true);
       translatedDocument.removeAttribute('id');
       translationPanel.appendChild(translatedDocument);
-      translationShowLabel = currentTrigger.getAttribute('data-translation-show') || 'Pokaż tłumaczenie';
-      translationOriginalLabel = currentTrigger.getAttribute('data-translation-original') || 'Pokaż oryginał';
+      translationShowLabel = currentTrigger.getAttribute('data-translation-show') ||
+        (pageLang.indexOf('nl') === 0 ? 'Nederlandse vertaling bekijken' : 'Pokaż tłumaczenie');
+      translationOriginalLabel = currentTrigger.getAttribute('data-translation-original') ||
+        (pageLang.indexOf('nl') === 0 ? 'Duits origineel bekijken' : 'Pokaż oryginał');
       translationToggle.textContent = translationShowLabel;
       translationToggle.hidden = false;
       documentStage.classList.add('has-translation');
     }
 
     function getTriggerAlt(trigger) {
+      var explicitAlt = trigger && trigger.getAttribute('data-lightbox-alt');
+      if (explicitAlt) return explicitAlt;
       var preview = trigger && trigger.querySelector('img');
       return preview ? (preview.getAttribute('alt') || '') : '';
     }
@@ -278,15 +291,23 @@
         prevBtn.style.display = 'none';
         nextBtn.style.display = 'none';
       }
+
+      window.requestAnimationFrame(function () {
+        closeBtn.focus();
+      });
     }
 
     function close() {
+      var returnFocus = currentTrigger;
       overlay.classList.remove('is-open');
       document.body.style.overflow = '';
       img.src = '';
       img.alt = '';
       prepareTranslation(null);
       resetZoom();
+      if (returnFocus && document.contains(returnFocus)) {
+        returnFocus.focus();
+      }
     }
 
     function updateImage() {
@@ -350,6 +371,26 @@
       if (!overlay.classList.contains('is-open')) return;
       if (e.key === 'Escape') {
         close();
+      } else if (e.key === 'Tab') {
+        var focusableControls = [closeBtn, prevBtn, nextBtn, translationToggle].filter(function (control) {
+          return !control.hidden && window.getComputedStyle(control).display !== 'none';
+        });
+        if (!focusableControls.length) {
+          e.preventDefault();
+          return;
+        }
+        var firstControl = focusableControls[0];
+        var lastControl = focusableControls[focusableControls.length - 1];
+        if (e.shiftKey && document.activeElement === firstControl) {
+          e.preventDefault();
+          lastControl.focus();
+        } else if (!e.shiftKey && document.activeElement === lastControl) {
+          e.preventDefault();
+          firstControl.focus();
+        } else if (!overlay.contains(document.activeElement)) {
+          e.preventDefault();
+          firstControl.focus();
+        }
       } else if (e.key === 'ArrowRight' && uniqueTriggers.length > 1) {
         currentIdx = (currentIdx + 1) % uniqueTriggers.length;
         updateImage();
@@ -566,6 +607,7 @@
       v.onload=function(){
         var pageLang = document.documentElement.lang.toLowerCase();
         var isEnglishPage = pageLang.indexOf('en') === 0;
+        var isDutchPage = pageLang.indexOf('nl') === 0;
         window.voiceflow.chat.load({
           verify:{projectID:'6a0977f2a62d285256e0577a'},
           url:'https://general-runtime.voiceflow.com',
@@ -581,25 +623,108 @@
               description: 'Questions about Dustin’s story, approach, and sources'
             },
             inputPlaceholder: 'What would you like to know about tinnitus, Dustin’s story, or his approach?'
+          } : isDutchPage ? {
+            title: 'Tinnitusassistent',
+            description: 'Vragen over Dustins verhaal, aanpak en bronnen',
+            header: { title: 'Tinnitusassistent' },
+            banner: {
+              title: 'Tinnitusassistent',
+              description: 'Vragen over Dustins verhaal, aanpak en bronnen'
+            },
+            launcher: {
+              label: 'Tinnitusassistent',
+              title: 'Tinnitusassistent'
+            },
+            inputPlaceholder: 'Wat wil je weten over tinnitus, Dustins verhaal of zijn aanpak?'
           } : {})
         });
         
-        function localizeEnglishLauncher(shadowRoot) {
+        function localizeLauncher(shadowRoot) {
           var launcher = shadowRoot.querySelector('.vfrc-launcher');
           if (!launcher) return false;
-          launcher.setAttribute('title', 'Tinnitus Assistant');
-          launcher.setAttribute('aria-label', 'Tinnitus Assistant');
+          var launcherText = isEnglishPage ? 'Tinnitus Assistant' :
+            (isDutchPage ? 'Tinnitusassistent' : '');
+          if (!launcherText) return true;
+          if (launcher.getAttribute('title') !== launcherText) {
+            launcher.setAttribute('title', launcherText);
+          }
+          if (launcher.getAttribute('aria-label') !== launcherText) {
+            launcher.setAttribute('aria-label', launcherText);
+          }
           var launcherLabel = launcher.querySelector('.vfrc-launcher__label');
-          if (launcherLabel) launcherLabel.textContent = 'Tinnitus Assistant';
+          if (launcherLabel && launcherLabel.textContent !== launcherText) {
+            launcherLabel.textContent = launcherText;
+          }
           return true;
         }
+
+        function localizeDutchWidget(shadowRoot) {
+          if (!isDutchPage) return true;
+
+          var textMap = {
+            'Start new chat': 'Nieuw gesprek starten',
+            'Cancel': 'Annuleren',
+            'Restart conversation': 'Gesprek opnieuw starten',
+            'Drop files to upload': 'Sleep bestanden hierheen om ze te uploaden',
+            'open chat': 'Chat openen',
+            'send': 'Versturen',
+            'scroll': 'Scrollen',
+            'system agent avatar': 'Avatar van de assistent',
+            'Privacy notice': 'Privacy-informatie',
+            'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': 'Voordat we verdergaan met je gesprek, vragen we je onze privacyverklaring te lezen en te accepteren. Daarin staat hoe we je persoonsgegevens binnen onze diensten verwerken en beschermen.',
+            'Submit': 'Accepteren',
+            'Privacy policy': 'Privacyverklaring',
+            'Powered by Voiceflow': 'Mogelijk gemaakt door Voiceflow'
+          };
+
+          shadowRoot.querySelectorAll('*').forEach(function(element) {
+            if (element.children.length > 0) return;
+            var sourceText = element.textContent.trim();
+            if (Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+              element.textContent = textMap[sourceText];
+            }
+          });
+
+          var textarea = shadowRoot.querySelector('textarea');
+          if (textarea && textarea.getAttribute('placeholder') !== 'Wat wil je weten over tinnitus, Dustins verhaal of zijn aanpak?') {
+            textarea.setAttribute('placeholder', 'Wat wil je weten over tinnitus, Dustins verhaal of zijn aanpak?');
+          }
+
+          shadowRoot.querySelectorAll('[aria-label], [title], [label]').forEach(function(element) {
+            ['aria-label', 'title', 'label'].forEach(function(attribute) {
+              var sourceText = element.getAttribute(attribute);
+              if (sourceText && Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+                element.setAttribute(attribute, textMap[sourceText]);
+              }
+            });
+          });
+
+          return localizeLauncher(shadowRoot);
+        }
+
+        var dutchObserver = null;
 
         // Listen for shadow host creation to inject styles
         var shadowInterval = setInterval(function() {
           var shadowHost = document.getElementById('voiceflow-chat');
           if (shadowHost && shadowHost.shadowRoot) {
             injectShadowStyles();
-            if (!isEnglishPage || localizeEnglishLauncher(shadowHost.shadowRoot)) {
+            if (isDutchPage) {
+              localizeDutchWidget(shadowHost.shadowRoot);
+              if (!dutchObserver) {
+                dutchObserver = new MutationObserver(function() {
+                  localizeDutchWidget(shadowHost.shadowRoot);
+                });
+                dutchObserver.observe(shadowHost.shadowRoot, {
+                  childList: true,
+                  subtree: true,
+                  characterData: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'label', 'placeholder']
+                });
+              }
+              clearInterval(shadowInterval);
+            } else if (!isEnglishPage || localizeLauncher(shadowHost.shadowRoot)) {
               clearInterval(shadowInterval);
             }
           }
@@ -612,6 +737,8 @@
             var pageLang = document.documentElement.lang.toLowerCase();
             var messageText = pageLang.indexOf('en') === 0
               ? "Tinnitus is not a life sentence. Do you have questions about my way out of tinnitus hell or the nutrient protocol?"
+              : pageLang.indexOf('nl') === 0
+                ? "Tinnitus is geen onherroepelijk lot. Heb je vragen over mijn weg uit de tinnitushel of over het voedingsstoffenprotocol?"
               : pageLang.indexOf('fr') === 0
                 ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole nutritionnel ?"
               : pageLang.indexOf('tr') === 0
@@ -647,6 +774,7 @@
     for (var i = 0; i < paragraphs.length; i++) {
       if (paragraphs[i].textContent.indexOf('nachts wach zu liegen') !== -1 ||
           paragraphs[i].textContent.indexOf('lying awake at night') !== -1 ||
+          paragraphs[i].textContent.indexOf('’s nachts wakker te liggen') !== -1 ||
           paragraphs[i].textContent.indexOf('Geceleri uyanık yatıp') !== -1 ||
           paragraphs[i].textContent.indexOf('leżeć nocą, nie mogąc zasnąć') !== -1) {
         return paragraphs[i];
@@ -657,6 +785,7 @@
     for (var i = 0; i < headings.length; i++) {
       if (headings[i].textContent.indexOf('Warum diese Seite existiert') !== -1 ||
           headings[i].textContent.indexOf('Why this site exists') !== -1 ||
+          headings[i].textContent.indexOf('Waarom deze pagina bestaat') !== -1 ||
           headings[i].textContent.indexOf('Bu site neden var') !== -1 ||
           headings[i].textContent.indexOf('Dlaczego ta strona istnieje') !== -1) {
         return headings[i];
@@ -686,6 +815,8 @@
                    pathname === '/tr' ||
                    pathname === '/pl/' ||
                    pathname === '/pl' ||
+                   pathname === '/nl/' ||
+                   pathname === '/nl' ||
                    pathname.endsWith('/index.html');
 
   if (isHomepage) {

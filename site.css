@@ -1407,6 +1407,25 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   overflow-wrap: anywhere;
   color: inherit;
 }
+.lightbox-translation-panel table {
+  display: block;
+  width: 100%;
+  margin: 10px 0 22px;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: clamp(12px, 1.45vw, 15px);
+}
+.lightbox-translation-panel th,
+.lightbox-translation-panel td {
+  padding: 8px 10px;
+  border: 1px solid #c9dfe7;
+  text-align: left;
+  vertical-align: top;
+}
+.lightbox-translation-panel th {
+  background: #e8f4f8;
+  font-weight: 700;
+}
 .lightbox-caption {
   color: #f3ecdc;
   font-family: var(--serif);
@@ -1438,8 +1457,24 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   border-color: var(--gold-soft);
   background: rgba(243, 236, 220, 0.08);
 }
+.lightbox-close:focus-visible,
+.lightbox-nav:focus-visible,
+.lightbox-translation-toggle:focus-visible {
+  outline: 3px solid var(--gold-soft) !important;
+  outline-offset: 3px;
+}
 @media (max-width: 640px) {
   .lightbox-overlay { padding: 54px 10px 22px; }
+  .lightbox-prev {
+    left: 8px !important;
+  }
+  .lightbox-next {
+    right: 8px !important;
+  }
+  .lightbox-nav {
+    width: 40px !important;
+    height: 40px !important;
+  }
   .lightbox-translation-toggle {
     top: 12px;
     max-width: calc(100% - 24px);
@@ -1543,6 +1578,12 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   line-height: 1.5;
   color: var(--muted);
   margin: 4px 0 0;
+}
+.evidence-translation-note {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 20px 0 0;
 }
 
 /* === Erfahrungsberichte: Filterleiste + Karten-Raster === */
