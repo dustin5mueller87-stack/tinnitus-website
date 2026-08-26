@@ -608,7 +608,7 @@
         var pageLang = document.documentElement.lang.toLowerCase();
         var isEnglishPage = pageLang.indexOf('en') === 0;
         var isDutchPage = pageLang.indexOf('nl') === 0;
-        window.voiceflow.chat.load({
+        var voiceflowReady = window.voiceflow.chat.load({
           verify:{projectID:'6a0977f2a62d285256e0577a'},
           url:'https://general-runtime.voiceflow.com',
           voice:{url:'https://runtime-api.voiceflow.com'},
@@ -731,36 +731,38 @@
         }, 50);
         setTimeout(function() { if (shadowInterval) clearInterval(shadowInterval); }, 8000);
 
-        // Show proactive speech bubble after a tiny delay
-        setTimeout(function(){
-          if(window.voiceflow && window.voiceflow.chat && typeof window.voiceflow.chat.proactive === 'object'){
-            var pageLang = document.documentElement.lang.toLowerCase();
-            var messageText = pageLang.indexOf('en') === 0
-              ? "Tinnitus is not a life sentence. Do you have questions about my way out of tinnitus hell or the nutrient protocol?"
-              : pageLang.indexOf('nl') === 0
-                ? "Tinnitus is geen onherroepelijk lot. Heb je vragen over mijn weg uit de tinnitushel of over het voedingsstoffenprotocol?"
-              : pageLang.indexOf('fr') === 0
-                ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole nutritionnel ?"
-              : pageLang.indexOf('tr') === 0
-                ? "Tinnitus ömür boyu sürecek bir kader değildir. Tinnitus cehenneminden nasıl çıktığım ya da besin öğeleri protokolü hakkında soruların mı var?"
-                : pageLang.indexOf('pl') === 0
-                  ? "Szumy uszne nie są wyrokiem. Masz pytania o moją drogę wyjścia z piekła szumów usznych albo o protokół oparty na składnikach odżywczych?"
-                  : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
-            window.voiceflow.chat.proactive.push({
-              type: 'text',
-              payload: {
-                message: messageText
-              }
-            });
-            
-            // Hide the proactive bubble automatically after 8.25 seconds (2.25s fade-in + 6s stay)
-            setTimeout(function() {
-              if (window.voiceflow && window.voiceflow.chat && typeof window.voiceflow.chat.proactive === 'object') {
-                window.voiceflow.chat.proactive.clear();
-              }
-            }, 8250);
-          }
-        }, 350);
+        // Show the proactive speech bubble only after Voiceflow is ready.
+        Promise.resolve(voiceflowReady).then(function() {
+          setTimeout(function(){
+            if(window.voiceflow && window.voiceflow.chat && typeof window.voiceflow.chat.proactive === 'object'){
+              var pageLang = document.documentElement.lang.toLowerCase();
+              var messageText = pageLang.indexOf('en') === 0
+                ? "Tinnitus is not a life sentence. Do you have questions about my way out of tinnitus hell or the nutrient protocol?"
+                : pageLang.indexOf('nl') === 0
+                  ? "Tinnitus is geen onherroepelijk lot. Heb je vragen over mijn weg uit de tinnitushel of over het voedingsstoffenprotocol?"
+                : pageLang.indexOf('fr') === 0
+                  ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole nutritionnel ?"
+                : pageLang.indexOf('tr') === 0
+                  ? "Tinnitus ömür boyu sürecek bir kader değildir. Tinnitus cehenneminden nasıl çıktığım ya da besin öğeleri protokolü hakkında soruların mı var?"
+                  : pageLang.indexOf('pl') === 0
+                    ? "Szumy uszne nie są wyrokiem. Masz pytania o moją drogę wyjścia z piekła szumów usznych albo o protokół oparty na składnikach odżywczych?"
+                    : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+              window.voiceflow.chat.proactive.push({
+                type: 'text',
+                payload: {
+                  message: messageText
+                }
+              });
+
+              // Hide the proactive bubble automatically after 8.25 seconds (2.25s fade-in + 6s stay)
+              setTimeout(function() {
+                if (window.voiceflow && window.voiceflow.chat && typeof window.voiceflow.chat.proactive === 'object') {
+                  window.voiceflow.chat.proactive.clear();
+                }
+              }, 8250);
+            }
+          }, 350);
+        });
       };
       v.src='https://cdn.voiceflow.com/widget-next/bundle.mjs';
       v.type='text/javascript';
