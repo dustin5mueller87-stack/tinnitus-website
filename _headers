@@ -35,6 +35,3 @@
 
 /es/*
   X-Robots-Tag: noindex, follow
-
-/ru/*
-  X-Robots-Tag: noindex, follow
