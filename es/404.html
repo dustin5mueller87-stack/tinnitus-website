@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,follow">
 <title>Página no encontrada | Tinnitus Bioregulation</title>
-<meta name="description" content="La página solicitada no existe o se ha trasladado.">
 <link rel="stylesheet" href="/site.css">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -19,6 +18,14 @@
       <ul class="nav-list">
         <li><a href="/es/">Inicio</a></li>
         <li class="nav-dropdown">
+          <button type="button" aria-haspopup="true" aria-expanded="false">Mi historia<span class="nav-caret" aria-hidden="true"></span></button>
+          <ul class="submenu">
+            <li><a href="/tinnitus-geheilt-erfahrungsbericht" hreflang="de" data-language-fallback="de" title="Enlace a una página en alemán">Mi crisis con los acúfenos (historia breve)</a></li>
+            <li><a href="/meine-geschichte-teil-1" hreflang="de" data-language-fallback="de" title="Enlace a una página en alemán">Biografía extensa, parte 1: el viaje infernal</a></li>
+            <li><a href="/meine-geschichte-teil-2" hreflang="de" data-language-fallback="de" title="Enlace a una página en alemán">Biografía extensa, parte 2: la prueba más dura</a></li>
+          </ul>
+        </li>
+        <li class="nav-dropdown">
           <button type="button" aria-haspopup="true" aria-expanded="false">Causas<span class="nav-caret" aria-hidden="true"></span></button>
           <ul class="submenu">
             <li><a href="/es/acufenos-por-ruido">Acúfenos por ruido</a></li>
@@ -26,6 +33,11 @@
             <li><a href="/es/acufenos-por-medicamentos-y-toxicos">Acúfenos por medicamentos y sustancias tóxicas</a></li>
           </ul>
         </li>
+        <li><a href="/es/mi-enfoque">Mi enfoque</a></li>
+        <li><a href="/es/productos">Mis productos</a></li>
+        <li><a href="/wissenschaftliche-quellen" hreflang="de" data-language-fallback="de" title="Enlace a una página en alemán">Fuentes</a></li>
+        <li><a href="/erfahrungsberichte" hreflang="de" data-language-fallback="de" title="Enlace a una página en alemán">Experiencias de otras personas</a></li>
+        <li><a href="/kontakt" hreflang="de" data-language-fallback="de" title="Enlace a una página en alemán">Contacto</a></li>
       </ul>
     </nav>
     <details class="lang-switch">
@@ -39,7 +51,7 @@
         <a href="/it/" hreflang="it"><span class="lang-code">IT</span><span class="lang-name" lang="it">Italiano</span></a>
         <a href="/fr/" hreflang="fr"><span class="lang-code">FR</span><span class="lang-name" lang="fr">Français</span></a>
         <a href="/nl/" hreflang="nl"><span class="lang-code">NL</span><span class="lang-name" lang="nl">Nederlands</span></a>
-        <a href="/es/" hreflang="es" class="active" aria-current="page"><span class="lang-code">ES</span><span class="lang-name" lang="es">Español</span></a>
+        <a href="/es/" hreflang="es" class="active" aria-current="true"><span class="lang-code">ES</span><span class="lang-name" lang="es">Español</span></a>
       </div>
     </details>
     <button class="nav-burger" id="navBurger" type="button" aria-label="Menú" aria-expanded="false" aria-controls="primaryNav">
@@ -68,12 +80,16 @@
 
 <main>
   <div class="eyebrow">Error 404</div>
-  <h1>Esta página no existe.</h1>
-  <p class="lede">Puede que el enlace sea antiguo o que la página se haya trasladado. Puedes volver al inicio o seguir leyendo una de las cuatro páginas que ya están disponibles en español.</p>
-  <p><a class="cta-link" href="/es/">Volver al inicio</a></p>
+  <h1>No se ha encontrado esta página.</h1>
+  <p class="lede">La dirección solicitada no existe o ha cambiado. Lo mejor es que vuelvas a la página de inicio.</p>
+  <p><a class="cta-link" href="/es/">Volver a la página de inicio</a></p>
 </main>
 
 <footer class="site-footer">
+  <div class="footer-links">
+    <a href="/impressum" hreflang="de" data-language-fallback="de" title="Enlace a una página en alemán">Aviso legal</a>
+    <a href="/datenschutz" hreflang="de" data-language-fallback="de" title="Enlace a una página en alemán">Protección de datos</a>
+  </div>
   <div>©<script>document.write(new Date().getFullYear());</script> Tinnitus Bioregulation – Dustin Müller</div>
 </footer>
 <button class="back-to-top" id="backToTop" type="button" aria-label="Volver arriba">
@@ -95,5 +111,118 @@
 })();
 </script>
 <script src="/site.js"></script>
+<script>
+(function () {
+  if (document.documentElement.lang.toLowerCase().indexOf('es') !== 0) return;
+  var localizeSpanishLightboxRegion = function () {
+    var translationPanel = document.getElementById('lightboxTranslation');
+    if (translationPanel) {
+      translationPanel.setAttribute('aria-label', 'Traducción al español del documento');
+    }
+  };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', localizeSpanishLightboxRegion, { once: true });
+  } else {
+    localizeSpanishLightboxRegion();
+  }
+
+  var voiceflowText = {
+    'Tinnitus-Assistent': 'Asistente sobre acúfenos',
+    'Fragen zu Dustins Geschichte, Ansatz & Quellen': 'Preguntas sobre la historia, el enfoque y las fuentes de Dustin',
+    'Was möchtest du über Tinnitus, Dustins Geschichte oder seinen Ansatz wissen?': '¿Qué te gustaría saber sobre los acúfenos, la historia de Dustin o su enfoque?',
+    'Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?': 'Los acúfenos no son una condena. ¿Tienes preguntas sobre mi camino para salir del infierno de los acúfenos o sobre el protocolo de nutrientes?',
+    'Start new chat': 'Iniciar un chat nuevo',
+    'Cancel': 'Cancelar',
+    'Restart conversation': 'Reiniciar conversación',
+    'Drop files to upload': 'Suelta aquí los archivos para subirlos',
+    'Privacy notice': 'Aviso de privacidad',
+    'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': 'Antes de continuar con la conversación, te pedimos que revises y aceptes nuestra política de privacidad, en la que explicamos cómo tratamos y protegemos tus datos personales durante el uso de nuestros servicios.',
+    'Submit': 'Aceptar',
+    'Privacy policy': 'Política de privacidad',
+    'Send': 'Enviar',
+    'Close': 'Cerrar',
+    'Maximize': 'Maximizar',
+    'Minimize': 'Minimizar',
+    'New conversation': 'Nueva conversación',
+    'End chat': 'Finalizar chat',
+    'Upload file': 'Subir archivo',
+    'Remove attachment': 'Eliminar archivo adjunto',
+    'Powered by Voiceflow': 'Con tecnología de Voiceflow',
+    'open chat': 'Abrir el chat',
+    'Open chat': 'Abrir el chat',
+    'system agent avatar': 'Avatar del asistente',
+    'scroll': 'Ir al final',
+    'send': 'Enviar'
+  };
+  var voiceflowAttributes = ['title', 'aria-label', 'placeholder', 'alt'];
+
+  var translateVoiceflowNode = function (root) {
+    if (!root) return;
+    if (root.nodeType === 3) {
+      var rootValue = root.nodeValue;
+      var rootKey = rootValue.trim();
+      if (voiceflowText[rootKey]) root.nodeValue = rootValue.replace(rootKey, voiceflowText[rootKey]);
+      return;
+    }
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    var node;
+    while ((node = walker.nextNode())) {
+      var value = node.nodeValue;
+      var key = value.trim();
+      if (voiceflowText[key]) node.nodeValue = value.replace(key, voiceflowText[key]);
+    }
+    if (root.nodeType === 1 && root.matches('[title], [aria-label], [placeholder], [alt]')) {
+      voiceflowAttributes.forEach(function (name) {
+        var value = root.getAttribute(name);
+        if (voiceflowText[value]) root.setAttribute(name, voiceflowText[value]);
+      });
+    }
+    if (root.querySelectorAll) {
+      root.querySelectorAll('[title], [aria-label], [placeholder], [alt]').forEach(function (element) {
+        voiceflowAttributes.forEach(function (name) {
+          var value = element.getAttribute(name);
+          if (voiceflowText[value]) element.setAttribute(name, voiceflowText[value]);
+        });
+      });
+    }
+    var shadowRoot = root.getRootNode ? root.getRootNode() : root;
+    if (shadowRoot.querySelectorAll) {
+      var headerButtons = shadowRoot.querySelectorAll('.vfrc-header--button');
+      ['Reiniciar conversación', 'Cerrar'].forEach(function (label, index) {
+        var button = headerButtons[index];
+        if (!button) return;
+        if (button.getAttribute('title') !== label) button.setAttribute('title', label);
+        if (button.getAttribute('aria-label') !== label) button.setAttribute('aria-label', label);
+      });
+    }
+  };
+
+  var attachVoiceflowSpanish = function () {
+    var host = document.getElementById('voiceflow-chat');
+    if (!host || !host.shadowRoot || host.dataset.spanishLocalized) return false;
+    host.dataset.spanishLocalized = 'true';
+    translateVoiceflowNode(host.shadowRoot);
+    new MutationObserver(function (records) {
+      records.forEach(function (record) {
+        if (record.type === 'characterData') translateVoiceflowNode(record.target.parentNode);
+        else if (record.type === 'attributes') translateVoiceflowNode(record.target);
+        else record.addedNodes.forEach(translateVoiceflowNode);
+      });
+    }).observe(host.shadowRoot, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: voiceflowAttributes
+    });
+    return true;
+  };
+
+  var voiceflowInterval = window.setInterval(function () {
+    if (attachVoiceflowSpanish()) window.clearInterval(voiceflowInterval);
+  }, 100);
+  window.setTimeout(function () { window.clearInterval(voiceflowInterval); }, 40000);
+})();
+</script>
 </body>
 </html>
