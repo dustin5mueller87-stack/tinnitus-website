@@ -668,7 +668,9 @@
             'Drop files to upload': 'Sleep bestanden hierheen om ze te uploaden',
             'open chat': 'Chat openen',
             'send': 'Versturen',
+            'Send': 'Versturen',
             'scroll': 'Scrollen',
+            'Hide messages': 'Berichten verbergen',
             'system agent avatar': 'Avatar van de assistent',
             'Privacy notice': 'Privacy-informatie',
             'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': 'Voordat we verdergaan met je gesprek, vragen we je onze privacyverklaring te lezen en te accepteren. Daarin staat hoe we je persoonsgegevens binnen onze diensten verwerken en beschermen.',
@@ -739,7 +741,7 @@
               var messageText = pageLang.indexOf('en') === 0
                 ? "Tinnitus is not a life sentence. Do you have questions about my way out of tinnitus hell or the nutrient protocol?"
                 : pageLang.indexOf('nl') === 0
-                  ? "Tinnitus is geen onherroepelijk lot. Heb je vragen over mijn weg uit de tinnitushel of over het voedingsstoffenprotocol?"
+                  ? "Tinnitus hoeft niet je lot te zijn. Heb je vragen over mijn weg uit de tinnitushel of over mijn voedingsstoffenprotocol?"
                 : pageLang.indexOf('fr') === 0
                   ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole nutritionnel ?"
                 : pageLang.indexOf('tr') === 0
