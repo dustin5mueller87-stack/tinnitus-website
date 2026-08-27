@@ -766,7 +766,15 @@
               title: 'Ассистент по тиннитусу',
               description: 'Вопросы о личной истории Дастина, о его подходе и об источниках'
             },
-            inputPlaceholder: 'Что ты хочешь узнать о тиннитусе, истории Дастина или его подходе?'
+            launcher: {
+              label: 'Ассистент по тиннитусу',
+              title: 'Открыть чат'
+            },
+            inputPlaceholder: 'Что ты хочешь узнать о тиннитусе, истории Дастина или его подходе?',
+            aiDisclaimer: {
+              text: 'Ответы ИИ могут содержать ошибки.',
+              hide: false
+            }
           } : {})
         });
 
@@ -974,7 +982,66 @@
           return localizeLauncher(shadowRoot);
         }
 
+        function localizeRussianWidget(shadowRoot) {
+          if (!isRussianPage) return true;
+
+          var textMap = {
+            'Start new chat': 'Новый чат',
+            'Restart conversation': 'Начать разговор заново',
+            'Cancel': 'Отмена',
+            'Drop files to upload': 'Перетащи файлы сюда для загрузки',
+            'Privacy notice': 'Уведомление о конфиденциальности',
+            'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': 'Прежде чем продолжить разговор, пожалуйста, ознакомься с нашей политикой конфиденциальности и прими её. В ней описано, как мы обрабатываем и защищаем твою личную информацию при использовании наших сервисов.',
+            'Submit': 'Принять и продолжить',
+            'Privacy policy': 'Политика конфиденциальности',
+            'Hide messages': 'Скрыть сообщения',
+            'Open chat': 'Открыть чат',
+            'open chat': 'Открыть чат',
+            'Send': 'Отправить',
+            'send': 'Отправить',
+            'Scroll down': 'Прокрутить вниз',
+            'scroll': 'Прокрутить вниз',
+            'system agent avatar': 'Аватар ассистента',
+            'Powered by Voiceflow': 'Работает на Voiceflow'
+          };
+
+          shadowRoot.querySelectorAll('*').forEach(function(element) {
+            if (element.children.length > 0) return;
+            var sourceText = element.textContent.trim();
+            if (Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+              element.textContent = textMap[sourceText];
+            }
+          });
+
+          var textarea = shadowRoot.querySelector('textarea');
+          if (textarea && textarea.getAttribute('placeholder') !== 'Что ты хочешь узнать о тиннитусе, истории Дастина или его подходе?') {
+            textarea.setAttribute('placeholder', 'Что ты хочешь узнать о тиннитусе, истории Дастина или его подходе?');
+          }
+
+          shadowRoot.querySelectorAll('[aria-label], [title], [label]').forEach(function(element) {
+            ['aria-label', 'title', 'label'].forEach(function(attribute) {
+              var sourceText = element.getAttribute(attribute);
+              if (sourceText && Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+                element.setAttribute(attribute, textMap[sourceText]);
+              }
+            });
+          });
+
+          var launcher = shadowRoot.querySelector('.vfrc-launcher');
+          if (launcher) {
+            launcher.setAttribute('title', 'Открыть чат');
+            launcher.setAttribute('aria-label', 'Открыть чат');
+            var launcherLabel = launcher.querySelector('.vfrc-launcher__label');
+            if (launcherLabel && launcherLabel.textContent !== 'Ассистент по тиннитусу') {
+              launcherLabel.textContent = 'Ассистент по тиннитусу';
+            }
+          }
+
+          return Boolean(launcher);
+        }
+
         var dutchObserver = null;
+        var russianObserver = null;
 
         // Listen for shadow host creation to inject styles
         var shadowInterval = setInterval(function() {
@@ -991,6 +1058,21 @@
                   localizeDutchWidget(shadowHost.shadowRoot);
                 });
                 dutchObserver.observe(shadowHost.shadowRoot, {
+                  childList: true,
+                  subtree: true,
+                  characterData: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'label', 'placeholder']
+                });
+              }
+              clearInterval(shadowInterval);
+            } else if (isRussianPage) {
+              localizeRussianWidget(shadowHost.shadowRoot);
+              if (!russianObserver) {
+                russianObserver = new MutationObserver(function() {
+                  localizeRussianWidget(shadowHost.shadowRoot);
+                });
+                russianObserver.observe(shadowHost.shadowRoot, {
                   childList: true,
                   subtree: true,
                   characterData: true,
