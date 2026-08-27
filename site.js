@@ -124,7 +124,8 @@
       viewer: 'Visionneuse d’images',
       close: 'Fermer',
       previous: 'Image précédente',
-      next: 'Image suivante'
+      next: 'Image suivante',
+      translationRegion: 'Traduction française du document'
     } : pageLang.indexOf('es') === 0 ? {
       viewer: 'Visor de imágenes',
       close: 'Cerrar',
@@ -186,7 +187,10 @@
   function init() {
     injectOverlay();
     var pageLang = document.documentElement.lang.toLowerCase();
-    var translationDefaults = pageLang.indexOf('ru') === 0 ? {
+    var translationDefaults = pageLang.indexOf('fr') === 0 ? {
+      show: 'Afficher la traduction française',
+      original: 'Afficher l’original allemand'
+    } : pageLang.indexOf('ru') === 0 ? {
       show: 'Показать перевод документа на русский язык',
       original: 'Показать оригинал на немецком языке'
     } : pageLang.indexOf('nl') === 0 ? {
@@ -706,6 +710,7 @@
       v.onload=function(){
         var pageLang = document.documentElement.lang.toLowerCase();
         var isEnglishPage = pageLang.indexOf('en') === 0;
+        var isFrenchPage = pageLang.indexOf('fr') === 0;
         var isDutchPage = pageLang.indexOf('nl') === 0;
         var isRussianPage = pageLang.indexOf('ru') === 0;
         var voiceflowReady = window.voiceflow.chat.load({
@@ -723,6 +728,23 @@
               description: 'Questions about Dustin’s story, approach, and sources'
             },
             inputPlaceholder: 'What would you like to know about tinnitus, Dustin’s story, or his approach?'
+          } : isFrenchPage ? {
+            title: 'Assistant sur les acouphènes',
+            description: 'Questions sur l’histoire de Dustin, sa démarche et ses sources',
+            header: { title: 'Assistant sur les acouphènes' },
+            banner: {
+              title: 'Assistant sur les acouphènes',
+              description: 'Questions sur l’histoire de Dustin, sa démarche et ses sources'
+            },
+            launcher: {
+              label: 'Assistant sur les acouphènes',
+              title: 'Assistant sur les acouphènes'
+            },
+            inputPlaceholder: 'Que souhaitez-vous savoir sur les acouphènes, l’histoire de Dustin ou sa démarche ?',
+            aiDisclaimer: {
+              text: 'Les réponses de l’IA peuvent contenir des erreurs.',
+              hide: false
+            }
           } : isDutchPage ? {
             title: 'Tinnitusassistent',
             description: 'Vragen over Dustins verhaal, aanpak en bronnen',
@@ -747,8 +769,142 @@
             inputPlaceholder: 'Что ты хочешь узнать о тиннитусе, истории Дастина или его подходе?'
           } : {})
         });
-        
+
+        function setAttributeIfChanged(element, name, value) {
+          if (element && element.getAttribute(name) !== value) {
+            element.setAttribute(name, value);
+          }
+        }
+
+        function replaceKnownElementText(shadowRoot, selector, replacements) {
+          var elements = shadowRoot.querySelectorAll(selector);
+          for (var i = 0; i < elements.length; i++) {
+            var element = elements[i];
+            if (element.children.length) continue;
+            var value = (element.textContent || '').trim();
+            if (value && Object.prototype.hasOwnProperty.call(replacements, value) &&
+                element.textContent !== replacements[value]) {
+              element.textContent = replacements[value];
+            }
+          }
+        }
+
+        function setFrenchHeaderControlLabel(button) {
+          if (!button) return;
+          var currentLabel = [
+            button.getAttribute('title') || '',
+            button.getAttribute('aria-label') || '',
+            (button.textContent || '').trim()
+          ].join(' ');
+          var path = button.querySelector('path');
+          var pathData = path ? (path.getAttribute('d') || '') : '';
+          var label = '';
+
+          if (/restart conversation|start new chat|redémarrer la conversation/i.test(currentLabel) ||
+              pathData.indexOf('M5.75 5C5.75 4.58579') === 0) {
+            label = 'Redémarrer la conversation';
+          } else if (/hide messages|close chat|masquer les messages/i.test(currentLabel) ||
+                     pathData.indexOf('M17.7478 7.31915') === 0) {
+            label = 'Masquer les messages';
+          }
+
+          if (label) {
+            setAttributeIfChanged(button, 'title', label);
+            setAttributeIfChanged(button, 'aria-label', label);
+          }
+        }
+
+        function localizeFrenchInterface(shadowRoot) {
+          var title = 'Assistant sur les acouphènes';
+          var description = 'Questions sur l’histoire de Dustin, sa démarche et ses sources';
+          var placeholder = 'Que souhaitez-vous savoir sur les acouphènes, l’histoire de Dustin ou sa démarche ?';
+          var textReplacements = {
+            'Tinnitus-Assistent': title,
+            'Fragen zu Dustins Geschichte, Ansatz & Quellen': description,
+            'Start new chat': 'Nouvelle conversation',
+            'Restart conversation': 'Redémarrer la conversation',
+            'Cancel': 'Annuler',
+            'Drop files to upload': 'Déposez les fichiers à importer',
+            'Privacy notice': 'Avis de confidentialité',
+            'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': 'Avant de poursuivre la conversation, veuillez consulter et accepter notre politique de confidentialité. Elle explique comment vos informations personnelles sont traitées et protégées lorsque vous utilisez ce service.',
+            'Submit': 'Accepter et continuer',
+            'Privacy policy': 'Politique de confidentialité',
+            'Hide messages': 'Masquer les messages',
+            'Open chat': 'Ouvrir le chat',
+            'open chat': 'Ouvrir le chat'
+          };
+          replaceKnownElementText(shadowRoot,
+            '.vfrc-launcher__label, .vfrc-header--title, .vfrc-assistant-info--title, ' +
+            '.vfrc-assistant-info--description, .vfrc-footer__start-button button, ' +
+            '.vfrc-prompt button, .vfrc-more-menu .vfrc-button--label, ' +
+            '.vfrc-file-drop-overlay *, .vfrc-privacy__title, .vfrc-privacy__description, ' +
+            '.vfrc-privacy__primary-button, .vfrc-privacy__secondary-button-label',
+            textReplacements);
+
+          var launcher = shadowRoot.querySelector('.vfrc-launcher');
+          if (launcher) {
+            setAttributeIfChanged(launcher, 'title', 'Ouvrir le chat');
+            setAttributeIfChanged(launcher, 'aria-label', 'Ouvrir le chat');
+            var launcherLabel = launcher.querySelector('.vfrc-launcher__label');
+            if (launcherLabel && launcherLabel.textContent !== title) launcherLabel.textContent = title;
+          }
+
+          var headerButtons = shadowRoot.querySelectorAll('.vfrc-header--button');
+          for (var i = 0; i < headerButtons.length; i++) {
+            setFrenchHeaderControlLabel(headerButtons[i]);
+          }
+
+          var input = shadowRoot.querySelector('.vfrc-chat-input');
+          setAttributeIfChanged(input, 'placeholder', placeholder);
+
+          var sendButton = shadowRoot.querySelector('.vfrc-chat-input__send');
+          setAttributeIfChanged(sendButton, 'title', 'Envoyer');
+          setAttributeIfChanged(sendButton, 'aria-label', 'Envoyer');
+
+          var scrollIcon = shadowRoot.querySelector('[title="scroll"], [title="Faire défiler vers le bas"]');
+          if (scrollIcon) {
+            setAttributeIfChanged(scrollIcon, 'title', 'Faire défiler vers le bas');
+            setAttributeIfChanged(scrollIcon.closest('button'), 'aria-label', 'Faire défiler vers le bas');
+          }
+
+          var privacyPrimary = shadowRoot.querySelector('.vfrc-privacy__primary-button');
+          var privacySecondary = shadowRoot.querySelector('.vfrc-privacy__secondary-button');
+          setAttributeIfChanged(privacyPrimary, 'aria-label', 'Accepter et continuer');
+          setAttributeIfChanged(privacySecondary, 'aria-label', 'Politique de confidentialité');
+
+          var proactiveClose = shadowRoot.querySelector('.vfrc-proactive__close-button');
+          setAttributeIfChanged(proactiveClose, 'title', 'Fermer');
+          setAttributeIfChanged(proactiveClose, 'aria-label', 'Fermer');
+
+          return Boolean(launcher);
+        }
+
+        function observeFrenchInterface(shadowRoot) {
+          var localized = localizeFrenchInterface(shadowRoot);
+          if (!shadowRoot.__tinnitusFrenchUiObserver) {
+            var scheduled = false;
+            var observer = new MutationObserver(function() {
+              if (scheduled) return;
+              scheduled = true;
+              window.requestAnimationFrame(function() {
+                scheduled = false;
+                localizeFrenchInterface(shadowRoot);
+              });
+            });
+            observer.observe(shadowRoot, {
+              childList: true,
+              subtree: true,
+              characterData: true,
+              attributes: true,
+              attributeFilter: ['title', 'aria-label', 'placeholder']
+            });
+            shadowRoot.__tinnitusFrenchUiObserver = observer;
+          }
+          return localized;
+        }
+
         function localizeLauncher(shadowRoot) {
+          if (isFrenchPage) return observeFrenchInterface(shadowRoot);
           var localizedLabel = isEnglishPage
             ? 'Tinnitus Assistant'
             : isDutchPage
@@ -825,7 +981,10 @@
           var shadowHost = document.getElementById('voiceflow-chat');
           if (shadowHost && shadowHost.shadowRoot) {
             injectShadowStyles();
-            if (isDutchPage) {
+            if (isFrenchPage) {
+              localizeLauncher(shadowHost.shadowRoot);
+              clearInterval(shadowInterval);
+            } else if (isDutchPage) {
               localizeDutchWidget(shadowHost.shadowRoot);
               if (!dutchObserver) {
                 dutchObserver = new MutationObserver(function() {
@@ -894,6 +1053,7 @@
     for (var i = 0; i < paragraphs.length; i++) {
       if (paragraphs[i].textContent.indexOf('nachts wach zu liegen') !== -1 ||
           paragraphs[i].textContent.indexOf('lying awake at night') !== -1 ||
+          paragraphs[i].textContent.indexOf('reste éveillé la nuit') !== -1 ||
           paragraphs[i].textContent.indexOf('’s nachts wakker te liggen') !== -1 ||
           paragraphs[i].textContent.indexOf('Geceleri uyanık yatıp') !== -1 ||
           paragraphs[i].textContent.indexOf('leżeć nocą, nie mogąc zasnąć') !== -1 ||
@@ -906,6 +1066,7 @@
     for (var i = 0; i < headings.length; i++) {
       if (headings[i].textContent.indexOf('Warum diese Seite existiert') !== -1 ||
           headings[i].textContent.indexOf('Why this site exists') !== -1 ||
+          headings[i].textContent.indexOf('Pourquoi cette page existe') !== -1 ||
           headings[i].textContent.indexOf('Waarom deze pagina bestaat') !== -1 ||
           headings[i].textContent.indexOf('Bu site neden var') !== -1 ||
           headings[i].textContent.indexOf('Dlaczego ta strona istnieje') !== -1 ||
