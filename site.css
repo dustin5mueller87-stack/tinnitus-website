@@ -64,6 +64,12 @@ body.cluster-quellen   { --accent: #6e6a5e; }  /* Schiefer: Quellen */
   --sans: "Inter", sans-serif;
 }
 
+/* Fraunces enthält in der gebündelten Datei keine kyrillischen Zeichen.
+   Russische Seiten behalten die typografische Hierarchie mit Inter bei. */
+html:lang(ru) {
+  --serif: "Inter", sans-serif;
+}
+
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
@@ -222,7 +228,8 @@ body {
    Sprachphasen sichtbar als Sprachwechsel gekennzeichnet. */
 html[lang^="es"] a[data-language-fallback="de"]::after,
 html[lang^="tr"] a[data-language-fallback="de"]::after,
-html[lang^="pl"] a[data-language-fallback="de"]::after {
+html[lang^="pl"] a[data-language-fallback="de"]::after,
+html[lang^="ru"] a[data-language-fallback="de"]::after {
   content: "DE";
   display: inline-flex;
   align-items: center;
@@ -242,14 +249,16 @@ html[lang^="pl"] a[data-language-fallback="de"]::after {
 }
 html[lang^="es"] .cta-card[data-language-fallback="de"]::after,
 html[lang^="tr"] .cta-card[data-language-fallback="de"]::after,
-html[lang^="pl"] .cta-card[data-language-fallback="de"]::after {
+html[lang^="pl"] .cta-card[data-language-fallback="de"]::after,
+html[lang^="ru"] .cta-card[data-language-fallback="de"]::after {
   position: absolute;
   top: 10px;
   right: 0;
 }
 html[lang^="es"] .page-nav a[data-language-fallback="de"]::after,
 html[lang^="tr"] .page-nav a[data-language-fallback="de"]::after,
-html[lang^="pl"] .page-nav a[data-language-fallback="de"]::after {
+html[lang^="pl"] .page-nav a[data-language-fallback="de"]::after,
+html[lang^="ru"] .page-nav a[data-language-fallback="de"]::after {
   grid-column: 1 / -1;
   justify-self: end;
   margin-top: 3px;
@@ -410,6 +419,8 @@ html[lang^="es"] #contacto {
   padding: 11px 20px 11px 22px;
   font-size: 11.5px;
   letter-spacing: 0.1em;
+  white-space: normal;
+  overflow-wrap: anywhere;
   border-left: 2px solid transparent;
   opacity: 0.85;
   transition: border-color 0.15s ease, background 0.15s ease, padding-left 0.15s ease, opacity 0.15s ease;
@@ -1333,11 +1344,15 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   cursor: pointer;
   transition: background .15s ease, color .15s ease, border-color .15s ease;
 }
-.lightbox-translation-toggle:hover,
+.lightbox-translation-toggle:hover {
+  border-color: var(--gold);
+  background: #fff9e9;
+}
 .lightbox-translation-toggle:focus-visible {
   border-color: var(--gold);
   background: #fff9e9;
-  outline: none;
+  outline: 3px solid #202020;
+  outline-offset: 3px;
 }
 .lightbox-translation-toggle[aria-pressed="true"] {
   background: var(--gold);
@@ -1367,16 +1382,27 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   max-width: 760px;
   margin: 0 auto;
 }
+.lightbox-translation-panel:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: -5px;
+}
+.lightbox-translation-panel h1,
+.lightbox-translation-panel h2,
 .lightbox-translation-panel h3,
 .lightbox-translation-panel h4 {
   color: #167ca4;
   line-height: 1.3;
 }
+.lightbox-translation-panel h1,
+.lightbox-translation-panel h2,
 .lightbox-translation-panel h3 {
   margin: 0 0 22px;
   padding-bottom: 9px;
   border-bottom: 2px solid #8ec7dc;
   font-size: clamp(18px, 2.3vw, 24px);
+}
+.lightbox-translation-panel h1 {
+  font-size: clamp(20px, 2.6vw, 28px);
 }
 .lightbox-translation-panel h4 {
   margin: 24px 0 9px;
@@ -1408,23 +1434,57 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   color: inherit;
 }
 .lightbox-translation-panel table {
-  display: block;
   width: 100%;
-  margin: 10px 0 22px;
-  overflow-x: auto;
+  margin: 12px 0 22px;
   border-collapse: collapse;
   font-size: clamp(12px, 1.45vw, 15px);
+  line-height: 1.45;
+}
+.lightbox-translation-panel .translation-table-scroll {
+  max-width: 100%;
+  margin: 12px 0 22px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+.lightbox-translation-panel .translation-table-scroll table {
+  width: max-content;
+  min-width: 100%;
+  margin: 0;
+}
+.lightbox-translation-panel .translation-table-scroll:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 2px;
 }
 .lightbox-translation-panel th,
 .lightbox-translation-panel td {
-  padding: 8px 10px;
-  border: 1px solid #c9dfe7;
+  padding: 7px 9px;
+  border: 1px solid #c8dfe7;
   text-align: left;
   vertical-align: top;
+  overflow-wrap: anywhere;
 }
 .lightbox-translation-panel th {
-  background: #e8f4f8;
+  background: #edf7fa;
   font-weight: 700;
+}
+.lightbox-translation-panel aside,
+.lightbox-translation-panel .translation-note {
+  margin: 0 0 22px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--gold);
+  background: #fff8e8;
+}
+.lightbox-translation-panel .source-clip,
+.lightbox-translation-panel .source-empty,
+.lightbox-translation-panel [data-clipped="true"] {
+  color: #695f52;
+  font-style: italic;
+}
+.lightbox-translation-panel .graph-signal {
+  padding: 10px 12px;
+  border-left: 3px solid #8ec7dc;
+  background: #f3f9fb;
 }
 .lightbox-caption {
   color: #f3ecdc;
@@ -1458,10 +1518,10 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   background: rgba(243, 236, 220, 0.08);
 }
 .lightbox-close:focus-visible,
-.lightbox-nav:focus-visible,
-.lightbox-translation-toggle:focus-visible {
-  outline: 3px solid var(--gold-soft) !important;
+.lightbox-nav:focus-visible {
+  outline: 3px solid #fff !important;
   outline-offset: 3px;
+  border-color: var(--gold-soft) !important;
 }
 @media (max-width: 640px) {
   .lightbox-overlay { padding: 54px 10px 22px; }
@@ -1530,10 +1590,6 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin-right: 8px;
-}
-  border: 1px solid var(--rule);
-  margin-bottom: 12px;
-  background-image: linear-gradient(180deg, #fff 0%, #f8f6ef 100%);
 }
 .doc-card h3,
 .doc-card h4 {

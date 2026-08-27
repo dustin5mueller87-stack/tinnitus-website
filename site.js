@@ -139,21 +139,28 @@
       viewer: 'Podgląd obrazów',
       close: 'Zamknij',
       previous: 'Poprzedni obraz',
-      next: 'Następny obraz'
+      next: 'Następny obraz',
+      translationRegion: 'Polskie tłumaczenie dokumentu'
     } : pageLang.indexOf('nl') === 0 ? {
       viewer: 'Afbeeldingsweergave',
       close: 'Sluiten',
       previous: 'Vorige afbeelding',
-      next: 'Volgende afbeelding'
+      next: 'Volgende afbeelding',
+      translationRegion: 'Nederlandse vertaling van het document'
+    } : pageLang.indexOf('ru') === 0 ? {
+      viewer: 'Просмотр изображения',
+      close: 'Закрыть',
+      previous: 'Предыдущее изображение',
+      next: 'Следующее изображение',
+      translationRegion: 'Перевод документа на русский язык',
+      translationShow: 'Показать перевод документа на русский язык',
+      translationOriginal: 'Показать оригинал на немецком языке'
     } : {
       viewer: 'Bildansicht',
       close: 'Schließen',
       previous: 'Vorheriges Bild',
       next: 'Nächstes Bild'
     };
-    var translationRegionLabel = pageLang.indexOf('nl') === 0
-      ? 'Nederlandse vertaling van het document'
-      : 'Polskie tłumaczenie dokumentu';
     var overlay = document.createElement('div');
     overlay.className = 'lightbox-overlay';
     overlay.id = 'lightbox';
@@ -168,8 +175,8 @@
       '<div class="lightbox-frame">' +
       '  <div class="lightbox-document-stage">' +
       '    <img id="lightboxImg" alt="">' +
-      '    <div class="lightbox-translation-panel" id="lightboxTranslation" role="region" aria-label="' + translationRegionLabel + '" hidden></div>' +
-      '    <button class="lightbox-translation-toggle" id="lightboxTranslationToggle" type="button" aria-pressed="false" hidden></button>' +
+      '    <div class="lightbox-translation-panel" id="lightboxTranslation" role="region" aria-label="' + (labels.translationRegion || 'Dokumentübersetzung') + '" tabindex="-1" hidden></div>' +
+      '    <button class="lightbox-translation-toggle" id="lightboxTranslationToggle" type="button" aria-controls="lightboxTranslation" aria-pressed="false" hidden></button>' +
       '  </div>' +
       '  <div class="lightbox-caption" id="lightboxCaption"></div>' +
       '</div>';
@@ -179,6 +186,19 @@
   function init() {
     injectOverlay();
     var pageLang = document.documentElement.lang.toLowerCase();
+    var translationDefaults = pageLang.indexOf('ru') === 0 ? {
+      show: 'Показать перевод документа на русский язык',
+      original: 'Показать оригинал на немецком языке'
+    } : pageLang.indexOf('nl') === 0 ? {
+      show: 'Nederlandse vertaling bekijken',
+      original: 'Duits origineel bekijken'
+    } : pageLang.indexOf('pl') === 0 ? {
+      show: 'Pokaż tłumaczenie',
+      original: 'Pokaż oryginał'
+    } : {
+      show: 'Übersetzung anzeigen',
+      original: 'Original anzeigen'
+    };
     var overlay = document.getElementById('lightbox');
     var img = document.getElementById('lightboxImg');
     var cap = document.getElementById('lightboxCaption');
@@ -206,6 +226,9 @@
     var translationMode = false;
     var translationShowLabel = '';
     var translationOriginalLabel = '';
+    var lastFocusedElement = null;
+    var inertedBackgroundElements = [];
+    var inertObserver = null;
 
     // Zoom- und Drag-Status
     var scale = 1;
@@ -227,6 +250,58 @@
       img.style.cursor = 'zoom-in';
     }
 
+    function setBackgroundInert(makeInert) {
+      if (makeInert) {
+        inertedBackgroundElements = [];
+        if (inertObserver) inertObserver.disconnect();
+        Array.prototype.forEach.call(document.body.children, function (child) {
+          if (child === overlay || child.hasAttribute('inert')) return;
+          child.setAttribute('inert', '');
+          inertedBackgroundElements.push(child);
+        });
+        inertObserver = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            Array.prototype.forEach.call(mutation.addedNodes, function (node) {
+              if (node.nodeType !== 1 || node === overlay || node.hasAttribute('inert')) return;
+              node.setAttribute('inert', '');
+              inertedBackgroundElements.push(node);
+            });
+          });
+        });
+        inertObserver.observe(document.body, { childList: true });
+        return;
+      }
+      if (inertObserver) {
+        inertObserver.disconnect();
+        inertObserver = null;
+      }
+      inertedBackgroundElements.forEach(function (child) {
+        child.removeAttribute('inert');
+      });
+      inertedBackgroundElements = [];
+    }
+
+    function getFocusableElements() {
+      return Array.prototype.filter.call(
+        overlay.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), ' +
+          'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        ),
+        function (element) {
+          return !element.hidden && element.getAttribute('aria-hidden') !== 'true' && element.offsetParent !== null;
+        }
+      );
+    }
+
+    function focusWithoutScroll(element) {
+      if (!element || typeof element.focus !== 'function') return;
+      try {
+        element.focus({ preventScroll: true });
+      } catch (error) {
+        element.focus();
+      }
+    }
+
     function setTranslationMode(showTranslation) {
       translationMode = Boolean(showTranslation && currentTrigger);
       translationPanel.hidden = !translationMode;
@@ -235,6 +310,11 @@
       translationToggle.textContent = translationMode ? translationOriginalLabel : translationShowLabel;
       translationPanel.scrollTop = 0;
       resetZoom();
+      if (translationMode) {
+        focusWithoutScroll(translationPanel);
+      } else {
+        focusWithoutScroll(translationToggle);
+      }
     }
 
     function prepareTranslation(trigger) {
@@ -252,16 +332,33 @@
       var sourceSelector = currentTrigger.getAttribute('data-lightbox-translation');
       if (!sourceSelector) return;
 
-      var source = document.querySelector(sourceSelector);
+      var source = null;
+      try {
+        source = document.querySelector(sourceSelector);
+      } catch (error) {
+        return;
+      }
       if (!source) return;
 
       var translatedDocument = source.cloneNode(true);
       translatedDocument.removeAttribute('id');
+      translatedDocument.removeAttribute('aria-labelledby');
+      translatedDocument.querySelectorAll('[id]').forEach(function (node) {
+        node.removeAttribute('id');
+      });
+      translatedDocument.querySelectorAll('[aria-labelledby]').forEach(function (node) {
+        node.removeAttribute('aria-labelledby');
+      });
+      translatedDocument.querySelectorAll('table').forEach(function (table) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'translation-table-scroll';
+        wrapper.setAttribute('tabindex', '0');
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+      });
       translationPanel.appendChild(translatedDocument);
-      translationShowLabel = currentTrigger.getAttribute('data-translation-show') ||
-        (pageLang.indexOf('nl') === 0 ? 'Nederlandse vertaling bekijken' : 'Pokaż tłumaczenie');
-      translationOriginalLabel = currentTrigger.getAttribute('data-translation-original') ||
-        (pageLang.indexOf('nl') === 0 ? 'Duits origineel bekijken' : 'Pokaż oryginał');
+      translationShowLabel = currentTrigger.getAttribute('data-translation-show') || translationDefaults.show;
+      translationOriginalLabel = currentTrigger.getAttribute('data-translation-original') || translationDefaults.original;
       translationToggle.textContent = translationShowLabel;
       translationToggle.hidden = false;
       documentStage.classList.add('has-translation');
@@ -275,13 +372,18 @@
     }
 
     function open(href, caption, trigger) {
+      lastFocusedElement = trigger || document.activeElement;
       img.src = href;
       img.alt = getTriggerAlt(trigger);
       cap.textContent = caption || '';
       prepareTranslation(trigger);
       overlay.classList.add('is-open');
+      setBackgroundInert(true);
       document.body.style.overflow = 'hidden';
       resetZoom();
+      window.requestAnimationFrame(function () {
+        focusWithoutScroll(closeBtn);
+      });
 
       // Zeige Navigationspfeile nur an, wenn es mehr als ein eindeutiges Bild gibt
       if (uniqueTriggers.length > 1) {
@@ -292,22 +394,21 @@
         nextBtn.style.display = 'none';
       }
 
-      window.requestAnimationFrame(function () {
-        closeBtn.focus();
-      });
     }
 
     function close() {
-      var returnFocus = currentTrigger;
+      if (!overlay.classList.contains('is-open')) return;
       overlay.classList.remove('is-open');
+      setBackgroundInert(false);
       document.body.style.overflow = '';
       img.src = '';
       img.alt = '';
       prepareTranslation(null);
       resetZoom();
-      if (returnFocus && document.contains(returnFocus)) {
-        returnFocus.focus();
+      if (lastFocusedElement && document.documentElement.contains(lastFocusedElement)) {
+        focusWithoutScroll(lastFocusedElement);
       }
+      lastFocusedElement = null;
     }
 
     function updateImage() {
@@ -366,35 +467,33 @@
       updateImage();
     });
 
-    // Tastatursteuerung (Pfeiltasten links/rechts + Escape)
+    // Tastatursteuerung: Fokusfalle, Pfeiltasten links/rechts und Escape.
     document.addEventListener('keydown', function (e) {
       if (!overlay.classList.contains('is-open')) return;
       if (e.key === 'Escape') {
+        e.preventDefault();
         close();
       } else if (e.key === 'Tab') {
-        var focusableControls = [closeBtn, prevBtn, nextBtn, translationToggle].filter(function (control) {
-          return !control.hidden && window.getComputedStyle(control).display !== 'none';
-        });
-        if (!focusableControls.length) {
+        var focusable = getFocusableElements();
+        if (!focusable.length) {
           e.preventDefault();
+          focusWithoutScroll(closeBtn);
           return;
         }
-        var firstControl = focusableControls[0];
-        var lastControl = focusableControls[focusableControls.length - 1];
-        if (e.shiftKey && document.activeElement === firstControl) {
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        var active = document.activeElement;
+        if (e.shiftKey && (active === first || focusable.indexOf(active) === -1)) {
           e.preventDefault();
-          lastControl.focus();
-        } else if (!e.shiftKey && document.activeElement === lastControl) {
+          focusWithoutScroll(last);
+        } else if (!e.shiftKey && (active === last || focusable.indexOf(active) === -1)) {
           e.preventDefault();
-          firstControl.focus();
-        } else if (!overlay.contains(document.activeElement)) {
-          e.preventDefault();
-          firstControl.focus();
+          focusWithoutScroll(first);
         }
-      } else if (e.key === 'ArrowRight' && uniqueTriggers.length > 1) {
+      } else if (e.key === 'ArrowRight' && uniqueTriggers.length > 1 && !translationMode) {
         currentIdx = (currentIdx + 1) % uniqueTriggers.length;
         updateImage();
-      } else if (e.key === 'ArrowLeft' && uniqueTriggers.length > 1) {
+      } else if (e.key === 'ArrowLeft' && uniqueTriggers.length > 1 && !translationMode) {
         currentIdx = (currentIdx - 1 + uniqueTriggers.length) % uniqueTriggers.length;
         updateImage();
       }
@@ -608,6 +707,7 @@
         var pageLang = document.documentElement.lang.toLowerCase();
         var isEnglishPage = pageLang.indexOf('en') === 0;
         var isDutchPage = pageLang.indexOf('nl') === 0;
+        var isRussianPage = pageLang.indexOf('ru') === 0;
         var voiceflowReady = window.voiceflow.chat.load({
           verify:{projectID:'6a0977f2a62d285256e0577a'},
           url:'https://general-runtime.voiceflow.com',
@@ -636,24 +736,38 @@
               title: 'Tinnitusassistent'
             },
             inputPlaceholder: 'Wat wil je weten over tinnitus, Dustins verhaal of zijn aanpak?'
+          } : isRussianPage ? {
+            title: 'Ассистент по тиннитусу',
+            description: 'Вопросы о личной истории Дастина, о его подходе и об источниках',
+            header: { title: 'Ассистент по тиннитусу' },
+            banner: {
+              title: 'Ассистент по тиннитусу',
+              description: 'Вопросы о личной истории Дастина, о его подходе и об источниках'
+            },
+            inputPlaceholder: 'Что ты хочешь узнать о тиннитусе, истории Дастина или его подходе?'
           } : {})
         });
         
         function localizeLauncher(shadowRoot) {
+          var localizedLabel = isEnglishPage
+            ? 'Tinnitus Assistant'
+            : isDutchPage
+              ? 'Tinnitusassistent'
+              : isRussianPage
+                ? 'Ассистент по тиннитусу'
+                : '';
+          if (!localizedLabel) return true;
           var launcher = shadowRoot.querySelector('.vfrc-launcher');
           if (!launcher) return false;
-          var launcherText = isEnglishPage ? 'Tinnitus Assistant' :
-            (isDutchPage ? 'Tinnitusassistent' : '');
-          if (!launcherText) return true;
-          if (launcher.getAttribute('title') !== launcherText) {
-            launcher.setAttribute('title', launcherText);
+          if (launcher.getAttribute('title') !== localizedLabel) {
+            launcher.setAttribute('title', localizedLabel);
           }
-          if (launcher.getAttribute('aria-label') !== launcherText) {
-            launcher.setAttribute('aria-label', launcherText);
+          if (launcher.getAttribute('aria-label') !== localizedLabel) {
+            launcher.setAttribute('aria-label', localizedLabel);
           }
           var launcherLabel = launcher.querySelector('.vfrc-launcher__label');
-          if (launcherLabel && launcherLabel.textContent !== launcherText) {
-            launcherLabel.textContent = launcherText;
+          if (launcherLabel && launcherLabel.textContent !== localizedLabel) {
+            launcherLabel.textContent = localizedLabel;
           }
           return true;
         }
@@ -726,7 +840,7 @@
                 });
               }
               clearInterval(shadowInterval);
-            } else if (!isEnglishPage || localizeLauncher(shadowHost.shadowRoot)) {
+            } else if (localizeLauncher(shadowHost.shadowRoot)) {
               clearInterval(shadowInterval);
             }
           }
@@ -748,7 +862,9 @@
                   ? "Tinnitus ömür boyu sürecek bir kader değildir. Tinnitus cehenneminden nasıl çıktığım ya da besin öğeleri protokolü hakkında soruların mı var?"
                   : pageLang.indexOf('pl') === 0
                     ? "Szumy uszne nie są wyrokiem. Masz pytania o moją drogę wyjścia z piekła szumów usznych albo o protokół oparty na składnikach odżywczych?"
-                    : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+                    : pageLang.indexOf('ru') === 0
+                      ? "Тиннитус — не приговор. У тебя есть вопросы о моём пути из ада тиннитуса или о протоколе приёма нутриентов?"
+                      : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
               window.voiceflow.chat.proactive.push({
                 type: 'text',
                 payload: {
@@ -780,7 +896,8 @@
           paragraphs[i].textContent.indexOf('lying awake at night') !== -1 ||
           paragraphs[i].textContent.indexOf('’s nachts wakker te liggen') !== -1 ||
           paragraphs[i].textContent.indexOf('Geceleri uyanık yatıp') !== -1 ||
-          paragraphs[i].textContent.indexOf('leżeć nocą, nie mogąc zasnąć') !== -1) {
+          paragraphs[i].textContent.indexOf('leżeć nocą, nie mogąc zasnąć') !== -1 ||
+          paragraphs[i].textContent.indexOf('лежать без сна по ночам') !== -1) {
         return paragraphs[i];
       }
     }
@@ -791,7 +908,8 @@
           headings[i].textContent.indexOf('Why this site exists') !== -1 ||
           headings[i].textContent.indexOf('Waarom deze pagina bestaat') !== -1 ||
           headings[i].textContent.indexOf('Bu site neden var') !== -1 ||
-          headings[i].textContent.indexOf('Dlaczego ta strona istnieje') !== -1) {
+          headings[i].textContent.indexOf('Dlaczego ta strona istnieje') !== -1 ||
+          headings[i].textContent.indexOf('Почему существует этот сайт') !== -1) {
         return headings[i];
       }
     }
@@ -810,18 +928,35 @@
 
   // Determine if we are on the homepage (prevent subpages with trailing slashes from matching)
   var pathname = window.location.pathname.toLowerCase();
-  var isHomepage = pathname === '/' || 
-                   pathname === '/index.html' || 
-                   pathname === '/en/' || 
-                   pathname === '/en/index.html' || 
-                   pathname === '/en' || 
-                   pathname === '/tr/' ||
-                   pathname === '/tr' ||
-                   pathname === '/pl/' ||
-                   pathname === '/pl' ||
-                   pathname === '/nl/' ||
-                   pathname === '/nl' ||
-                   pathname.endsWith('/index.html');
+  var homepagePaths = {
+    '/': true,
+    '/index.html': true,
+    '/en': true,
+    '/en/': true,
+    '/en/index.html': true,
+    '/it': true,
+    '/it/': true,
+    '/it/index.html': true,
+    '/fr': true,
+    '/fr/': true,
+    '/fr/index.html': true,
+    '/nl': true,
+    '/nl/': true,
+    '/nl/index.html': true,
+    '/es': true,
+    '/es/': true,
+    '/es/index.html': true,
+    '/tr': true,
+    '/tr/': true,
+    '/tr/index.html': true,
+    '/pl': true,
+    '/pl/': true,
+    '/pl/index.html': true,
+    '/ru': true,
+    '/ru/': true,
+    '/ru/index.html': true
+  };
+  var isHomepage = Boolean(homepagePaths[pathname]);
 
   if (isHomepage) {
     // 1. Try to set up IntersectionObserver for precise trigger on the homepage
