@@ -38,6 +38,3 @@
 
 /es/*
   X-Robots-Tag: noindex, follow
-
-/pl/*
-  X-Robots-Tag: noindex, follow
