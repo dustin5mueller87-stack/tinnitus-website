@@ -164,6 +164,14 @@
       translationRegion: 'Český překlad dokumentu',
       translationShow: 'Zobrazit český překlad',
       translationOriginal: 'Zobrazit německý originál'
+    } : pageLang.indexOf('ja') === 0 ? {
+      viewer: '画像ビューア',
+      close: '閉じる',
+      previous: '前の画像',
+      next: '次の画像',
+      translationRegion: '文書の日本語訳',
+      translationShow: '日本語訳を表示',
+      translationOriginal: 'ドイツ語の原文を表示'
     } : {
       viewer: 'Bildansicht',
       close: 'Schließen',
@@ -210,6 +218,9 @@
     } : pageLang.indexOf('cs') === 0 ? {
       show: 'Zobrazit český překlad',
       original: 'Zobrazit německý originál'
+    } : pageLang.indexOf('ja') === 0 ? {
+      show: '日本語訳を表示',
+      original: 'ドイツ語の原文を表示'
     } : {
       show: 'Übersetzung anzeigen',
       original: 'Original anzeigen'
@@ -728,7 +739,9 @@
         var isDutchPage = pageLang.indexOf('nl') === 0;
         var isRussianPage = pageLang.indexOf('ru') === 0;
         var isCzechPage = pageLang.indexOf('cs') === 0;
+        var isJapanesePage = pageLang.indexOf('ja') === 0;
         var czechAiDisclaimer = 'Odpovědi umělé inteligence mohou obsahovat chyby.';
+        var japaneseAiDisclaimer = 'AIの回答には誤りが含まれる場合があります。';
         var voiceflowReady = window.voiceflow.chat.load({
           verify:{projectID:'6a0977f2a62d285256e0577a'},
           url:'https://general-runtime.voiceflow.com',
@@ -789,6 +802,23 @@
             inputPlaceholder: 'Что ты хочешь узнать о тиннитусе, истории Дастина или его подходе?',
             aiDisclaimer: {
               text: 'Ответы ИИ могут содержать ошибки.',
+              hide: false
+            }
+          } : isJapanesePage ? {
+            title: '耳鳴りアシスタント',
+            description: 'ダスティンの体験、アプローチ、出典についての質問',
+            header: { title: '耳鳴りアシスタント' },
+            banner: {
+              title: '耳鳴りアシスタント',
+              description: 'ダスティンの体験、アプローチ、出典についての質問'
+            },
+            launcher: {
+              label: '耳鳴りアシスタント',
+              title: 'チャットを開く'
+            },
+            inputPlaceholder: '耳鳴りやダスティンの体験、アプローチについて、何を知りたいですか？',
+            aiDisclaimer: {
+              text: japaneseAiDisclaimer,
               hide: false
             }
           } : isCzechPage ? {
@@ -956,6 +986,8 @@
               ? 'Tinnitusassistent'
               : isRussianPage
                 ? 'Ассистент по тиннитусу'
+                : isJapanesePage
+                  ? '耳鳴りアシスタント'
                 : isCzechPage
                   ? 'Asistent pro tinnitus'
                   : '';
@@ -963,13 +995,14 @@
           var launcher = shadowRoot.querySelector('.vfrc-launcher');
           if (!launcher) return false;
           var currentLauncherTitle = launcher.getAttribute('title') || '';
-          var launcherActionLabel = isCzechPage
+          var launcherActionLabel = (isCzechPage || isJapanesePage)
             ? (
                 currentLauncherTitle === 'Close chat agent' ||
                 currentLauncherTitle === 'Close chat' ||
-                currentLauncherTitle === 'Zavřít chat'
-                  ? 'Zavřít chat'
-                  : 'Otevřít chat'
+                currentLauncherTitle === 'Zavřít chat' ||
+                currentLauncherTitle === 'チャットを閉じる'
+                  ? (isJapanesePage ? 'チャットを閉じる' : 'Zavřít chat')
+                  : (isJapanesePage ? 'チャットを開く' : 'Otevřít chat')
               )
             : localizedLabel;
           if (launcher.getAttribute('title') !== launcherActionLabel) {
@@ -1236,10 +1269,159 @@
           return true;
         }
 
+        function setJapaneseHeaderControlLabel(button) {
+          if (!button) return;
+          var currentLabel = [
+            button.getAttribute('title') || '',
+            button.getAttribute('aria-label') || '',
+            (button.textContent || '').trim()
+          ].join(' ');
+          var path = button.querySelector('path');
+          var pathData = path ? (path.getAttribute('d') || '') : '';
+          var label = '';
+
+          if (/restart conversation|restart chat|start new chat|会話を最初からやり直す|新しいチャット/i.test(currentLabel) ||
+              pathData.indexOf('M5.75 5C5.75 4.58579') === 0) {
+            label = '会話を最初からやり直す';
+          } else if (/hide messages|close chat agent|close chat|メッセージを閉じる|チャットを閉じる/i.test(currentLabel) ||
+                     pathData.indexOf('M17.7478 7.31915') === 0) {
+            label = 'チャットを閉じる';
+          }
+
+          if (label) {
+            setAttributeIfChanged(button, 'title', label);
+            setAttributeIfChanged(button, 'aria-label', label);
+          }
+        }
+
+        function localizeJapaneseWidget(shadowRoot) {
+          if (!isJapanesePage) return true;
+
+          var textMap = {
+            'Tinnitus-Assistent': '耳鳴りアシスタント',
+            'Fragen zu Dustins Geschichte, Ansatz & Quellen': 'ダスティンの体験、アプローチ、出典についての質問',
+            'Start new chat': '新しいチャット',
+            'Cancel': 'キャンセル',
+            'Restart conversation': '会話を最初からやり直す',
+            'Restart chat': '会話を最初からやり直す',
+            'Drop files to upload': 'ファイルをここにドロップしてアップロード',
+            'open chat': 'チャットを開く',
+            'Open chat': 'チャットを開く',
+            'Open chat agent': 'チャットを開く',
+            'Close chat agent': 'チャットを閉じる',
+            'Close chat': 'チャットを閉じる',
+            'Chat has ended': 'チャットは終了しました',
+            'send': '送信',
+            'Send': '送信',
+            'Sent': '送信済み',
+            'scroll': '下へスクロール',
+            'Scroll down': '下へスクロール',
+            'Hide messages': 'メッセージを閉じる',
+            'system agent avatar': 'アシスタントのアバター',
+            'See more': 'もっと見る',
+            'See less': '折りたたむ',
+            'Download': 'ダウンロード',
+            'Image viewer': '画像ビューア',
+            'Previous image': '前の画像',
+            'Next image': '次の画像',
+            'Scrollable table': 'スクロール可能な表',
+            'Privacy notice': 'プライバシーに関するお知らせ',
+            'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': '会話を続ける前に、当サービスで個人情報をどのように取り扱い、保護するかを記載したプライバシーポリシーをご確認のうえ、同意してください。',
+            'Submit': '同意する',
+            'Privacy policy': 'プライバシーポリシー',
+            'Powered by Voiceflow': 'Voiceflowを使用',
+            'AI responses may contain mistakes.': japaneseAiDisclaimer,
+            'Close': '閉じる'
+          };
+
+          shadowRoot.querySelectorAll('*').forEach(function(element) {
+            if (element.children.length > 0) return;
+            var sourceText = element.textContent.trim();
+            if (Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+              element.textContent = textMap[sourceText];
+            }
+          });
+
+          var textarea = shadowRoot.querySelector('textarea');
+          var placeholder = '耳鳴りやダスティンの体験、アプローチについて、何を知りたいですか？';
+          if (textarea && textarea.getAttribute('placeholder') !== placeholder) {
+            textarea.setAttribute('placeholder', placeholder);
+          }
+
+          shadowRoot.querySelectorAll('[aria-label], [title], [label], [alt]').forEach(function(element) {
+            ['aria-label', 'title', 'label', 'alt'].forEach(function(attribute) {
+              var sourceText = element.getAttribute(attribute);
+              if (sourceText && Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+                element.setAttribute(attribute, textMap[sourceText]);
+              }
+            });
+          });
+
+          var headerButtons = shadowRoot.querySelectorAll('.vfrc-header--button');
+          for (var i = 0; i < headerButtons.length; i++) {
+            setJapaneseHeaderControlLabel(headerButtons[i]);
+          }
+
+          var sendButton = shadowRoot.querySelector('.vfrc-chat-input__send');
+          setAttributeIfChanged(sendButton, 'title', '送信');
+          setAttributeIfChanged(sendButton, 'aria-label', '送信');
+
+          var scrollIcon = shadowRoot.querySelector('[title="scroll"], [title="Scroll down"], [title="下へスクロール"]');
+          if (scrollIcon) {
+            setAttributeIfChanged(scrollIcon, 'title', '下へスクロール');
+            setAttributeIfChanged(scrollIcon.closest('button'), 'aria-label', '下へスクロール');
+          }
+
+          var proactiveClose = shadowRoot.querySelector('.vfrc-proactive__close-button');
+          setAttributeIfChanged(proactiveClose, 'title', 'メッセージを閉じる');
+          setAttributeIfChanged(proactiveClose, 'aria-label', 'メッセージを閉じる');
+
+          return localizeLauncher(shadowRoot);
+        }
+
+        function localizeJapanesePortal() {
+          if (!isJapanesePage) return false;
+          var dialogs = document.querySelectorAll(
+            '[role="dialog"][aria-label="Image viewer"], ' +
+            '[role="dialog"][aria-label="画像ビューア"]'
+          );
+          if (!dialogs.length) return false;
+
+          var portalMap = {
+            'Image viewer': '画像ビューア',
+            'Download': 'ダウンロード',
+            'Close': '閉じる',
+            'Previous image': '前の画像',
+            'Next image': '次の画像'
+          };
+
+          dialogs.forEach(function(dialog) {
+            setAttributeIfChanged(dialog, 'aria-label', '画像ビューア');
+            dialog.querySelectorAll('*').forEach(function(element) {
+              if (element.children.length > 0) return;
+              var sourceText = (element.textContent || '').trim();
+              if (Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                element.textContent = portalMap[sourceText];
+              }
+            });
+            dialog.querySelectorAll('[aria-label], [title], [alt]').forEach(function(element) {
+              ['aria-label', 'title', 'alt'].forEach(function(attribute) {
+                var sourceText = element.getAttribute(attribute);
+                if (sourceText && Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                  setAttributeIfChanged(element, attribute, portalMap[sourceText]);
+                }
+              });
+            });
+          });
+          return true;
+        }
+
         var dutchObserver = null;
         var russianObserver = null;
         var czechObserver = null;
         var czechPortalObserver = null;
+        var japaneseObserver = null;
+        var japanesePortalObserver = null;
 
         // Listen for shadow host creation to inject styles
         var shadowInterval = setInterval(function() {
@@ -1306,6 +1488,33 @@
                 });
               }
               clearInterval(shadowInterval);
+            } else if (isJapanesePage) {
+              localizeJapaneseWidget(shadowHost.shadowRoot);
+              localizeJapanesePortal();
+              if (!japaneseObserver) {
+                japaneseObserver = new MutationObserver(function() {
+                  localizeJapaneseWidget(shadowHost.shadowRoot);
+                });
+                japaneseObserver.observe(shadowHost.shadowRoot, {
+                  childList: true,
+                  subtree: true,
+                  characterData: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'label', 'placeholder', 'alt']
+                });
+              }
+              if (!japanesePortalObserver) {
+                japanesePortalObserver = new MutationObserver(function() {
+                  localizeJapanesePortal();
+                });
+                japanesePortalObserver.observe(document.body, {
+                  childList: true,
+                  subtree: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'alt']
+                });
+              }
+              clearInterval(shadowInterval);
             } else if (localizeLauncher(shadowHost.shadowRoot)) {
               clearInterval(shadowInterval);
             }
@@ -1332,7 +1541,9 @@
                       ? "Тиннитус — не приговор. У тебя есть вопросы о моём пути из ада тиннитуса или о протоколе приёма нутриентов?"
                       : pageLang.indexOf('cs') === 0
                         ? "Tinnitus není nezvratný osud. Máš otázky k mé cestě z tinnitusového pekla nebo k protokolu založenému na živinách?"
-                        : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+                        : pageLang.indexOf('ja') === 0
+                          ? "耳鳴りは、変えられない運命ではありません。私が耳鳴りの地獄から抜け出した道のりや、栄養素プロトコルについて質問はありますか？"
+                          : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
               window.voiceflow.chat.proactive.push({
                 type: 'text',
                 payload: {
@@ -1367,7 +1578,8 @@
           paragraphs[i].textContent.indexOf('Geceleri uyanık yatıp') !== -1 ||
           paragraphs[i].textContent.indexOf('leżeć nocą, nie mogąc zasnąć') !== -1 ||
           paragraphs[i].textContent.indexOf('лежать без сна по ночам') !== -1 ||
-          paragraphs[i].textContent.indexOf('ležet v noci vzhůru') !== -1) {
+          paragraphs[i].textContent.indexOf('ležet v noci vzhůru') !== -1 ||
+          paragraphs[i].textContent.indexOf('夜、眠れずに横たわり') !== -1) {
         return paragraphs[i];
       }
     }
@@ -1381,7 +1593,8 @@
           headings[i].textContent.indexOf('Bu site neden var') !== -1 ||
           headings[i].textContent.indexOf('Dlaczego ta strona istnieje') !== -1 ||
           headings[i].textContent.indexOf('Почему существует этот сайт') !== -1 ||
-          headings[i].textContent.indexOf('Proč tento web existuje') !== -1) {
+          headings[i].textContent.indexOf('Proč tento web existuje') !== -1 ||
+          headings[i].textContent.indexOf('このサイトを作った理由') !== -1) {
         return headings[i];
       }
     }
@@ -1429,7 +1642,10 @@
     '/ru/index.html': true,
     '/cs': true,
     '/cs/': true,
-    '/cs/index.html': true
+    '/cs/index.html': true,
+    '/ja': true,
+    '/ja/': true,
+    '/ja/index.html': true
   };
   var isHomepage = Boolean(homepagePaths[pathname]);
 
