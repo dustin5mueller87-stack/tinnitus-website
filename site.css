@@ -1316,6 +1316,13 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
   max-width: 100%;
   max-height: 80vh;
 }
+.lightbox-document-stage.has-translation {
+  box-sizing: border-box;
+  padding-top: 58px;
+}
+.lightbox-document-stage.has-translation img {
+  max-height: calc(80vh - 58px);
+}
 .lightbox-frame img {
   max-width: 100%;
   max-height: 80vh;
@@ -1328,7 +1335,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
 .lightbox-translation-toggle {
   position: absolute;
   z-index: 3;
-  top: 18px;
+  top: 8px;
   left: 50%;
   transform: translateX(-50%);
   width: max-content;
@@ -1536,10 +1543,16 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
     height: 40px !important;
   }
   .lightbox-translation-toggle {
-    top: 12px;
+    top: 6px;
     max-width: calc(100% - 24px);
     padding: 9px 13px;
     font-size: 12px;
+  }
+  .lightbox-document-stage.has-translation {
+    padding-top: 52px;
+  }
+  .lightbox-document-stage.has-translation img {
+    max-height: calc(80vh - 52px);
   }
   .lightbox-translation-panel {
     padding: 62px 16px 24px;

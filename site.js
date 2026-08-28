@@ -156,6 +156,14 @@
       translationRegion: 'Перевод документа на русский язык',
       translationShow: 'Показать перевод документа на русский язык',
       translationOriginal: 'Показать оригинал на немецком языке'
+    } : pageLang.indexOf('cs') === 0 ? {
+      viewer: 'Prohlížeč obrázků',
+      close: 'Zavřít',
+      previous: 'Předchozí obrázek',
+      next: 'Následující obrázek',
+      translationRegion: 'Český překlad dokumentu',
+      translationShow: 'Zobrazit český překlad',
+      translationOriginal: 'Zobrazit německý originál'
     } : {
       viewer: 'Bildansicht',
       close: 'Schließen',
@@ -199,6 +207,9 @@
     } : pageLang.indexOf('pl') === 0 ? {
       show: 'Pokaż tłumaczenie',
       original: 'Pokaż oryginał'
+    } : pageLang.indexOf('cs') === 0 ? {
+      show: 'Zobrazit český překlad',
+      original: 'Zobrazit německý originál'
     } : {
       show: 'Übersetzung anzeigen',
       original: 'Original anzeigen'
@@ -310,6 +321,8 @@
       translationMode = Boolean(showTranslation && currentTrigger);
       translationPanel.hidden = !translationMode;
       translationPanel.setAttribute('aria-hidden', translationMode ? 'false' : 'true');
+      if (translationMode) img.setAttribute('aria-hidden', 'true');
+      else img.removeAttribute('aria-hidden');
       translationToggle.setAttribute('aria-pressed', translationMode ? 'true' : 'false');
       translationToggle.textContent = translationMode ? translationOriginalLabel : translationShowLabel;
       translationPanel.scrollTop = 0;
@@ -327,6 +340,7 @@
       translationPanel.hidden = true;
       translationPanel.setAttribute('aria-hidden', 'true');
       translationPanel.innerHTML = '';
+      img.removeAttribute('aria-hidden');
       translationToggle.hidden = true;
       translationToggle.setAttribute('aria-pressed', 'false');
       documentStage.classList.remove('has-translation');
@@ -713,6 +727,8 @@
         var isFrenchPage = pageLang.indexOf('fr') === 0;
         var isDutchPage = pageLang.indexOf('nl') === 0;
         var isRussianPage = pageLang.indexOf('ru') === 0;
+        var isCzechPage = pageLang.indexOf('cs') === 0;
+        var czechAiDisclaimer = 'Odpovědi umělé inteligence mohou obsahovat chyby.';
         var voiceflowReady = window.voiceflow.chat.load({
           verify:{projectID:'6a0977f2a62d285256e0577a'},
           url:'https://general-runtime.voiceflow.com',
@@ -773,6 +789,27 @@
             inputPlaceholder: 'Что ты хочешь узнать о тиннитусе, истории Дастина или его подходе?',
             aiDisclaimer: {
               text: 'Ответы ИИ могут содержать ошибки.',
+              hide: false
+            }
+          } : isCzechPage ? {
+            title: 'Asistent pro tinnitus',
+            description: 'Otázky k Dustinovu příběhu, přístupu a zdrojům',
+            header: { title: 'Asistent pro tinnitus' },
+            banner: {
+              title: 'Asistent pro tinnitus',
+              description: 'Otázky k Dustinovu příběhu, přístupu a zdrojům'
+            },
+            launcher: {
+              label: 'Asistent pro tinnitus',
+              title: 'Otevřít chat'
+            },
+            inputPlaceholder: 'Co chceš vědět o tinnitu, Dustinově příběhu nebo jeho přístupu?',
+            responseLoader: {
+              type: 'spinner-with-text',
+              text: 'Jen se na to podívám…'
+            },
+            aiDisclaimer: {
+              text: czechAiDisclaimer,
               hide: false
             }
           } : {})
@@ -919,15 +956,27 @@
               ? 'Tinnitusassistent'
               : isRussianPage
                 ? 'Ассистент по тиннитусу'
-                : '';
+                : isCzechPage
+                  ? 'Asistent pro tinnitus'
+                  : '';
           if (!localizedLabel) return true;
           var launcher = shadowRoot.querySelector('.vfrc-launcher');
           if (!launcher) return false;
-          if (launcher.getAttribute('title') !== localizedLabel) {
-            launcher.setAttribute('title', localizedLabel);
+          var currentLauncherTitle = launcher.getAttribute('title') || '';
+          var launcherActionLabel = isCzechPage
+            ? (
+                currentLauncherTitle === 'Close chat agent' ||
+                currentLauncherTitle === 'Close chat' ||
+                currentLauncherTitle === 'Zavřít chat'
+                  ? 'Zavřít chat'
+                  : 'Otevřít chat'
+              )
+            : localizedLabel;
+          if (launcher.getAttribute('title') !== launcherActionLabel) {
+            launcher.setAttribute('title', launcherActionLabel);
           }
-          if (launcher.getAttribute('aria-label') !== localizedLabel) {
-            launcher.setAttribute('aria-label', localizedLabel);
+          if (launcher.getAttribute('aria-label') !== launcherActionLabel) {
+            launcher.setAttribute('aria-label', launcherActionLabel);
           }
           var launcherLabel = launcher.querySelector('.vfrc-launcher__label');
           if (launcherLabel && launcherLabel.textContent !== localizedLabel) {
@@ -1040,8 +1089,157 @@
           return Boolean(launcher);
         }
 
+        function setCzechHeaderControlLabel(button) {
+          if (!button) return;
+          var currentLabel = [
+            button.getAttribute('title') || '',
+            button.getAttribute('aria-label') || '',
+            (button.textContent || '').trim()
+          ].join(' ');
+          var path = button.querySelector('path');
+          var pathData = path ? (path.getAttribute('d') || '') : '';
+          var label = '';
+
+          if (/restart conversation|restart chat|start new chat|začít chat znovu|začít konverzaci znovu/i.test(currentLabel) ||
+              pathData.indexOf('M5.75 5C5.75 4.58579') === 0) {
+            label = 'Začít chat znovu';
+          } else if (/hide messages|close chat agent|close chat|zavřít chat|skrýt zprávy/i.test(currentLabel) ||
+                     pathData.indexOf('M17.7478 7.31915') === 0) {
+            label = 'Zavřít chat';
+          }
+
+          if (label) {
+            setAttributeIfChanged(button, 'title', label);
+            setAttributeIfChanged(button, 'aria-label', label);
+          }
+        }
+
+        function localizeCzechWidget(shadowRoot) {
+          if (!isCzechPage) return true;
+
+          var textMap = {
+            'Tinnitus-Assistent': 'Asistent pro tinnitus',
+            'Fragen zu Dustins Geschichte, Ansatz & Quellen': 'Otázky k Dustinovu příběhu, přístupu a zdrojům',
+            'Start new chat': 'Nový chat',
+            'Cancel': 'Zrušit',
+            'Restart conversation': 'Začít konverzaci znovu',
+            'Restart chat': 'Začít chat znovu',
+            'Drop files to upload': 'Přetáhni sem soubory k nahrání',
+            'open chat': 'Otevřít chat',
+            'Open chat': 'Otevřít chat',
+            'Open chat agent': 'Otevřít chat',
+            'Close chat agent': 'Zavřít chat',
+            'Close chat': 'Zavřít chat',
+            'Chat has ended': 'Konverzace skončila',
+            'send': 'Odeslat',
+            'Send': 'Odeslat',
+            'Sent': 'Odesláno',
+            'scroll': 'Posunout dolů',
+            'Scroll down': 'Posunout dolů',
+            'Hide messages': 'Skrýt zprávy',
+            'system agent avatar': 'Avatar asistenta',
+            'See more': 'Zobrazit více',
+            'See less': 'Zobrazit méně',
+            'Download': 'Stáhnout',
+            'Image viewer': 'Prohlížeč obrázků',
+            'Previous image': 'Předchozí obrázek',
+            'Next image': 'Následující obrázek',
+            'Scrollable table': 'Tabulka s možností posouvání',
+            'Privacy notice': 'Upozornění k ochraně osobních údajů',
+            'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': 'Než budeme pokračovat v konverzaci, přečti si prosím naše zásady ochrany osobních údajů a přijmi je. Popisují, jak v rámci našich služeb nakládáme s tvými osobními údaji a jak je chráníme.',
+            'Submit': 'Přijmout',
+            'Privacy policy': 'Zásady ochrany osobních údajů',
+            'Powered by Voiceflow': 'Vytvořeno pomocí Voiceflow',
+            'AI responses may contain mistakes.': czechAiDisclaimer,
+            'Close': 'Zavřít'
+          };
+
+          shadowRoot.querySelectorAll('*').forEach(function(element) {
+            if (element.children.length > 0) return;
+            var sourceText = element.textContent.trim();
+            if (Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+              element.textContent = textMap[sourceText];
+            }
+          });
+
+          var textarea = shadowRoot.querySelector('textarea');
+          var placeholder = 'Co chceš vědět o tinnitu, Dustinově příběhu nebo jeho přístupu?';
+          if (textarea && textarea.getAttribute('placeholder') !== placeholder) {
+            textarea.setAttribute('placeholder', placeholder);
+          }
+
+          shadowRoot.querySelectorAll('[aria-label], [title], [label], [alt]').forEach(function(element) {
+            ['aria-label', 'title', 'label', 'alt'].forEach(function(attribute) {
+              var sourceText = element.getAttribute(attribute);
+              if (sourceText && Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+                element.setAttribute(attribute, textMap[sourceText]);
+              }
+            });
+          });
+
+          var headerButtons = shadowRoot.querySelectorAll('.vfrc-header--button');
+          for (var i = 0; i < headerButtons.length; i++) {
+            setCzechHeaderControlLabel(headerButtons[i]);
+          }
+
+          var sendButton = shadowRoot.querySelector('.vfrc-chat-input__send');
+          setAttributeIfChanged(sendButton, 'title', 'Odeslat');
+          setAttributeIfChanged(sendButton, 'aria-label', 'Odeslat');
+
+          var scrollIcon = shadowRoot.querySelector('[title="scroll"], [title="Scroll down"], [title="Posunout dolů"]');
+          if (scrollIcon) {
+            setAttributeIfChanged(scrollIcon, 'title', 'Posunout dolů');
+            setAttributeIfChanged(scrollIcon.closest('button'), 'aria-label', 'Posunout dolů');
+          }
+
+          var proactiveClose = shadowRoot.querySelector('.vfrc-proactive__close-button');
+          setAttributeIfChanged(proactiveClose, 'title', 'Skrýt zprávy');
+          setAttributeIfChanged(proactiveClose, 'aria-label', 'Skrýt zprávy');
+
+          return localizeLauncher(shadowRoot);
+        }
+
+        function localizeCzechPortal() {
+          if (!isCzechPage) return false;
+          var dialogs = document.querySelectorAll(
+            '[role="dialog"][aria-label="Image viewer"], ' +
+            '[role="dialog"][aria-label="Prohlížeč obrázků"]'
+          );
+          if (!dialogs.length) return false;
+
+          var portalMap = {
+            'Image viewer': 'Prohlížeč obrázků',
+            'Download': 'Stáhnout',
+            'Close': 'Zavřít',
+            'Previous image': 'Předchozí obrázek',
+            'Next image': 'Následující obrázek'
+          };
+
+          dialogs.forEach(function(dialog) {
+            setAttributeIfChanged(dialog, 'aria-label', 'Prohlížeč obrázků');
+            dialog.querySelectorAll('*').forEach(function(element) {
+              if (element.children.length > 0) return;
+              var sourceText = (element.textContent || '').trim();
+              if (Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                element.textContent = portalMap[sourceText];
+              }
+            });
+            dialog.querySelectorAll('[aria-label], [title], [alt]').forEach(function(element) {
+              ['aria-label', 'title', 'alt'].forEach(function(attribute) {
+                var sourceText = element.getAttribute(attribute);
+                if (sourceText && Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                  setAttributeIfChanged(element, attribute, portalMap[sourceText]);
+                }
+              });
+            });
+          });
+          return true;
+        }
+
         var dutchObserver = null;
         var russianObserver = null;
+        var czechObserver = null;
+        var czechPortalObserver = null;
 
         // Listen for shadow host creation to inject styles
         var shadowInterval = setInterval(function() {
@@ -1081,6 +1279,33 @@
                 });
               }
               clearInterval(shadowInterval);
+            } else if (isCzechPage) {
+              localizeCzechWidget(shadowHost.shadowRoot);
+              localizeCzechPortal();
+              if (!czechObserver) {
+                czechObserver = new MutationObserver(function() {
+                  localizeCzechWidget(shadowHost.shadowRoot);
+                });
+                czechObserver.observe(shadowHost.shadowRoot, {
+                  childList: true,
+                  subtree: true,
+                  characterData: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'label', 'placeholder', 'alt']
+                });
+              }
+              if (!czechPortalObserver) {
+                czechPortalObserver = new MutationObserver(function() {
+                  localizeCzechPortal();
+                });
+                czechPortalObserver.observe(document.body, {
+                  childList: true,
+                  subtree: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'alt']
+                });
+              }
+              clearInterval(shadowInterval);
             } else if (localizeLauncher(shadowHost.shadowRoot)) {
               clearInterval(shadowInterval);
             }
@@ -1105,7 +1330,9 @@
                     ? "Szumy uszne nie są wyrokiem. Masz pytania o moją drogę wyjścia z piekła szumów usznych albo o protokół oparty na składnikach odżywczych?"
                     : pageLang.indexOf('ru') === 0
                       ? "Тиннитус — не приговор. У тебя есть вопросы о моём пути из ада тиннитуса или о протоколе приёма нутриентов?"
-                      : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+                      : pageLang.indexOf('cs') === 0
+                        ? "Tinnitus není nezvratný osud. Máš otázky k mé cestě z tinnitusového pekla nebo k protokolu založenému na živinách?"
+                        : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
               window.voiceflow.chat.proactive.push({
                 type: 'text',
                 payload: {
@@ -1139,7 +1366,8 @@
           paragraphs[i].textContent.indexOf('’s nachts wakker te liggen') !== -1 ||
           paragraphs[i].textContent.indexOf('Geceleri uyanık yatıp') !== -1 ||
           paragraphs[i].textContent.indexOf('leżeć nocą, nie mogąc zasnąć') !== -1 ||
-          paragraphs[i].textContent.indexOf('лежать без сна по ночам') !== -1) {
+          paragraphs[i].textContent.indexOf('лежать без сна по ночам') !== -1 ||
+          paragraphs[i].textContent.indexOf('ležet v noci vzhůru') !== -1) {
         return paragraphs[i];
       }
     }
@@ -1152,7 +1380,8 @@
           headings[i].textContent.indexOf('Waarom deze pagina bestaat') !== -1 ||
           headings[i].textContent.indexOf('Bu site neden var') !== -1 ||
           headings[i].textContent.indexOf('Dlaczego ta strona istnieje') !== -1 ||
-          headings[i].textContent.indexOf('Почему существует этот сайт') !== -1) {
+          headings[i].textContent.indexOf('Почему существует этот сайт') !== -1 ||
+          headings[i].textContent.indexOf('Proč tento web existuje') !== -1) {
         return headings[i];
       }
     }
@@ -1197,7 +1426,10 @@
     '/pl/index.html': true,
     '/ru': true,
     '/ru/': true,
-    '/ru/index.html': true
+    '/ru/index.html': true,
+    '/cs': true,
+    '/cs/': true,
+    '/cs/index.html': true
   };
   var isHomepage = Boolean(homepagePaths[pathname]);
 
