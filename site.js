@@ -36,7 +36,61 @@
     });
   }
 
+  function ensureKoreanLanguageOption() {
+    var koreanRoutesByGermanPath = {
+      '/': '/ko/',
+      '/tinnitus-geheilt-erfahrungsbericht': '/ko/tinnitus-geheilt-erfahrungsbericht',
+      '/meine-geschichte-teil-1': '/ko/meine-geschichte-teil-1',
+      '/meine-geschichte-teil-2': '/ko/meine-geschichte-teil-2',
+      '/laermbedingter-tinnitus': '/ko/laermbedingter-tinnitus',
+      '/stressbedingter-tinnitus': '/ko/stressbedingter-tinnitus',
+      '/medikamente-gifte-tinnitus': '/ko/medikamente-gifte-tinnitus',
+      '/mein-loesungsansatz': '/ko/mein-loesungsansatz',
+      '/wissenschaftliche-quellen': '/ko/wissenschaftliche-quellen'
+    };
+
+    document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
+      if (menu.querySelector('a[hreflang="ko"]')) return;
+
+      var germanLink = menu.querySelector('a[hreflang="de"]');
+      var germanPath = '/';
+
+      if (germanLink) {
+        try {
+          germanPath = new URL(germanLink.getAttribute('href'), window.location.origin).pathname;
+          germanPath = germanPath.replace(/\/+$/, '') || '/';
+        } catch (error) {
+          germanPath = '/';
+        }
+      }
+
+      var koreanLink = document.createElement('a');
+      koreanLink.href = koreanRoutesByGermanPath[germanPath] || '/ko/';
+      koreanLink.setAttribute('hreflang', 'ko');
+
+      if (document.documentElement.lang.toLowerCase().indexOf('ko') === 0) {
+        koreanLink.classList.add('active');
+        koreanLink.setAttribute('aria-current', 'page');
+      }
+
+      var languageCode = document.createElement('span');
+      languageCode.className = 'lang-code';
+      languageCode.textContent = 'KO';
+
+      var languageName = document.createElement('span');
+      languageName.className = 'lang-name';
+      languageName.setAttribute('lang', 'ko');
+      languageName.textContent = '한국어';
+
+      koreanLink.appendChild(languageCode);
+      koreanLink.appendChild(languageName);
+      menu.appendChild(koreanLink);
+    });
+  }
+
   function initHeaderControls() {
+    ensureKoreanLanguageOption();
+
     var header = document.getElementById('siteHeader');
     var burger = document.getElementById('navBurger');
     var primaryNav = document.getElementById('primaryNav');
