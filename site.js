@@ -46,7 +46,13 @@
       '/stressbedingter-tinnitus': '/ko/stressbedingter-tinnitus',
       '/medikamente-gifte-tinnitus': '/ko/medikamente-gifte-tinnitus',
       '/mein-loesungsansatz': '/ko/mein-loesungsansatz',
-      '/wissenschaftliche-quellen': '/ko/wissenschaftliche-quellen'
+      '/wissenschaftliche-quellen': '/ko/wissenschaftliche-quellen',
+      '/produkte': '/ko/produkte',
+      '/erfahrungsberichte': '/ko/erfahrungsberichte',
+      '/faq': '/ko/faq',
+      '/kontakt': '/ko/kontakt',
+      '/impressum': '/ko/impressum',
+      '/datenschutz': '/ko/datenschutz'
     };
 
     document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
