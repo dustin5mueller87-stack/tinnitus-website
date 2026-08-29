@@ -1,0 +1,11 @@
+html:lang(ko) {
+  --serif: "Noto Serif KR", "AppleMyungjo", "Batang", "Nanum Myeongjo", serif;
+  --sans: "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "Nanum Gothic", sans-serif;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+html:lang(ko) .eyebrow {
+  letter-spacing: 0.08em;
+  text-transform: none;
+}

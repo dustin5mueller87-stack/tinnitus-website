@@ -172,6 +172,14 @@
       translationRegion: '文書の日本語訳',
       translationShow: '日本語訳を表示',
       translationOriginal: 'ドイツ語の原文を表示'
+    } : pageLang.indexOf('ko') === 0 ? {
+      viewer: '이미지 뷰어',
+      close: '닫기',
+      previous: '이전 이미지',
+      next: '다음 이미지',
+      translationRegion: '문서 번역',
+      translationShow: '문서 번역 보기',
+      translationOriginal: '독일어 원문 보기'
     } : {
       viewer: 'Bildansicht',
       close: 'Schließen',
@@ -221,6 +229,9 @@
     } : pageLang.indexOf('ja') === 0 ? {
       show: '日本語訳を表示',
       original: 'ドイツ語の原文を表示'
+    } : pageLang.indexOf('ko') === 0 ? {
+      show: '문서 번역 보기',
+      original: '독일어 원문 보기'
     } : {
       show: 'Übersetzung anzeigen',
       original: 'Original anzeigen'
@@ -740,8 +751,10 @@
         var isRussianPage = pageLang.indexOf('ru') === 0;
         var isCzechPage = pageLang.indexOf('cs') === 0;
         var isJapanesePage = pageLang.indexOf('ja') === 0;
+        var isKoreanPage = pageLang.indexOf('ko') === 0;
         var czechAiDisclaimer = 'Odpovědi umělé inteligence mohou obsahovat chyby.';
         var japaneseAiDisclaimer = 'AIの回答には誤りが含まれる場合があります。';
+        var koreanAiDisclaimer = 'AI 답변에는 오류가 포함될 수 있습니다.';
         var voiceflowReady = window.voiceflow.chat.load({
           verify:{projectID:'6a0977f2a62d285256e0577a'},
           url:'https://general-runtime.voiceflow.com',
@@ -819,6 +832,23 @@
             inputPlaceholder: '耳鳴りやダスティンの体験、アプローチについて、何を知りたいですか？',
             aiDisclaimer: {
               text: japaneseAiDisclaimer,
+              hide: false
+            }
+          } : isKoreanPage ? {
+            title: '이명 도우미',
+            description: 'Dustin의 이야기와 해결 접근법, 출처에 관한 질문',
+            header: { title: '이명 도우미' },
+            banner: {
+              title: '이명 도우미',
+              description: 'Dustin의 이야기와 해결 접근법, 출처에 관한 질문'
+            },
+            launcher: {
+              label: '이명 도우미',
+              title: '채팅 열기'
+            },
+            inputPlaceholder: '이명이나 Dustin의 이야기, 해결 접근법에 관해 무엇이 궁금하신가요?',
+            aiDisclaimer: {
+              text: koreanAiDisclaimer,
               hide: false
             }
           } : isCzechPage ? {
@@ -988,21 +1018,24 @@
                 ? 'Ассистент по тиннитусу'
                 : isJapanesePage
                   ? '耳鳴りアシスタント'
-                : isCzechPage
-                  ? 'Asistent pro tinnitus'
-                  : '';
+                  : isKoreanPage
+                    ? '이명 도우미'
+                    : isCzechPage
+                      ? 'Asistent pro tinnitus'
+                      : '';
           if (!localizedLabel) return true;
           var launcher = shadowRoot.querySelector('.vfrc-launcher');
           if (!launcher) return false;
           var currentLauncherTitle = launcher.getAttribute('title') || '';
-          var launcherActionLabel = (isCzechPage || isJapanesePage)
+          var launcherActionLabel = (isCzechPage || isJapanesePage || isKoreanPage)
             ? (
                 currentLauncherTitle === 'Close chat agent' ||
                 currentLauncherTitle === 'Close chat' ||
                 currentLauncherTitle === 'Zavřít chat' ||
-                currentLauncherTitle === 'チャットを閉じる'
-                  ? (isJapanesePage ? 'チャットを閉じる' : 'Zavřít chat')
-                  : (isJapanesePage ? 'チャットを開く' : 'Otevřít chat')
+                currentLauncherTitle === 'チャットを閉じる' ||
+                currentLauncherTitle === '채팅 닫기'
+                  ? (isJapanesePage ? 'チャットを閉じる' : isKoreanPage ? '채팅 닫기' : 'Zavřít chat')
+                  : (isJapanesePage ? 'チャットを開く' : isKoreanPage ? '채팅 열기' : 'Otevřít chat')
               )
             : localizedLabel;
           if (launcher.getAttribute('title') !== launcherActionLabel) {
@@ -1416,12 +1449,161 @@
           return true;
         }
 
+        function setKoreanHeaderControlLabel(button) {
+          if (!button) return;
+          var currentLabel = [
+            button.getAttribute('title') || '',
+            button.getAttribute('aria-label') || '',
+            (button.textContent || '').trim()
+          ].join(' ');
+          var path = button.querySelector('path');
+          var pathData = path ? (path.getAttribute('d') || '') : '';
+          var label = '';
+
+          if (/restart conversation|restart chat|start new chat|대화 다시 시작|새 채팅 시작/i.test(currentLabel) ||
+              pathData.indexOf('M5.75 5C5.75 4.58579') === 0) {
+            label = '대화 다시 시작';
+          } else if (/hide messages|close chat agent|close chat|메시지 숨기기|채팅 닫기/i.test(currentLabel) ||
+                     pathData.indexOf('M17.7478 7.31915') === 0) {
+            label = '채팅 닫기';
+          }
+
+          if (label) {
+            setAttributeIfChanged(button, 'title', label);
+            setAttributeIfChanged(button, 'aria-label', label);
+          }
+        }
+
+        function localizeKoreanWidget(shadowRoot) {
+          if (!isKoreanPage) return true;
+
+          var textMap = {
+            'Tinnitus-Assistent': '이명 도우미',
+            'Fragen zu Dustins Geschichte, Ansatz & Quellen': 'Dustin의 이야기와 해결 접근법, 출처에 관한 질문',
+            'Start new chat': '새 채팅 시작',
+            'Cancel': '취소',
+            'Restart conversation': '대화 다시 시작',
+            'Restart chat': '대화 다시 시작',
+            'Drop files to upload': '업로드할 파일을 여기에 놓으세요',
+            'open chat': '채팅 열기',
+            'Open chat': '채팅 열기',
+            'Open chat agent': '채팅 열기',
+            'Close chat agent': '채팅 닫기',
+            'Close chat': '채팅 닫기',
+            'Chat has ended': '채팅이 종료되었습니다',
+            'send': '보내기',
+            'Send': '보내기',
+            'Sent': '전송됨',
+            'scroll': '아래로 스크롤',
+            'Scroll down': '아래로 스크롤',
+            'Hide messages': '메시지 숨기기',
+            'system agent avatar': '이명 도우미 아바타',
+            'See more': '더 보기',
+            'See less': '접기',
+            'Download': '다운로드',
+            'Image viewer': '이미지 뷰어',
+            'Previous image': '이전 이미지',
+            'Next image': '다음 이미지',
+            'Scrollable table': '스크롤 가능한 표',
+            'Privacy notice': '개인정보 보호 안내',
+            'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': '대화를 계속하기 전에 개인정보 처리방침을 검토하고 동의해 주세요. 이 방침에는 서비스 전반에서 개인정보를 어떻게 처리하고 보호하는지 설명되어 있습니다.',
+            'Submit': '동의하고 계속하기',
+            'Privacy policy': '개인정보 처리방침',
+            'Powered by Voiceflow': 'Voiceflow 제공',
+            'AI responses may contain mistakes.': koreanAiDisclaimer,
+            'Close': '닫기'
+          };
+
+          shadowRoot.querySelectorAll('*').forEach(function(element) {
+            if (element.children.length > 0) return;
+            var sourceText = element.textContent.trim();
+            if (Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+              element.textContent = textMap[sourceText];
+            }
+          });
+
+          var textarea = shadowRoot.querySelector('textarea');
+          var placeholder = '이명이나 Dustin의 이야기, 해결 접근법에 관해 무엇이 궁금하신가요?';
+          if (textarea && textarea.getAttribute('placeholder') !== placeholder) {
+            textarea.setAttribute('placeholder', placeholder);
+          }
+
+          shadowRoot.querySelectorAll('[aria-label], [title], [label], [alt]').forEach(function(element) {
+            ['aria-label', 'title', 'label', 'alt'].forEach(function(attribute) {
+              var sourceText = element.getAttribute(attribute);
+              if (sourceText && Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+                element.setAttribute(attribute, textMap[sourceText]);
+              }
+            });
+          });
+
+          var headerButtons = shadowRoot.querySelectorAll('.vfrc-header--button');
+          for (var i = 0; i < headerButtons.length; i++) {
+            setKoreanHeaderControlLabel(headerButtons[i]);
+          }
+
+          var sendButton = shadowRoot.querySelector('.vfrc-chat-input__send');
+          setAttributeIfChanged(sendButton, 'title', '보내기');
+          setAttributeIfChanged(sendButton, 'aria-label', '보내기');
+
+          var scrollIcon = shadowRoot.querySelector('[title="scroll"], [title="Scroll down"], [title="아래로 스크롤"]');
+          if (scrollIcon) {
+            setAttributeIfChanged(scrollIcon, 'title', '아래로 스크롤');
+            setAttributeIfChanged(scrollIcon.closest('button'), 'aria-label', '아래로 스크롤');
+          }
+
+          var proactiveClose = shadowRoot.querySelector('.vfrc-proactive__close-button');
+          setAttributeIfChanged(proactiveClose, 'title', '메시지 숨기기');
+          setAttributeIfChanged(proactiveClose, 'aria-label', '메시지 숨기기');
+
+          return localizeLauncher(shadowRoot);
+        }
+
+        function localizeKoreanPortal() {
+          if (!isKoreanPage) return false;
+          var dialogs = document.querySelectorAll(
+            '[role="dialog"][aria-label="Image viewer"], ' +
+            '[role="dialog"][aria-label="이미지 뷰어"]'
+          );
+          if (!dialogs.length) return false;
+
+          var portalMap = {
+            'Image viewer': '이미지 뷰어',
+            'Download': '다운로드',
+            'Close': '닫기',
+            'Previous image': '이전 이미지',
+            'Next image': '다음 이미지'
+          };
+
+          dialogs.forEach(function(dialog) {
+            setAttributeIfChanged(dialog, 'aria-label', '이미지 뷰어');
+            dialog.querySelectorAll('*').forEach(function(element) {
+              if (element.children.length > 0) return;
+              var sourceText = (element.textContent || '').trim();
+              if (Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                element.textContent = portalMap[sourceText];
+              }
+            });
+            dialog.querySelectorAll('[aria-label], [title], [alt]').forEach(function(element) {
+              ['aria-label', 'title', 'alt'].forEach(function(attribute) {
+                var sourceText = element.getAttribute(attribute);
+                if (sourceText && Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                  setAttributeIfChanged(element, attribute, portalMap[sourceText]);
+                }
+              });
+            });
+          });
+          return true;
+        }
+
         var dutchObserver = null;
         var russianObserver = null;
         var czechObserver = null;
         var czechPortalObserver = null;
         var japaneseObserver = null;
         var japanesePortalObserver = null;
+        var koreanObserver = null;
+        var koreanPortalObserver = null;
 
         // Listen for shadow host creation to inject styles
         var shadowInterval = setInterval(function() {
@@ -1515,6 +1697,33 @@
                 });
               }
               clearInterval(shadowInterval);
+            } else if (isKoreanPage) {
+              localizeKoreanWidget(shadowHost.shadowRoot);
+              localizeKoreanPortal();
+              if (!koreanObserver) {
+                koreanObserver = new MutationObserver(function() {
+                  localizeKoreanWidget(shadowHost.shadowRoot);
+                });
+                koreanObserver.observe(shadowHost.shadowRoot, {
+                  childList: true,
+                  subtree: true,
+                  characterData: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'label', 'placeholder', 'alt']
+                });
+              }
+              if (!koreanPortalObserver) {
+                koreanPortalObserver = new MutationObserver(function() {
+                  localizeKoreanPortal();
+                });
+                koreanPortalObserver.observe(document.body, {
+                  childList: true,
+                  subtree: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'alt']
+                });
+              }
+              clearInterval(shadowInterval);
             } else if (localizeLauncher(shadowHost.shadowRoot)) {
               clearInterval(shadowInterval);
             }
@@ -1543,7 +1752,9 @@
                         ? "Tinnitus není nezvratný osud. Máš otázky k mé cestě z tinnitusového pekla nebo k protokolu založenému na živinách?"
                         : pageLang.indexOf('ja') === 0
                           ? "耳鳴りは、変えられない運命ではありません。私が耳鳴りの地獄から抜け出した道のりや、栄養素プロトコルについて質問はありますか？"
-                          : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+                          : pageLang.indexOf('ko') === 0
+                            ? "이명은 정해진 운명이 아닙니다. 제가 이명 지옥에서 빠져나온 과정이나 영양소 프로토콜에 관해 궁금한 점이 있나요?"
+                            : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
               window.voiceflow.chat.proactive.push({
                 type: 'text',
                 payload: {
@@ -1579,7 +1790,8 @@
           paragraphs[i].textContent.indexOf('leżeć nocą, nie mogąc zasnąć') !== -1 ||
           paragraphs[i].textContent.indexOf('лежать без сна по ночам') !== -1 ||
           paragraphs[i].textContent.indexOf('ležet v noci vzhůru') !== -1 ||
-          paragraphs[i].textContent.indexOf('夜、眠れずに横たわり') !== -1) {
+          paragraphs[i].textContent.indexOf('夜、眠れずに横たわり') !== -1 ||
+          paragraphs[i].textContent.indexOf('밤에 깨어 누운 채') !== -1) {
         return paragraphs[i];
       }
     }
@@ -1594,7 +1806,8 @@
           headings[i].textContent.indexOf('Dlaczego ta strona istnieje') !== -1 ||
           headings[i].textContent.indexOf('Почему существует этот сайт') !== -1 ||
           headings[i].textContent.indexOf('Proč tento web existuje') !== -1 ||
-          headings[i].textContent.indexOf('このサイトを作った理由') !== -1) {
+          headings[i].textContent.indexOf('このサイトを作った理由') !== -1 ||
+          headings[i].textContent.indexOf('이 사이트가 존재하는 이유') !== -1) {
         return headings[i];
       }
     }
@@ -1645,7 +1858,10 @@
     '/cs/index.html': true,
     '/ja': true,
     '/ja/': true,
-    '/ja/index.html': true
+    '/ja/index.html': true,
+    '/ko': true,
+    '/ko/': true,
+    '/ko/index.html': true
   };
   var isHomepage = Boolean(homepagePaths[pathname]);
 
