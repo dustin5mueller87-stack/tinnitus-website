@@ -70,6 +70,26 @@ html:lang(ru) {
   --serif: "Inter", sans-serif;
 }
 
+/* Fraunces und Inter enthalten keine Devanagari-Zeichen. Hindi nutzt
+   kontrollierte plattformuebliche Devanagari-Fallbacks, ohne Matra-Trennung. */
+html:lang(hi) {
+  --serif: "Noto Serif Devanagari", "Kohinoor Devanagari", "Nirmala UI", "Mangal", serif;
+  --sans: "Noto Sans Devanagari", "Kohinoor Devanagari", "Nirmala UI", "Mangal", sans-serif;
+}
+
+html:lang(hi) body {
+  line-height: 1.8;
+}
+
+html:lang(hi) .eyebrow,
+html:lang(hi) .toc-eyebrow,
+html:lang(hi) .compare-eyebrow,
+html:lang(hi) .evidence-eyebrow,
+html:lang(hi) .term-note-label {
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
@@ -2559,5 +2579,13 @@ details.studien > .evidence-card:first-of-type { margin-top: 14px; }
   h1, h2, h3, .section-title {
     overflow-wrap: break-word;
     hyphens: auto;
+  }
+
+  html:lang(hi) h1,
+  html:lang(hi) h2,
+  html:lang(hi) h3,
+  html:lang(hi) .section-title {
+    hyphens: none;
+    -webkit-hyphens: none;
   }
 }

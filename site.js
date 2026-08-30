@@ -88,8 +88,69 @@
     });
   }
 
+  function ensureHindiLanguageOption() {
+    var hindiRoutesByGermanPath = {
+      '/': '/hi/',
+      '/tinnitus-geheilt-erfahrungsbericht': '/hi/tinnitus-geheilt-erfahrungsbericht',
+      '/meine-geschichte-teil-1': '/hi/meine-geschichte-teil-1',
+      '/meine-geschichte-teil-2': '/hi/meine-geschichte-teil-2',
+      '/laermbedingter-tinnitus': '/hi/laermbedingter-tinnitus',
+      '/stressbedingter-tinnitus': '/hi/stressbedingter-tinnitus',
+      '/medikamente-gifte-tinnitus': '/hi/medikamente-gifte-tinnitus',
+      '/mein-loesungsansatz': '/hi/mein-loesungsansatz',
+      '/wissenschaftliche-quellen': '/hi/wissenschaftliche-quellen',
+      '/produkte': '/hi/produkte',
+      '/erfahrungsberichte': '/hi/erfahrungsberichte',
+      '/faq': '/hi/faq',
+      '/kontakt': '/hi/kontakt',
+      '/impressum': '/hi/impressum',
+      '/datenschutz': '/hi/datenschutz',
+      '/404': '/hi/404.html',
+      '/404.html': '/hi/404.html'
+    };
+
+    document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
+      if (menu.querySelector('a[hreflang="hi"]')) return;
+
+      var germanLink = menu.querySelector('a[hreflang="de"]');
+      var germanPath = '/';
+
+      if (germanLink) {
+        try {
+          germanPath = new URL(germanLink.getAttribute('href'), window.location.origin).pathname;
+          germanPath = germanPath.replace(/\/+$/, '') || '/';
+        } catch (error) {
+          germanPath = '/';
+        }
+      }
+
+      var hindiLink = document.createElement('a');
+      hindiLink.href = hindiRoutesByGermanPath[germanPath] || '/hi/';
+      hindiLink.setAttribute('hreflang', 'hi');
+
+      if (document.documentElement.lang.toLowerCase().indexOf('hi') === 0) {
+        hindiLink.classList.add('active');
+        hindiLink.setAttribute('aria-current', 'page');
+      }
+
+      var languageCode = document.createElement('span');
+      languageCode.className = 'lang-code';
+      languageCode.textContent = 'HI';
+
+      var languageName = document.createElement('span');
+      languageName.className = 'lang-name';
+      languageName.setAttribute('lang', 'hi');
+      languageName.textContent = 'हिंदी';
+
+      hindiLink.appendChild(languageCode);
+      hindiLink.appendChild(languageName);
+      menu.appendChild(hindiLink);
+    });
+  }
+
   function initHeaderControls() {
     ensureKoreanLanguageOption();
+    ensureHindiLanguageOption();
 
     var header = document.getElementById('siteHeader');
     var burger = document.getElementById('navBurger');
@@ -234,6 +295,14 @@
       translationRegion: '문서 번역',
       translationShow: '문서 번역 보기',
       translationOriginal: '독일어 원문 보기'
+    } : pageLang.indexOf('hi') === 0 ? {
+      viewer: 'चित्र दर्शक',
+      close: 'बंद करें',
+      previous: 'पिछला चित्र',
+      next: 'अगला चित्र',
+      translationRegion: 'दस्तावेज़ का हिंदी अनुवाद',
+      translationShow: 'हिंदी अनुवाद दिखाएँ',
+      translationOriginal: 'जर्मन मूल दस्तावेज़ दिखाएँ'
     } : {
       viewer: 'Bildansicht',
       close: 'Schließen',
@@ -286,6 +355,9 @@
     } : pageLang.indexOf('ko') === 0 ? {
       show: '문서 번역 보기',
       original: '독일어 원문 보기'
+    } : pageLang.indexOf('hi') === 0 ? {
+      show: 'हिंदी अनुवाद दिखाएँ',
+      original: 'जर्मन मूल दस्तावेज़ दिखाएँ'
     } : {
       show: 'Übersetzung anzeigen',
       original: 'Original anzeigen'
@@ -806,9 +878,11 @@
         var isCzechPage = pageLang.indexOf('cs') === 0;
         var isJapanesePage = pageLang.indexOf('ja') === 0;
         var isKoreanPage = pageLang.indexOf('ko') === 0;
+        var isHindiPage = pageLang.indexOf('hi') === 0;
         var czechAiDisclaimer = 'Odpovědi umělé inteligence mohou obsahovat chyby.';
         var japaneseAiDisclaimer = 'AIの回答には誤りが含まれる場合があります。';
         var koreanAiDisclaimer = 'AI 답변에는 오류가 포함될 수 있습니다.';
+        var hindiAiDisclaimer = 'AI के जवाबों में गलतियाँ हो सकती हैं।';
         var voiceflowReady = window.voiceflow.chat.load({
           verify:{projectID:'6a0977f2a62d285256e0577a'},
           url:'https://general-runtime.voiceflow.com',
@@ -903,6 +977,23 @@
             inputPlaceholder: '이명이나 Dustin의 이야기, 해결 접근법에 관해 무엇이 궁금하신가요?',
             aiDisclaimer: {
               text: koreanAiDisclaimer,
+              hide: false
+            }
+          } : isHindiPage ? {
+            title: 'टिनिटस सहायक',
+            description: 'Dustin की कहानी, उनके तरीके और स्रोतों पर सवाल',
+            header: { title: 'टिनिटस सहायक' },
+            banner: {
+              title: 'टिनिटस सहायक',
+              description: 'Dustin की कहानी, उनके तरीके और स्रोतों पर सवाल'
+            },
+            launcher: {
+              label: 'टिनिटस सहायक',
+              title: 'चैट खोलें'
+            },
+            inputPlaceholder: 'टिनिटस, Dustin की कहानी या उनके तरीके के बारे में आप क्या जानना चाहते हैं?',
+            aiDisclaimer: {
+              text: hindiAiDisclaimer,
               hide: false
             }
           } : isCzechPage ? {
@@ -1072,24 +1163,27 @@
                 ? 'Ассистент по тиннитусу'
                 : isJapanesePage
                   ? '耳鳴りアシスタント'
-                  : isKoreanPage
-                    ? '이명 도우미'
-                    : isCzechPage
-                      ? 'Asistent pro tinnitus'
-                      : '';
+                   : isKoreanPage
+                     ? '이명 도우미'
+                     : isHindiPage
+                       ? 'टिनिटस सहायक'
+                       : isCzechPage
+                         ? 'Asistent pro tinnitus'
+                         : '';
           if (!localizedLabel) return true;
           var launcher = shadowRoot.querySelector('.vfrc-launcher');
           if (!launcher) return false;
           var currentLauncherTitle = launcher.getAttribute('title') || '';
-          var launcherActionLabel = (isCzechPage || isJapanesePage || isKoreanPage)
+          var launcherActionLabel = (isCzechPage || isJapanesePage || isKoreanPage || isHindiPage)
             ? (
                 currentLauncherTitle === 'Close chat agent' ||
                 currentLauncherTitle === 'Close chat' ||
-                currentLauncherTitle === 'Zavřít chat' ||
-                currentLauncherTitle === 'チャットを閉じる' ||
-                currentLauncherTitle === '채팅 닫기'
-                  ? (isJapanesePage ? 'チャットを閉じる' : isKoreanPage ? '채팅 닫기' : 'Zavřít chat')
-                  : (isJapanesePage ? 'チャットを開く' : isKoreanPage ? '채팅 열기' : 'Otevřít chat')
+                 currentLauncherTitle === 'Zavřít chat' ||
+                 currentLauncherTitle === 'チャットを閉じる' ||
+                 currentLauncherTitle === '채팅 닫기' ||
+                 currentLauncherTitle === 'चैट बंद करें'
+                  ? (isJapanesePage ? 'チャットを閉じる' : isKoreanPage ? '채팅 닫기' : isHindiPage ? 'चैट बंद करें' : 'Zavřít chat')
+                  : (isJapanesePage ? 'チャットを開く' : isKoreanPage ? '채팅 열기' : isHindiPage ? 'चैट खोलें' : 'Otevřít chat')
               )
             : localizedLabel;
           if (launcher.getAttribute('title') !== launcherActionLabel) {
@@ -1650,6 +1744,153 @@
           return true;
         }
 
+        function setHindiHeaderControlLabel(button) {
+          if (!button) return;
+          var currentLabel = [
+            button.getAttribute('title') || '',
+            button.getAttribute('aria-label') || '',
+            (button.textContent || '').trim()
+          ].join(' ');
+          var path = button.querySelector('path');
+          var pathData = path ? (path.getAttribute('d') || '') : '';
+          var label = '';
+
+          if (/restart conversation|restart chat|start new chat|बातचीत फिर शुरू करें|नई चैट शुरू करें/i.test(currentLabel) ||
+              pathData.indexOf('M5.75 5C5.75 4.58579') === 0) {
+            label = 'बातचीत फिर शुरू करें';
+          } else if (/hide messages|close chat agent|close chat|संदेश छिपाएँ|चैट बंद करें/i.test(currentLabel) ||
+                     pathData.indexOf('M17.7478 7.31915') === 0) {
+            label = 'चैट बंद करें';
+          }
+
+          if (label) {
+            setAttributeIfChanged(button, 'title', label);
+            setAttributeIfChanged(button, 'aria-label', label);
+          }
+        }
+
+        function localizeHindiWidget(shadowRoot) {
+          if (!isHindiPage) return true;
+
+          var textMap = {
+            'Tinnitus-Assistent': 'टिनिटस सहायक',
+            'Fragen zu Dustins Geschichte, Ansatz & Quellen': 'Dustin की कहानी, उनके तरीके और स्रोतों पर सवाल',
+            'Start new chat': 'नई चैट शुरू करें',
+            'Cancel': 'रद्द करें',
+            'Restart conversation': 'बातचीत फिर शुरू करें',
+            'Restart chat': 'बातचीत फिर शुरू करें',
+            'Drop files to upload': 'अपलोड करने के लिए फ़ाइलें यहाँ छोड़ें',
+            'open chat': 'चैट खोलें',
+            'Open chat': 'चैट खोलें',
+            'Open chat agent': 'चैट खोलें',
+            'Close chat agent': 'चैट बंद करें',
+            'Close chat': 'चैट बंद करें',
+            'Chat has ended': 'चैट समाप्त हो गई है',
+            'send': 'भेजें',
+            'Send': 'भेजें',
+            'Sent': 'भेजा गया',
+            'scroll': 'नीचे स्क्रॉल करें',
+            'Scroll down': 'नीचे स्क्रॉल करें',
+            'Hide messages': 'संदेश छिपाएँ',
+            'system agent avatar': 'टिनिटस सहायक का अवतार',
+            'See more': 'और देखें',
+            'See less': 'कम देखें',
+            'Download': 'डाउनलोड करें',
+            'Image viewer': 'चित्र दर्शक',
+            'Previous image': 'पिछला चित्र',
+            'Next image': 'अगला चित्र',
+            'Scrollable table': 'स्क्रॉल की जा सकने वाली तालिका',
+            'Privacy notice': 'गोपनीयता सूचना',
+            'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': 'बातचीत जारी रखने से पहले, कृपया हमारी गोपनीयता नीति पढ़कर स्वीकार करें। इसमें बताया गया है कि हमारी सेवाओं में हम आपकी निजी जानकारी को कैसे संभालते और सुरक्षित रखते हैं।',
+            'Submit': 'सबमिट करें',
+            'Privacy policy': 'गोपनीयता नीति',
+            'Powered by Voiceflow': 'Voiceflow द्वारा संचालित',
+            'AI responses may contain mistakes.': hindiAiDisclaimer,
+            'Close': 'बंद करें'
+          };
+
+          shadowRoot.querySelectorAll('*').forEach(function(element) {
+            if (element.children.length > 0) return;
+            var sourceText = element.textContent.trim();
+            if (Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+              element.textContent = textMap[sourceText];
+            }
+          });
+
+          var textarea = shadowRoot.querySelector('textarea');
+          var placeholder = 'टिनिटस, Dustin की कहानी या उनके तरीके के बारे में आप क्या जानना चाहते हैं?';
+          if (textarea && textarea.getAttribute('placeholder') !== placeholder) {
+            textarea.setAttribute('placeholder', placeholder);
+          }
+
+          shadowRoot.querySelectorAll('[aria-label], [title], [label], [alt]').forEach(function(element) {
+            ['aria-label', 'title', 'label', 'alt'].forEach(function(attribute) {
+              var sourceText = element.getAttribute(attribute);
+              if (sourceText && Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+                element.setAttribute(attribute, textMap[sourceText]);
+              }
+            });
+          });
+
+          var headerButtons = shadowRoot.querySelectorAll('.vfrc-header--button');
+          for (var i = 0; i < headerButtons.length; i++) {
+            setHindiHeaderControlLabel(headerButtons[i]);
+          }
+
+          var sendButton = shadowRoot.querySelector('.vfrc-chat-input__send');
+          setAttributeIfChanged(sendButton, 'title', 'भेजें');
+          setAttributeIfChanged(sendButton, 'aria-label', 'भेजें');
+
+          var scrollIcon = shadowRoot.querySelector('[title="scroll"], [title="Scroll down"], [title="नीचे स्क्रॉल करें"]');
+          if (scrollIcon) {
+            setAttributeIfChanged(scrollIcon, 'title', 'नीचे स्क्रॉल करें');
+            setAttributeIfChanged(scrollIcon.closest('button'), 'aria-label', 'नीचे स्क्रॉल करें');
+          }
+
+          var proactiveClose = shadowRoot.querySelector('.vfrc-proactive__close-button');
+          setAttributeIfChanged(proactiveClose, 'title', 'संदेश छिपाएँ');
+          setAttributeIfChanged(proactiveClose, 'aria-label', 'संदेश छिपाएँ');
+
+          return localizeLauncher(shadowRoot);
+        }
+
+        function localizeHindiPortal() {
+          if (!isHindiPage) return false;
+          var dialogs = document.querySelectorAll(
+            '[role="dialog"][aria-label="Image viewer"], ' +
+            '[role="dialog"][aria-label="चित्र दर्शक"]'
+          );
+          if (!dialogs.length) return false;
+
+          var portalMap = {
+            'Image viewer': 'चित्र दर्शक',
+            'Download': 'डाउनलोड करें',
+            'Close': 'बंद करें',
+            'Previous image': 'पिछला चित्र',
+            'Next image': 'अगला चित्र'
+          };
+
+          dialogs.forEach(function(dialog) {
+            setAttributeIfChanged(dialog, 'aria-label', 'चित्र दर्शक');
+            dialog.querySelectorAll('*').forEach(function(element) {
+              if (element.children.length > 0) return;
+              var sourceText = (element.textContent || '').trim();
+              if (Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                element.textContent = portalMap[sourceText];
+              }
+            });
+            dialog.querySelectorAll('[aria-label], [title], [alt]').forEach(function(element) {
+              ['aria-label', 'title', 'alt'].forEach(function(attribute) {
+                var sourceText = element.getAttribute(attribute);
+                if (sourceText && Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                  setAttributeIfChanged(element, attribute, portalMap[sourceText]);
+                }
+              });
+            });
+          });
+          return true;
+        }
+
         var dutchObserver = null;
         var russianObserver = null;
         var czechObserver = null;
@@ -1658,6 +1899,8 @@
         var japanesePortalObserver = null;
         var koreanObserver = null;
         var koreanPortalObserver = null;
+        var hindiObserver = null;
+        var hindiPortalObserver = null;
 
         // Listen for shadow host creation to inject styles
         var shadowInterval = setInterval(function() {
@@ -1778,6 +2021,33 @@
                 });
               }
               clearInterval(shadowInterval);
+            } else if (isHindiPage) {
+              localizeHindiWidget(shadowHost.shadowRoot);
+              localizeHindiPortal();
+              if (!hindiObserver) {
+                hindiObserver = new MutationObserver(function() {
+                  localizeHindiWidget(shadowHost.shadowRoot);
+                });
+                hindiObserver.observe(shadowHost.shadowRoot, {
+                  childList: true,
+                  subtree: true,
+                  characterData: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'label', 'placeholder', 'alt']
+                });
+              }
+              if (!hindiPortalObserver) {
+                hindiPortalObserver = new MutationObserver(function() {
+                  localizeHindiPortal();
+                });
+                hindiPortalObserver.observe(document.body, {
+                  childList: true,
+                  subtree: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'alt']
+                });
+              }
+              clearInterval(shadowInterval);
             } else if (localizeLauncher(shadowHost.shadowRoot)) {
               clearInterval(shadowInterval);
             }
@@ -1808,7 +2078,9 @@
                           ? "耳鳴りは、変えられない運命ではありません。私が耳鳴りの地獄から抜け出した道のりや、栄養素プロトコルについて質問はありますか？"
                           : pageLang.indexOf('ko') === 0
                             ? "이명은 정해진 운명이 아닙니다. 제가 이명 지옥에서 빠져나온 과정이나 영양소 프로토콜에 관해 궁금한 점이 있나요?"
-                            : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+                            : pageLang.indexOf('hi') === 0
+                              ? "टिनिटस कोई अटल नियति नहीं है। टिनिटस के नर्क से बाहर निकलने के मेरे रास्ते या पोषक तत्व प्रोटोकॉल के बारे में आपके सवाल हैं?"
+                              : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
               window.voiceflow.chat.proactive.push({
                 type: 'text',
                 payload: {
@@ -1845,7 +2117,8 @@
           paragraphs[i].textContent.indexOf('лежать без сна по ночам') !== -1 ||
           paragraphs[i].textContent.indexOf('ležet v noci vzhůru') !== -1 ||
           paragraphs[i].textContent.indexOf('夜、眠れずに横たわり') !== -1 ||
-          paragraphs[i].textContent.indexOf('밤에 깨어 누운 채') !== -1) {
+          paragraphs[i].textContent.indexOf('밤에 깨어 누운 채') !== -1 ||
+          paragraphs[i].textContent.indexOf('रात में जागते पड़े रहना') !== -1) {
         return paragraphs[i];
       }
     }
@@ -1861,7 +2134,8 @@
           headings[i].textContent.indexOf('Почему существует этот сайт') !== -1 ||
           headings[i].textContent.indexOf('Proč tento web existuje') !== -1 ||
           headings[i].textContent.indexOf('このサイトを作った理由') !== -1 ||
-          headings[i].textContent.indexOf('이 사이트가 존재하는 이유') !== -1) {
+          headings[i].textContent.indexOf('이 사이트가 존재하는 이유') !== -1 ||
+          headings[i].textContent.indexOf('यह वेबसाइट क्यों है') !== -1) {
         return headings[i];
       }
     }
@@ -1915,7 +2189,10 @@
     '/ja/index.html': true,
     '/ko': true,
     '/ko/': true,
-    '/ko/index.html': true
+    '/ko/index.html': true,
+    '/hi': true,
+    '/hi/': true,
+    '/hi/index.html': true
   };
   var isHomepage = Boolean(homepagePaths[pathname]);
 

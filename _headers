@@ -35,3 +35,6 @@
 
 /ja/*
   X-Robots-Tag: noindex, follow
+
+/hi/*
+  X-Robots-Tag: noindex, follow
