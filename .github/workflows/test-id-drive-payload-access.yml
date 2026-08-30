@@ -1,0 +1,27 @@
+name: Test Indonesian Drive payload access
+
+on:
+  push:
+    branches:
+      - id-safe-publish-20260831
+    paths:
+      - .github/workflows/test-id-drive-payload-access.yml
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Test exact Drive archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet gdown
+          file_id='15HvWYaiv75cwz2LHHIfpgHPbhKAw7UQ1'
+          gdown "https://drive.google.com/uc?id=${file_id}" -O /tmp/id-final.zip
+          echo '73c239ccd66e09fe9006695361a5d497f87e2476b6a8739d0a80524f991b3e98  /tmp/id-final.zip' | sha256sum --check --strict
+          unzip -t /tmp/id-final.zip >/dev/null
+          echo 'DRIVE_PAYLOAD_ACCESS_PASS'
