@@ -1,0 +1,99 @@
+name: Publish Indonesian core pages
+
+on:
+  push:
+    branches:
+      - id-payload-deploy-20260830
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out deployment payload
+        uses: actions/checkout@v4
+        with:
+          path: payload
+
+      - name: Reconstruct and verify Indonesian page archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat payload/.id-deploy/chunk-* | base64 --decode > /tmp/idpages.tar.bz2
+          echo "24baae797af364dbe01b5598b2c1620bd59aece9d2b422a27f3844823262f70f  /tmp/idpages.tar.bz2" | sha256sum --check -
+
+      - name: Check out latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          path: site
+
+      - name: Apply only the eight Indonesian pages and push safely
+        shell: bash
+        working-directory: site
+        run: |
+          set -euo pipefail
+
+          targets=(
+            id/index.html
+            id/tinnitus-sembuh-kisah-saya.html
+            id/kisah-tinnitus-saya-bagian-1.html
+            id/kisah-tinnitus-saya-bagian-2.html
+            id/tinnitus-akibat-kebisingan.html
+            id/tinnitus-akibat-stres.html
+            id/tinnitus-akibat-obat-dan-zat-beracun.html
+            id/pendekatan-saya.html
+          )
+
+          check_id_scope() {
+            test -f id/index.html
+            test "$(git hash-object id/index.html)" = "eb639682b964462406bf5cbae9231ee232935df6"
+            unexpected="$(find id -maxdepth 1 -type f ! -name index.html -printf '%f\n' | sort || true)"
+            test -z "$unexpected"
+          }
+
+          apply_payload() {
+            tar -xjf /tmp/idpages.tar.bz2
+            echo "97ff2000450defb95850b3c30205cfee74216141a21b3812e93298310b34a2e5  id/index.html" | sha256sum --check -
+            echo "bc932fabf7160876b66bb40ea61e7fd2bcd6a8103bd6f19c45309a543770da48  id/tinnitus-sembuh-kisah-saya.html" | sha256sum --check -
+            echo "e649cefb4ab5dae4b8e26442e53e9b8a3d8ebe501ca751f24c258bb9405aa261  id/kisah-tinnitus-saya-bagian-1.html" | sha256sum --check -
+            echo "22ea33aa8717a01bc1bd2d5bd85ea5b4c106815ebebc06906ae1c1f4190c8c65  id/kisah-tinnitus-saya-bagian-2.html" | sha256sum --check -
+            echo "4d06771b6c19b4a220a3e50d11dab72e599e91a1349e1dda3418bdac95b2886b  id/tinnitus-akibat-kebisingan.html" | sha256sum --check -
+            echo "58b8201279e19c544939baac8b23edf535bcee4abcac34c6310ce4199342db6d  id/tinnitus-akibat-stres.html" | sha256sum --check -
+            echo "d198994395fefac0f76ff810637b6aa45d9927c99471950c7c665d6e87dd78c7  id/tinnitus-akibat-obat-dan-zat-beracun.html" | sha256sum --check -
+            echo "72420e903cffb11d2acbe07632c7497ba7b90d4b3db24390f03589530bbcb61c  id/pendekatan-saya.html" | sha256sum --check -
+            grep -q '<html lang="id"' "${targets[@]}"
+            grep -q 'noindex, follow' "${targets[@]}"
+          }
+
+          git config user.name "dustin5mueller87-stack"
+          git config user.email "dustin5.mueller87@gmail.com"
+
+          for attempt in 1 2 3 4; do
+            git fetch origin main
+            latest="$(git rev-parse origin/main)"
+            git reset --hard "$latest"
+
+            check_id_scope
+            apply_payload
+
+            git add -- "${targets[@]}"
+            git diff --cached --check
+
+            staged="$(git diff --cached --name-only | sort)"
+            expected="$(printf '%s\n' "${targets[@]}" | sort)"
+            test "$staged" = "$expected"
+
+            git commit -m "Publish Indonesian core pages for review"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+
+            echo "Main moved during publish attempt $attempt; retrying safely." >&2
+          done
+
+          echo "Could not publish without a race after four attempts." >&2
+          exit 32
