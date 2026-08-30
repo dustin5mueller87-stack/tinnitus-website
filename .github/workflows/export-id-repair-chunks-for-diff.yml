@@ -28,4 +28,5 @@ jobs:
           name: id-repair-chunks-v2-byte-diff
           path: .id-repair-payload
           if-no-files-found: error
+          include-hidden-files: true
           retention-days: 1
