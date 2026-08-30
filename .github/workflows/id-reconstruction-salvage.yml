@@ -1,0 +1,106 @@
+name: Export current main and salvage old Indonesian payload
+
+on:
+  push:
+    branches:
+      - id-reconstruction-salvage-20260830
+
+permissions:
+  contents: read
+
+jobs:
+  salvage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out current production main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: current-main
+          fetch-depth: 1
+
+      - name: Check out historical payload branch
+        uses: actions/checkout@v4
+        with:
+          ref: id-payload-check
+          path: old-payload
+          fetch-depth: 1
+
+      - name: Prepare exact current-main snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/current-main-export
+          rsync -a --exclude='.git' current-main/ /tmp/current-main-export/
+          git -C current-main rev-parse HEAD > /tmp/current-main-export/SOURCE_COMMIT.txt
+
+      - name: Recover every readable byte from truncated payload
+        shell: bash
+        run: |
+          set -u
+          mkdir -p /tmp/id-salvage
+          python - <<'PY'
+          from pathlib import Path
+          import base64, hashlib, json, re, zlib
+
+          src = Path('old-payload/id/_payload')
+          chunks = sorted(src.glob('all-id-pages-*.txt'))
+          joined = ''.join(p.read_text(encoding='utf-8').strip() for p in chunks)
+          raw = base64.b64decode(joined + '=' * ((4 - len(joined) % 4) % 4), validate=False)
+          outdir = Path('/tmp/id-salvage')
+          outdir.mkdir(parents=True, exist_ok=True)
+          (outdir / 'truncated-payload.gz').write_bytes(raw)
+
+          decoder = zlib.decompressobj(16 + zlib.MAX_WBITS)
+          recovered = b''
+          error = None
+          try:
+              recovered += decoder.decompress(raw)
+              recovered += decoder.flush()
+          except Exception as exc:
+              error = repr(exc)
+              try:
+                  recovered += decoder.unconsumed_tail
+              except Exception:
+                  pass
+          (outdir / 'recovered-prefix.bin').write_bytes(recovered)
+          try:
+              text = recovered.decode('utf-8')
+          except UnicodeDecodeError:
+              text = recovered.decode('utf-8', errors='replace')
+          (outdir / 'recovered-prefix.txt').write_text(text, encoding='utf-8')
+
+          route_hits = sorted(set(re.findall(r'(?:id/)?[A-Za-z0-9_-]+\.html', text)))
+          report = {
+              'chunks': [p.name for p in chunks],
+              'base64_chars': len(joined),
+              'compressed_bytes': len(raw),
+              'recovered_bytes': len(recovered),
+              'compressed_sha256': hashlib.sha256(raw).hexdigest(),
+              'recovered_sha256': hashlib.sha256(recovered).hexdigest(),
+              'decompression_error': error,
+              'html_filename_hits': route_hits,
+              'starts_with': recovered[:200].decode('utf-8', errors='replace'),
+              'ends_with': recovered[-200:].decode('utf-8', errors='replace'),
+          }
+          (outdir / 'SALVAGE_REPORT.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
+          print(json.dumps(report, ensure_ascii=False, indent=2))
+          PY
+          file /tmp/id-salvage/* || true
+          wc -c /tmp/id-salvage/* || true
+
+      - name: Upload current main snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: tinnitus-current-main-for-id-reconstruction
+          path: /tmp/current-main-export
+          include-hidden-files: true
+          retention-days: 2
+
+      - name: Upload payload salvage
+        uses: actions/upload-artifact@v4
+        with:
+          name: indonesian-old-payload-salvage
+          path: /tmp/id-salvage
+          retention-days: 2
