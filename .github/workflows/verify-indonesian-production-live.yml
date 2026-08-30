@@ -1,0 +1,149 @@
+name: Verify Indonesian production live
+
+on:
+  push:
+    branches:
+      - id-live-verification-20260830
+    paths:
+      - .github/workflows/verify-indonesian-production-live.yml
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out verification branch
+        uses: actions/checkout@v4
+        with:
+          ref: id-live-verification-20260830
+          fetch-depth: 0
+
+      - name: Refresh exact current main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --quiet
+          git reset --hard origin/main
+
+      - name: Validate repository state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          expected = {
+              'index.html', 'tinnitus-sembuh-kisah-saya.html',
+              'kisah-tinnitus-saya-bagian-1.html', 'kisah-tinnitus-saya-bagian-2.html',
+              'tinnitus-akibat-kebisingan.html', 'tinnitus-akibat-stres.html',
+              'tinnitus-akibat-obat-dan-zat-beracun.html', 'pendekatan-saya.html',
+              'produk.html', 'sumber-ilmiah.html', 'kisah-pengalaman.html',
+              'faq.html', 'kontak.html', 'informasi-hukum.html',
+              'kebijakan-privasi.html', '404.html'
+          }
+          actual = {p.name for p in Path('id').glob('*.html')}
+          if actual != expected:
+              raise SystemExit(f'Page set mismatch: missing={sorted(expected-actual)} extra={sorted(actual-expected)}')
+          js = Path('site.js').read_text(encoding='utf-8')
+          for needle in (
+              "'/produkte': '/id/produk'",
+              "'/wissenschaftliche-quellen': '/id/sumber-ilmiah'",
+              "'/erfahrungsberichte': '/id/kisah-pengalaman'",
+              "'/faq': '/id/faq'",
+              "'/kontakt': '/id/kontak'",
+              "'/impressum': '/id/informasi-hukum'",
+              "'/datenschutz': '/id/kebijakan-privasi'",
+          ):
+              if needle not in js:
+                  raise SystemExit(f'Missing site.js route: {needle}')
+          sitemap = Path('sitemap.xml').read_text(encoding='utf-8')
+          for route in ('/id/produk', '/id/sumber-ilmiah'):
+              if sitemap.count('https://tinnitusbioregulation.com' + route) != 1:
+                  raise SystemExit(f'Sitemap route absent or duplicated: {route}')
+          for image in ('img/quellen-laser-atp-id.webp', 'img/quellen-naehrstoffe-atp-id.webp'):
+              p = Path(image)
+              if not p.is_file() or p.stat().st_size < 10000:
+                  raise SystemExit(f'Missing localized image: {image}')
+          print('REPOSITORY_STATE_PASS')
+          PY
+          node --check site.js
+
+      - name: Verify Netlify production pages and assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://tinnitusbioregulation.com'
+          routes=(
+            '/id/'
+            '/id/produk'
+            '/id/sumber-ilmiah'
+            '/id/kisah-pengalaman'
+            '/id/faq'
+            '/id/kontak'
+            '/id/informasi-hukum'
+            '/id/kebijakan-privasi'
+          )
+          passed=0
+          for attempt in $(seq 1 36); do
+            passed=1
+            rm -rf /tmp/id-live
+            mkdir -p /tmp/id-live
+            for route in "${routes[@]}"; do
+              safe="$(printf '%s' "$route" | tr '/-' '__')"
+              code="$(curl --silent --show-error --location --output "/tmp/id-live/${safe}.html" --write-out '%{http_code}' "${base}${route}")"
+              if [ "$code" != '200' ]; then
+                echo "Attempt $attempt: ${route} returned ${code}"
+                passed=0
+                break
+              fi
+              grep -Eqi '<html[^>]+lang=["'"']id' "/tmp/id-live/${safe}.html" || { echo "Attempt $attempt: ${route} lacks lang=id"; passed=0; break; }
+            done
+            if [ "$passed" -eq 1 ]; then
+              home='/tmp/id-live/_id_.html'
+              sources='/tmp/id-live/_id_sumber_ilmiah.html'
+              grep -q 'href="/id/produk"' "$home" || passed=0
+              grep -q 'href="/id/sumber-ilmiah"' "$home" || passed=0
+              grep -q 'href="/id/kisah-pengalaman"' "$home" || passed=0
+              grep -q 'href="/id/kontak"' "$home" || passed=0
+              ! grep -q 'data-language-fallback="de"' "$home" || passed=0
+              grep -Eqi 'Sumber|ilmiah|Penelitian' "$sources" || passed=0
+            fi
+            if [ "$passed" -eq 1 ]; then
+              break
+            fi
+            sleep 5
+          done
+          test "$passed" -eq 1
+
+          for asset in '/img/quellen-laser-atp-id.webp' '/img/quellen-naehrstoffe-atp-id.webp'; do
+            headers="$(mktemp)"
+            body="$(mktemp)"
+            code="$(curl --silent --show-error --location --dump-header "$headers" --output "$body" --write-out '%{http_code}' "${base}${asset}")"
+            test "$code" = '200'
+            grep -Eqi '^content-type:[[:space:]]*image/(webp|octet-stream)' "$headers"
+            test "$(wc -c < "$body")" -gt 10000
+          done
+          echo 'PRODUCTION_LIVE_PASS'
+
+      - name: Write independent verification marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          cat > ID_LIVE_VERIFICATION.txt <<EOF
+          Indonesian production verification: PASS
+          Main commit: ${sha}
+          Verified UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          Repository pages: 16
+          Live routes checked: 8
+          Localized images checked: 2
+          Navigation fallback check: PASS
+          Sitemap check: PASS
+          EOF
+          git config user.name 'OpenAI Verification Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add ID_LIVE_VERIFICATION.txt
+          git commit -m 'Record Indonesian production verification'
+          git push --force origin HEAD:id-live-verification-20260830
