@@ -1,0 +1,478 @@
+German source images for Spanish short biography audit
+Method: ImageMagick identify plus Tesseract deu+eng, PSM 6 and 11
+
+============================================================
+FILE: img/kurz-hero.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=827 COLORS=22724 FILESIZE=73604B
+
+OCR PSM 6:
+BIOGRAFIE |
+a |
+\\
+NER |
+(e. \
+\ ai | a
+Der Moment, in dem alles kippte. a } 2 \ 2 a
+4 4
+= yt i
+
+Ein Clubbesuch. Eine Nacht. 7 fy )
+
+ee ¥ ae
+‘Am Morgen danach: Druck auf den Ohren, y = = R = 0743
+Schwindel, ein Linksdrall. , Ss Ars
+Und dann, an Tag 3, dieses Geräusch. N f y = —_
+Ein Pfeifen. Ein Rauschen. |
+Aus dem Nichts.
+Aus mir. ]
+So begann meine Tinnitus-Hélle Rt
+Und ich ahnte nicht, SZ
+wie tief der Abgrund wirklich ist 2 8 = i
+
+OCR PSM 11:
+BIOGRAFIE
+
+a
+
+MEINE ERSTE
+
+N
+
+ut
+
+GESCHICHTE
+
+N 7
+
+|
+
+seit
+
+Der Moment, in dem alles kippte.
+
+PL
+
+Ein Clubbesuch. Eine Nacht.
+
+Am Morgen danach: Druck auf den Ohren,
+
+Q
+
+a=
+
+0743
+
+Schwindel, ein Linksdrall.
+
+Und dann, an Tag 3, dieses Geräusch.
+
+Ein Pfeifen. Ein Rauschen.
+
+Aus dem Nichts,
+
+Aus mir.
+
+So begann meine Tinnitus-Hölle,
+
+Und ich ahnte nicht,
+
+wie tief der Abgrund wirklich ist
+
+
+============================================================
+FILE: img/kurz-mullbinden-stille.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=930 COLORS=37278 FILESIZE=41428B
+
+OCR PSM 6:
+=
+J 1
+" \ | 4
+BR \ .
+> i & | j
+Or
+a V |
+= a | |
+. j j
+\ N
+\' | w yt
+. 2 ae
+a me
+: 2 . N Ne
+
+OCR PSM 11:
+—
+
+N
+
+NN
+
+ee :
+
+)
+
+u
+
+\
+
+= f
+
+NN
+
+Za
+
+
+============================================================
+FILE: img/kurz-erste-heilung.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=827 COLORS=31365 FILESIZE=77102B
+
+OCR PSM 6:
+>=
+>
+| an ;
+( tus 4 wi \
+a ne \
+TINNITUS} ) head my oo | Ik |
+LERNEN SIE, Rs, Ge | |
+DAMIT ZU an N x 4 |
+LEBEN. I \ :
+| \y .
+- Ii | 7) E
+TONAUDIONETRE ii en \ IV | | | a |
+Pee |
+in, | Hf all
+= ee 8 S :
+\ J : DE 3
+| > ; Oe
+4
+
+OCR PSM 11:
+_—
+
+TINNITUsp
+
+LERNEN SIE,
+
+DAMIT zu
+
+LEBEN,
+
+}
+
+ERBEN.
+
+li |
+
+Fidei del
+
+yt
+
+An
+
+“
+
+,*
+
+
+============================================================
+FILE: img/kurz-haertetest.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=827 COLORS=16810 FILESIZE=35822B
+
+OCR PSM 6:
+ra ; g a j a I |
+va “YQ 4 : _ ae
+[N \ = = i a
+\ ij a
+" % ) =.
+a BIN: EEE |
+Ir! ©, as |
+run 2 2 > SR
+@” © tot" — > ee wi. aa f
+ee rect
+. Br x — > zz N j =
+
+OCR PSM 11:
+a
+
+ba
+
+\
+
+——
+
+=.
+
+=>
+
+Ru
+
+®
+
+aurı
+
+a8
+
+“Ex
+
+a
+
+S
+
+=
+
+>.
+
+OE ee’
+
+5!
+
+E.,
+
+@ :X
+
+
+============================================================
+FILE: img/kurz-cfs-absturz.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=827 COLORS=10812 FILESIZE=51438B
+
+OCR PSM 6:
+}
+a /
+A ¥ —— aes
+3 = y | ' u
+i
+rer - run
+Br = SLT. rr u = = >
+ee re ar \ 2 N . : > a
+Sie 37 Dem Se.
+E = GO j \ : Ss -
+” > - Fees = >
+> &
+| @&. “ .
+
+OCR PSM 11:
+i
+
+| —
+
+F—
+
+nn
+
+En
+
+Br
+
+EI
+
+—,
+
+eS
+
+<i
+
+=>
+
+Tim
+
++
+
+=
+
+y =
+
+=
+
+= &
+
+
+============================================================
+FILE: img/kurz-provokation.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=827 COLORS=95260 FILESIZE=81064B
+
+OCR PSM 6:
+Br N
+ar /
+t er
+; 7 v\ » ' Ya
+ey ty BRAT:
+ayy ya fh
+s Gon
+ax + "N - hen % i
+to’ r Er“
+EB bs cr
+cs ge phe N
+“ihe a
+u \ ! 4 i ae 5
+ene! ay '
+SS > & uf sos \ ~
+. ee] au ee
+SNES ı >. — _ SF
+is a4 re : en =
+vey, RN a 3
++ \ i al 3.
+“A x
+2.4 Me ; g > ~
+
+OCR PSM 11:
+Br
+
+4p
+
+4%
+
++.
+
+we
+
++.
+
+a
+
+K
+
+78
+
+w
+
+eae
+
+"N
+
+= ©
+
+ite |
+
+M
+
+ge
+
+=
+
+tt
+
+*
+
+I
+
+ace
+
+—
+
+.
+
+bo
+
+En =
+
+>
+
+nn
+
+IN
+
+an
+
+in
+
+vi
+
+TE Fee
+
+
+============================================================
+FILE: img/og-tinnitus-verstehen.webp
+FORMAT=WEBP WIDTH=1200 HEIGHT=630 COLORS=72629 FILESIZE=86252B
+
+OCR PSM 6:
+i
+\ VHS oe
+‘ ji { MEIN WEG.
+f A I \ MEIN WISSEN.
+# a « MEINE ERFAHRUNG.
+VERSTEHEN. | =
+. le, N
+nee rr PR a
+ny He 3 - his KR
+Die Hintergründe. Mein Modell. % EN A Te
+Wissen und Erfahrungen aus erster Hand. J, : ee)
+I A a in.
+Sf a A
+iby Og = —. FELL ) Wh
+FR f |
+OA Pe INN
+OEL. aaa),
+VERSTEHEN EINORDNEN WISSEN ORIENTIEREN
+‘Was im Ohr und Mögliche Auslöser Hintergrund, Studien Perspektiven und
+Gehirn passiert und Zusammenhänge | und Erfahrungsberichte | praktische Ansätze.
+@ EIN ORT FUR WISSEN, AUSTAUSCH UND ORIENTIERUNG.
+
+OCR PSM 11:
+MEIN WEG.
+
+MEIN WISSEN.
+
+TINNITUS
+
+MEINE ERFAHRUNG.
+
+E
+
+BB
+
+VERSTEHEN.
+
+Die Hintergründe. Mein Modell.
+
+Wissen und Erfahrungen aus erster Hand.
+
+—
+
+N
+
+Lf,
+
+Kal
+
+JUN
+
+i
+
+tL)
+
+f
+
+Q
+
+LUI
+
+VERSTEHEN
+
+EINORDNEN
+
+WISSEN
+
+ORIENTIEREN
+
+Was im Ohr und
+
+Mögliche Auslöser
+
+Hintergrund, Studien
+
+Perspektiven und
+
+Gehirn passiert
+
+und Zusammenhänge
+
+und Erfahrungsberichte
+
+praktische Ansätze
+
+EIN ORT FÜR WISSEN, AUST,
+
+SCH
+
+D ORIENTIERUNG
+
+
