@@ -25,8 +25,29 @@ jobs:
           python -m pip install --quiet 'Pillow==12.3.0' 'opencv-python-headless==4.13.0.92'
           sudo apt-get update -qq
           sudo apt-get install -y -qq fonts-noto-core fonts-comic-neue
-      - name: Apply audited corrections
-        run: python .audit-tmp/es-bio1-apply.py
+      - name: Apply audited corrections with diagnostic capture
+        shell: bash
+        run: |
+          set +e
+          python .audit-tmp/es-bio1-apply.py > .audit-tmp/run.log 2>&1
+          status=$?
+          printf '%s\n' "$status" > .audit-tmp/run.status
+          cat .audit-tmp/run.log
+          exit 0
+      - name: Upload diagnostic record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: es-biografie-teil-1-diagnostic
+          path: |
+            .audit-tmp/run.log
+            .audit-tmp/run.status
+            .audit-tmp/output-hashes.txt
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Require successful audited correction
+        run: |
+          test "$(cat .audit-tmp/run.status)" = "0"
       - name: Upload exact corrected files
         uses: actions/upload-artifact@v4
         with:
