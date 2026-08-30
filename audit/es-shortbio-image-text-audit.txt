@@ -1,0 +1,499 @@
+Spanish short biography image text audit
+Branch: review/es-kurzbiografie-2026-08-30
+Method: ImageMagick identify plus Tesseract spa+eng, PSM 6 and 11
+OCR is a fallback check and may miss stylized text.
+
+============================================================
+FILE: img/es-kurz-hero.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=827 COLORS=20043 FILESIZE=52990B
+
+OCR PSM 6:
+BIOGRAFÍA |
+ul
+|
+A NA
+j 5
+y a || =
+i 7 TT
+a LR
+
+El momento en que todo se torció. ji \ ———
+Una visita al club. Una noche. hd > ME
+A la mañana siguiente: presión en los oídos, y - = Ha N45
+
+4 SS, Es yea
+mareo, desviación hacia la izquierda. / E ~ S <DY5 a
+
+: / y Ta
+Y entonces, al tercer día, aquel sonido.
+Un pitido. Un ruido.
+De la nada.
+De mí. J
+Así comenzó mi infierno de los acúfenos. pS 0 >
+Y no imaginaba é —
+hasta dónde llegaba realmente el abismo.
+7
+
+OCR PSM 11:
+BIOGRAFÍA
+
+wa
+
+MI PRIMERA
+
+¥
+
+ide?
+
+HISTORIA
+
+a
+
+a
+
+El momento en que todo se torció.
+
+PA
+
+>
+
+Una visita al club. Una noche.
+
+A la mañana siguiente: presión en los oídos,
+
+dy)
+
+=
+
+mareo, desviación hacia la izquierda.
+
+a NS .
+
+ES
+
+Y entonces, al tercer día, aquel sonido.
+
+Un pitido. Un ruido.
+
+De la nada.
+
+De mí.
+
+Así comenzó mi infierno de los acúfenos.
+
+Y no imaginaba
+
+hasta dónde llegaba realmente el abismo.
+
+
+============================================================
+FILE: img/kurz-mullbinden-stille.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=930 COLORS=37278 FILESIZE=41428B
+
+OCR PSM 6:
+E
+J 1
+Ñ Ñ | y
+A) .
+> E | j
+Or
+a |
+7 a | |
+. j l
+p bi
+V | 3 A!
+3 2 ,
+3 me
+o a . > pa
+
+OCR PSM 11:
+A
+
+y
+
+SN
+
+Y
+
+)
+
+y
+
+\
+
+—=!
+
+NN
+
+5
+
+
+============================================================
+FILE: img/es-kurz-erste-heilung.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=827 COLORS=31238 FILESIZE=59360B
+
+OCR PSM 6:
+= —
+A
+, PE Anny f PN
+tACUFENOs) y ACÚFENOS mn —= Y A
+APRENDA A DOOR ( a i
+VIVIR CON ‘scour RS ae | itl
+ELLOS. RUDOSE ODO A” | i RL
+= YA 1
+AUDIOMETRIA TONAL | [he oa pepe i I | ‘| :
+O | po : (| Y ) fe]
+i) sag ae W | .
+; vt vat ‘ tea
+io i : ;
+wel tal ie! iy | 4
+J Page Sor
+
+OCR PSM 11:
+PRUEBA
+
+¿ACÚFENOS)
+
+APRENDA A
+
+ACÚFENOS
+
+4
+
+VIVIR CON
+
+DOLOR
+
+SENSACIÓN Des
+
+(inne?
+
+rash)
+
+ELLOS,
+
+E
+
+MH
+
+RUDOSENEL ODO
+
+—
+
+YR
+
+AUDIOMETRIA TONAL.
+
+Ape
+
+54)
+
+|
+
+Wi
+
+Js
+
+
+============================================================
+FILE: img/es-kurz-haertetest.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=827 COLORS=16718 FILESIZE=27146B
+
+OCR PSM 6:
+a A ; —— =.
+o ME =
+% UN . >
+E> E 457) pee at =
+E f pon ES > —
+PN Sn aw OS = s ey
+> E We = - a) : ñ a E
+€ ~~ = . > IA F
+
+OCR PSM 11:
+LN
+
+A
+
+e
+
+>
+
+.
+
+=
+
+=
+
+Fst
+
+4
+
+a
+
+AST
+
+E “F4
+
+Y +
+
+‘=
+
+pe
+
+= EN
+
+= &
+
+Se
+
+be
+
+>
+
+l
+
+El
+
+Y
+
+E.,
+
+
+============================================================
+FILE: img/es-kurz-cfs-absturz.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=827 COLORS=10288 FILESIZE=41298B
+
+OCR PSM 6:
+| y y mL
+a 3 f i ae
+A <= y AAA
+AU O ES
+2» a
+E -_ EE <a » LE. A
+—_ =
+‘3 e Oy .
+
+OCR PSM 11:
+Y
+
+= 4
+
+BE
+
+—
+
+<=
+
+TS
+
+ES A
+
+J
+
+tae
+
+mu Y
+
+AS
+
+ee
+
+a
+
+A
+
+SS
+
+a.-
+
+
+============================================================
+FILE: img/kurz-provokation.webp
+FORMAT=WEBP WIDTH=1240 HEIGHT=827 COLORS=95260 FILESIZE=81064B
+
+OCR PSM 6:
+y S
+SÓN /
+t a
+; 7 sl Le " thing
+ey ty BRAT:
+ayy ya fh
+s Gon
+ra + wt ; Kon 1
+to’ r =a er
+ee bs La
+EN Re phe Ñ
+EOS A
+E ' { 4 Me ae E
+O ay '
+== > E ES sos \ mo”
+y a] He ee
+SNES L => >. — _ ==
+A re : ——— = a
+vey, NS 2S E
++ > A al yl
+“A ‘
+E A , é > a
+
+OCR PSM 11:
+>
+
+» MM
+
+ee
+
+..
+
+we
+
+E
+
+A
+
+$
+
+78
+
+w
+
+eae
+
+wt
+
+= ©
+
+ite |
+
+M
+
+ge
+
+KS
+
+tt
+
++
+
+ms
+
+UA
+
+==
+
+7
+
+bo
+
+$ =
+
+===
+
+a
+
+US
+
+yd
+
+—
+
+YY
+
+<> Rn
+
+
+============================================================
+FILE: img/es-og-comprender-acufenos.webp
+FORMAT=WEBP WIDTH=1200 HEIGHT=630 COLORS=73177 FILESIZE=442954B
+
+OCR PSM 6:
+a y
+Vf / a)
+COMPRENDER LOS + Ke oe
+¡BN \ MIS CONOCIMIENTOS.
+. Bi 4 00 y MUEXPERIENCIA.
+ACUFENOS. TN
+> > ey LS A M
+yO ) e ist 4 i ie na
+El contexto. Mi modelo. O ae met fy: a
+Conocimientos y experiencias de primera mano. ) nS NS oe y :
+Y } LR
+> SD: > gues
+ib. yh 2 a VE" ) Jl
+i Pa, eg Y i Bie ei WU
+: OTE eral HH} Wh Wire
+Q PAPA
+COMPRENDER SITUAR INFORMARSE ORIENTARSE
+é i Posibles
+Eo | desencadenantes Ceftestmenis”” | toques prác
+a | UN ESPACIO PARA INFORMARSE, COMPARTIR Y ORIENTARSE.
+
+OCR PSM 11:
+MICAMINO.
+
+COMPRENDER LOS
+
+MIS CONOCIMIENTOS.
+
+MI EXPERIENCIA.
+
+ACÚFENOS.
+
+es
+
+Nor
+
+SS
+
+El contexto. Mi modelo.
+
+«
+
+Conocimientos y experiencias de primera mano.
+
+aa
+
+MT)
+
+i
+
+|
+
+I
+
+E
+
+Et)
+
+=
+
+,
+
+COMPRENDER
+
+SITUAR
+
+INFORMARSE
+
+ORIENTARSE
+
+Qué ocurre en el oído
+
+Posibles
+
+Contexto, estudios
+
+Perspectivas y
+
+yel cerebro
+
+desencadenantes
+
+y testimonios
+
+enfoques prácticos
+
+y relaciones
+
+
+============================================================
+GERMAN TOKEN SCREEN
