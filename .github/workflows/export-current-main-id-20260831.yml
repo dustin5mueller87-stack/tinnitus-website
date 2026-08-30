@@ -1,0 +1,43 @@
+name: Export current main for Indonesian repair 2026-08-31
+
+on:
+  push:
+    branches:
+      - id-current-main-export-20260831
+    paths:
+      - .github/workflows/export-current-main-id-20260831.yml
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Record source commit
+        shell: bash
+        run: git rev-parse HEAD > SOURCE_COMMIT.txt
+
+      - name: Package exact repository snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar --exclude=.git -czf /tmp/tinnitus-main-export-20260831.tar.gz .
+          sha256sum /tmp/tinnitus-main-export-20260831.tar.gz > /tmp/SHA256SUMS.txt
+
+      - name: Upload exact main snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: tinnitus-main-export-20260831
+          path: |
+            /tmp/tinnitus-main-export-20260831.tar.gz
+            /tmp/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 2
