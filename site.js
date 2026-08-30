@@ -94,6 +94,66 @@
     });
   }
 
+  function ensureJapaneseLanguageOption() {
+    var japaneseRoutesByGermanPath = {
+      '/': '/ja/',
+      '/tinnitus-geheilt-erfahrungsbericht': '/ja/tinnitus-geheilt-erfahrungsbericht',
+      '/meine-geschichte-teil-1': '/ja/meine-geschichte-teil-1',
+      '/meine-geschichte-teil-2': '/ja/meine-geschichte-teil-2',
+      '/laermbedingter-tinnitus': '/ja/laermbedingter-tinnitus',
+      '/stressbedingter-tinnitus': '/ja/stressbedingter-tinnitus',
+      '/medikamente-gifte-tinnitus': '/ja/medikamente-gifte-tinnitus',
+      '/mein-loesungsansatz': '/ja/mein-loesungsansatz',
+      '/produkte': '/ja/produkte',
+      '/wissenschaftliche-quellen': '/ja/wissenschaftliche-quellen',
+      '/erfahrungsberichte': '/ja/erfahrungsberichte',
+      '/faq': '/ja/faq',
+      '/kontakt': '/ja/kontakt',
+      '/impressum': '/ja/impressum',
+      '/datenschutz': '/ja/datenschutz'
+    };
+
+    document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
+      if (menu.querySelector('a[hreflang="ja"]')) return;
+
+      var germanLink = menu.querySelector('a[hreflang="de"]');
+      if (!germanLink) return;
+
+      var germanPath = '/';
+      try {
+        germanPath = new URL(germanLink.getAttribute('href'), window.location.origin).pathname;
+        germanPath = germanPath.replace(/\/+$/, '') || '/';
+      } catch (error) {
+        return;
+      }
+
+      var japaneseRoute = japaneseRoutesByGermanPath[germanPath];
+      if (!japaneseRoute) return;
+
+      var japaneseLink = document.createElement('a');
+      japaneseLink.href = japaneseRoute;
+      japaneseLink.setAttribute('hreflang', 'ja');
+
+      if (document.documentElement.lang.toLowerCase().indexOf('ja') === 0) {
+        japaneseLink.classList.add('active');
+        japaneseLink.setAttribute('aria-current', 'page');
+      }
+
+      var languageCode = document.createElement('span');
+      languageCode.className = 'lang-code';
+      languageCode.textContent = 'JA';
+
+      var languageName = document.createElement('span');
+      languageName.className = 'lang-name';
+      languageName.setAttribute('lang', 'ja');
+      languageName.textContent = '日本語';
+
+      japaneseLink.appendChild(languageCode);
+      japaneseLink.appendChild(languageName);
+      menu.insertBefore(japaneseLink, menu.querySelector('a[hreflang="ko"], a[hreflang="id"]'));
+    });
+  }
+
   function ensureIndonesianLanguageOption() {
     var indonesianRoutesByGermanPath = {
       '/': '/id/',
@@ -148,6 +208,7 @@
   }
 
   function initHeaderControls() {
+    ensureJapaneseLanguageOption();
     ensureKoreanLanguageOption();
     ensureIndonesianLanguageOption();
 
