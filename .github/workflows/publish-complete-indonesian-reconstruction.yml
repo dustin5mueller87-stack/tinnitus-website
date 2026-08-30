@@ -1,0 +1,307 @@
+name: Publish complete Indonesian reconstruction safely
+
+on:
+  push:
+    branches:
+      - id-final-complete-repair-v2-20260830
+
+concurrency:
+  group: publish-complete-indonesian-reconstruction
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  validate-and-publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out payload branch
+        uses: actions/checkout@v4
+        with:
+          ref: id-final-complete-repair-v2-20260830
+          path: payload-branch
+          fetch-depth: 1
+
+      - name: Check out latest main with history
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: target
+          fetch-depth: 0
+
+      - name: Guard against concurrent edits to Indonesian publication paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected='5eadfad53a8a4d8c6944da7cb3560d47e66aff61'
+          current="$(git -C target rev-parse HEAD)"
+          echo "Expected base: $expected"
+          echo "Current main:  $current"
+          if [ "$current" != "$expected" ]; then
+            git -C target fetch origin main --quiet
+            changed="$(git -C target diff --name-only "$expected"..HEAD)"
+            printf '%s\n' "$changed"
+            if printf '%s\n' "$changed" | grep -Eq '^(id/|site\.js$|sitemap\.xml$|img/quellen-(laser-atp|naehrstoffe-atp)-id\.webp$)'; then
+              echo 'Concurrent changes touched Indonesian publication paths. Refusing to overwrite.' >&2
+              exit 41
+            fi
+          fi
+
+      - name: Download exact reconstructed release package
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet gdown
+          file_id='1lkloQ1LkNx8frO_1HkDphpDeahSNutyy'
+          rm -f /tmp/id-final.zip
+          if ! gdown "https://drive.google.com/uc?id=${file_id}" -O /tmp/id-final.zip; then
+            curl --fail --location --retry 5 --retry-all-errors \
+              "https://drive.usercontent.google.com/download?id=${file_id}&export=download&confirm=t" \
+              --output /tmp/id-final.zip
+          fi
+          test -s /tmp/id-final.zip
+          unzip -t /tmp/id-final.zip >/dev/null
+          rm -rf /tmp/id-final-package
+          mkdir -p /tmp/id-final-package
+          unzip -q /tmp/id-final.zip -d /tmp/id-final-package
+          sha256sum /tmp/id-final.zip
+
+      - name: Overlay only the reviewed Indonesian release files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import shutil, sys
+
+          unpack = Path('/tmp/id-final-package')
+          target = Path('target')
+          expected = {
+              'index.html',
+              'tinnitus-sembuh-kisah-saya.html',
+              'kisah-tinnitus-saya-bagian-1.html',
+              'kisah-tinnitus-saya-bagian-2.html',
+              'tinnitus-akibat-kebisingan.html',
+              'tinnitus-akibat-stres.html',
+              'tinnitus-akibat-obat-dan-zat-beracun.html',
+              'pendekatan-saya.html',
+              'produk.html',
+              'sumber-ilmiah.html',
+              'kisah-pengalaman.html',
+              'faq.html',
+              'kontak.html',
+              'informasi-hukum.html',
+              'kebijakan-privasi.html',
+              '404.html',
+          }
+
+          candidates = []
+          for p in unpack.rglob('id'):
+              if not p.is_dir():
+                  continue
+              names = {x.name for x in p.glob('*.html')}
+              if expected <= names:
+                  candidates.append(p)
+          if not candidates:
+              raise SystemExit('No complete reviewed Indonesian directory found in release package')
+          id_dir = sorted(candidates, key=lambda p: (len(list(p.glob('*.html'))), -len(p.parts)), reverse=True)[0]
+          root = id_dir.parent
+          print(f'Release root: {root}')
+          print(f'Indonesian directory: {id_dir}')
+
+          actual = {x.name for x in id_dir.glob('*.html')}
+          missing = sorted(expected - actual)
+          if missing:
+              raise SystemExit(f'Missing Indonesian pages: {missing}')
+
+          target_id = target / 'id'
+          target_id.mkdir(parents=True, exist_ok=True)
+          for name in sorted(expected):
+              shutil.copy2(id_dir / name, target_id / name)
+
+          def locate_unique(name, preferred_root):
+              preferred = preferred_root / name
+              if preferred.is_file():
+                  return preferred
+              matches = [p for p in unpack.rglob(name) if p.is_file()]
+              if len(matches) != 1:
+                  raise SystemExit(f'Expected one {name}, found {len(matches)}')
+              return matches[0]
+
+          shutil.copy2(locate_unique('site.js', root), target / 'site.js')
+          shutil.copy2(locate_unique('sitemap.xml', root), target / 'sitemap.xml')
+
+          out_img = target / 'img'
+          out_img.mkdir(parents=True, exist_ok=True)
+          for name in ('quellen-laser-atp-id.webp', 'quellen-naehrstoffe-atp-id.webp'):
+              shutil.copy2(locate_unique(name, root / 'img'), out_img / name)
+          PY
+
+      - name: Validate complete Indonesian publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet beautifulsoup4 pillow
+          node --check target/site.js
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlparse
+          from bs4 import BeautifulSoup
+          from PIL import Image
+          import html, json, re, sys
+
+          root = Path('target')
+          id_dir = root / 'id'
+          expected = {
+              'index.html',
+              'tinnitus-sembuh-kisah-saya.html',
+              'kisah-tinnitus-saya-bagian-1.html',
+              'kisah-tinnitus-saya-bagian-2.html',
+              'tinnitus-akibat-kebisingan.html',
+              'tinnitus-akibat-stres.html',
+              'tinnitus-akibat-obat-dan-zat-beracun.html',
+              'pendekatan-saya.html',
+              'produk.html',
+              'sumber-ilmiah.html',
+              'kisah-pengalaman.html',
+              'faq.html',
+              'kontak.html',
+              'informasi-hukum.html',
+              'kebijakan-privasi.html',
+              '404.html',
+          }
+          actual = {p.name for p in id_dir.glob('*.html')}
+          if actual != expected:
+              raise SystemExit(f'Indonesian page set mismatch. Missing={sorted(expected-actual)} Extra={sorted(actual-expected)}')
+
+          german_fallback_routes = {
+              '/produkte', '/wissenschaftliche-quellen', '/erfahrungsberichte',
+              '/kontakt', '/impressum', '/datenschutz'
+          }
+          local_routes = {
+              '/id/': 'index.html',
+              '/id/tinnitus-sembuh-kisah-saya': 'tinnitus-sembuh-kisah-saya.html',
+              '/id/kisah-tinnitus-saya-bagian-1': 'kisah-tinnitus-saya-bagian-1.html',
+              '/id/kisah-tinnitus-saya-bagian-2': 'kisah-tinnitus-saya-bagian-2.html',
+              '/id/tinnitus-akibat-kebisingan': 'tinnitus-akibat-kebisingan.html',
+              '/id/tinnitus-akibat-stres': 'tinnitus-akibat-stres.html',
+              '/id/tinnitus-akibat-obat-dan-zat-beracun': 'tinnitus-akibat-obat-dan-zat-beracun.html',
+              '/id/pendekatan-saya': 'pendekatan-saya.html',
+              '/id/produk': 'produk.html',
+              '/id/sumber-ilmiah': 'sumber-ilmiah.html',
+              '/id/kisah-pengalaman': 'kisah-pengalaman.html',
+              '/id/faq': 'faq.html',
+              '/id/kontak': 'kontak.html',
+              '/id/informasi-hukum': 'informasi-hukum.html',
+              '/id/kebijakan-privasi': 'kebijakan-privasi.html',
+          }
+
+          errors = []
+          external_sources = 0
+          for file in sorted(id_dir.glob('*.html')):
+              text = file.read_text(encoding='utf-8')
+              soup = BeautifulSoup(text, 'html.parser')
+              html_tag = soup.find('html')
+              if not html_tag or not str(html_tag.get('lang', '')).lower().startswith('id'):
+                  errors.append(f'{file.name}: missing lang=id')
+              if 'TRANSLATE_ME' in text or 'TODO_TRANSLATION' in text:
+                  errors.append(f'{file.name}: translation placeholder remains')
+              ids = [tag.get('id') for tag in soup.find_all(attrs={'id': True})]
+              if len(ids) != len(set(ids)):
+                  errors.append(f'{file.name}: duplicate HTML IDs')
+
+              if file.name != '404.html':
+                  canonical = soup.find('link', rel=lambda value: value and 'canonical' in value)
+                  href = canonical.get('href', '') if canonical else ''
+                  if not urlparse(href).path.startswith('/id'):
+                      errors.append(f'{file.name}: canonical is not Indonesian')
+                  robots = soup.find('meta', attrs={'name': re.compile(r'^robots$', re.I)})
+                  if robots and 'noindex' in robots.get('content', '').lower():
+                      errors.append(f'{file.name}: still marked noindex')
+
+              for block in soup.find_all('script', attrs={'type': 'application/ld+json'}):
+                  try:
+                      json.loads(html.unescape(block.get_text().strip()))
+                  except Exception as exc:
+                      errors.append(f'{file.name}: invalid JSON-LD: {exc}')
+
+              for a in soup.find_all('a', href=True):
+                  href = html.unescape(a.get('href', '')).strip()
+                  path = urlparse(href).path.rstrip('/') or '/'
+                  hreflang = str(a.get('hreflang', '')).lower()
+                  if path in german_fallback_routes and hreflang != 'de':
+                      errors.append(f'{file.name}: German fallback anchor remains: {href}')
+                  if href.startswith('/id/'):
+                      clean = urlparse(href).path.rstrip('/') or '/id/'
+                      if clean not in local_routes and not clean.startswith('/id/#'):
+                          errors.append(f'{file.name}: unknown Indonesian route: {href}')
+                  if file.name == 'sumber-ilmiah.html' and href.startswith(('http://', 'https://')):
+                      external_sources += 1
+
+              visible = soup.get_text(' ', strip=True)
+              if re.search(r'\bAnda\b', visible) and file.name != 'kisah-tinnitus-saya-bagian-1.html':
+                  errors.append(f'{file.name}: unexpected formal Anda form')
+
+          if external_sources < 50:
+              errors.append(f'sumber-ilmiah.html: only {external_sources} external source links')
+
+          site_js = (root / 'site.js').read_text(encoding='utf-8')
+          required_js = [
+              "'/produkte': '/id/produk'",
+              "'/wissenschaftliche-quellen': '/id/sumber-ilmiah'",
+              "'/erfahrungsberichte': '/id/kisah-pengalaman'",
+              "'/faq': '/id/faq'",
+              "'/kontakt': '/id/kontak'",
+              "'/impressum': '/id/informasi-hukum'",
+              "'/datenschutz': '/id/kebijakan-privasi'",
+              "pageLang.indexOf('id') === 0",
+              "hreflang', 'hi'",
+          ]
+          for needle in required_js:
+              if needle not in site_js:
+                  errors.append(f'site.js: missing {needle}')
+
+          sitemap = (root / 'sitemap.xml').read_text(encoding='utf-8')
+          for route in ('/id/produk', '/id/sumber-ilmiah'):
+              if sitemap.count(f'https://tinnitusbioregulation.com{route}') != 1:
+                  errors.append(f'sitemap.xml: {route} is absent or duplicated')
+
+          image_expectations = {
+              'quellen-laser-atp-id.webp': (1600, 1134),
+              'quellen-naehrstoffe-atp-id.webp': (1600, 1145),
+          }
+          for name, dimensions in image_expectations.items():
+              path = root / 'img' / name
+              if not path.is_file() or path.stat().st_size < 10000:
+                  errors.append(f'{name}: missing or unexpectedly small')
+                  continue
+              with Image.open(path) as image:
+                  if image.size != dimensions:
+                      errors.append(f'{name}: dimensions {image.size}, expected {dimensions}')
+
+          if errors:
+              print('\n'.join(f'ERROR: {e}' for e in errors))
+              raise SystemExit(f'Validation failed with {len(errors)} errors')
+          print(f'VALIDATION_PASS: 16 Indonesian pages; {external_sources} external source links; images and routing valid')
+          PY
+
+      - name: Commit only the reviewed Indonesian publication paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd target
+          git config user.name 'OpenAI Repair Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add id site.js sitemap.xml img/quellen-laser-atp-id.webp img/quellen-naehrstoffe-atp-id.webp
+          staged="$(git diff --cached --name-only)"
+          printf '%s\n' "$staged"
+          test -n "$staged"
+          if printf '%s\n' "$staged" | grep -Ev '^(id/[^/]+\.html|site\.js|sitemap\.xml|img/quellen-(laser-atp|naehrstoffe-atp)-id\.webp)$' | grep -q .; then
+            echo 'Unexpected staged path detected' >&2
+            exit 51
+          fi
+          git commit -m 'Complete Indonesian reconstruction and navigation'
+          git push origin HEAD:main
