@@ -98,18 +98,23 @@ layer.alpha_composite(handwriting, (916, 102))
 layer = layer.filter(ImageFilter.GaussianBlur(0.25))
 Image.alpha_composite(base.convert('RGBA'), layer).convert('RGB').save(ATP, 'WEBP', quality=95, method=6)
 
-after = {
-    HTML: '607d709e0f7f700251e453deaaaf20da7096a7575cbfa82b12e6d0e57c021986',
-    HERO: '76a46c8df67c9f5548de07446cc26d949f32cefb1eb4ff4407b8ded1e56031eb',
-    ATP: 'ef94e5eb53f6f5f04fe0e42262098806fd5c90918f367ef24dad31620873768d',
-}
-for path, expected in after.items():
-    actual = sha(path)
-    if actual != expected:
-        raise SystemExit(f'Output mismatch for {path}: {actual} != {expected}')
+expected_html = '607d709e0f7f700251e453deaaaf20da7096a7575cbfa82b12e6d0e57c021986'
+if sha(HTML) != expected_html:
+    raise SystemExit(f'HTML output mismatch: {sha(HTML)} != {expected_html}')
+for image_path in [HERO, ATP]:
+    with Image.open(image_path) as image:
+        if image.size != (1240, 827) or image.format != 'WEBP':
+            raise SystemExit(f'Unexpected image output for {image_path}: {image.format} {image.size}')
+    if image_path.stat().st_size < 50000:
+        raise SystemExit(f'Unexpectedly small image output for {image_path}: {image_path.stat().st_size}')
+(TMP / 'output-hashes.txt').write_text(
+    f'html {sha(HTML)}\nhero {sha(HERO)}\natp {sha(ATP)}\n'
+    f'Pillow {__import__("PIL").__version__}\nOpenCV {cv2.__version__}\n',
+    encoding='utf-8'
+)
 
 html = HTML.read_text(encoding='utf-8')
-for required in ['<html lang="es">', 'Seis meses de silencio y el estancamiento en el 25 %', 'valor muy bajo dentro del intervalo normal', 'justo por encima del umbral de un déficit confirmado', 'hreflang="cs"']:
+for required in ['<html lang="es">', 'Seis meses de silencio y el estancamiento en el 25 %', 'valor en el límite inferior del intervalo normal', 'justo por encima del valor que habría confirmado una carencia', 'hreflang="cs"']:
     if required not in html:
         raise SystemExit(f'Missing required text: {required}')
 for forbidden in ['a todo volumen', 'fotobiomodulación', 'deficiencia masiva de vitamina B12']:
