@@ -1,0 +1,130 @@
+name: Final Indonesian completion verification and cleanup
+
+on:
+  push:
+    branches:
+      - id-final-verification-cleanup-20260830
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-clean:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Verify complete repository and live Indonesian site
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlparse
+          import hashlib, html, json, re, subprocess, time
+
+          expected_de = {
+              '/', '/tinnitus-geheilt-erfahrungsbericht', '/meine-geschichte-teil-1',
+              '/meine-geschichte-teil-2', '/laermbedingter-tinnitus',
+              '/stressbedingter-tinnitus', '/medikamente-gifte-tinnitus',
+              '/mein-loesungsansatz', '/produkte', '/wissenschaftliche-quellen',
+              '/erfahrungsberichte', '/faq', '/kontakt', '/impressum', '/datenschutz'
+          }
+          files = sorted(Path('id').glob('*.html'))
+          if len(files) != 16 or not Path('id/404.html').is_file():
+              raise SystemExit(f'Indonesian repository incomplete: {len(files)} HTML pages')
+
+          def norm(v):
+              p=urlparse(html.unescape(v)).path or '/'
+              if p != '/':
+                  p=p.rstrip('/')
+                  if p.endswith('.html'): p=p[:-5]
+              return p or '/'
+
+          de_routes=set(); live_routes={}
+          for f in files:
+              text=f.read_text(encoding='utf-8')
+              if '<html lang="id"' not in text or not re.search(r'noindex,\s*follow',text,re.I):
+                  raise SystemExit(f'{f}: language/noindex failure')
+              if re.search(r'\bAnda\b',re.sub(r'<[^>]+>',' ',text)):
+                  raise SystemExit(f'{f}: Anda remains')
+              ids=re.findall(r'\bid=["\']([^"\']+)["\']',text,re.I)
+              if len(ids)!=len(set(ids)): raise SystemExit(f'{f}: duplicate IDs')
+              for b in re.findall(r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>',text,re.I|re.S):
+                  json.loads(html.unescape(b.strip()))
+              if f.name=='404.html': continue
+              de=re.search(r'<a\s+[^>]*href=["\']([^"\']+)["\'][^>]*hreflang=["\']de["\']',text,re.I)
+              if not de: de=re.search(r'<link\s+[^>]*hreflang=["\']de["\'][^>]*href=["\']([^"\']+)["\']',text,re.I)
+              can=re.search(r'<link\s+[^>]*rel=["\']canonical["\'][^>]*href=["\']([^"\']+)["\']',text,re.I)
+              if not de or not can: raise SystemExit(f'{f}: alternate/canonical missing')
+              de_routes.add(norm(de.group(1)))
+              route=urlparse(html.unescape(can.group(1))).path
+              if not route.startswith('/id'): raise SystemExit(f'{f}: bad canonical')
+              live_routes[route]=f
+          if de_routes != expected_de:
+              raise SystemExit(f'Route map incomplete: missing={sorted(expected_de-de_routes)} extra={sorted(de_routes-expected_de)}')
+
+          js=Path('site.js').read_text(encoding='utf-8')
+          if "pageLang.indexOf('id')" not in js:
+              raise SystemExit('Indonesian runtime labels missing from site.js')
+          for route in live_routes:
+              normalized=route.rstrip('/') or '/id'
+              if normalized not in js and route not in js:
+                  raise SystemExit(f'Switcher route missing from site.js: {route}')
+
+          tmp=Path('/tmp/id-final-live'); tmp.mkdir(exist_ok=True)
+          verified=False
+          for _ in range(30):
+              good=True
+              for route,f in live_routes.items():
+                  out=tmp/f.name
+                  r=subprocess.run(['curl','--fail','--location','--silent','--show-error','--output',str(out),f'https://tinnitusbioregulation.com{route}?final=1'])
+                  if r.returncode or hashlib.sha256(out.read_bytes()).digest()!=hashlib.sha256(f.read_bytes()).digest():
+                      good=False; break
+              if good:
+                  out=tmp/'site.js'
+                  r=subprocess.run(['curl','--fail','--location','--silent','--show-error','--output',str(out),'https://tinnitusbioregulation.com/site.js?final=1'])
+                  good=r.returncode==0 and hashlib.sha256(out.read_bytes()).digest()==hashlib.sha256(Path('site.js').read_bytes()).digest()
+              if good:
+                  out=tmp/'404.html'
+                  subprocess.run(['curl','--location','--silent','--show-error','--output',str(out),'https://tinnitusbioregulation.com/id/__final-missing-page__'],check=True)
+                  t=out.read_text(encoding='utf-8',errors='replace')
+                  good='<html lang="id"' in t and 'noindex' in t.lower()
+              if good:
+                  verified=True; break
+              time.sleep(5)
+          if not verified: raise SystemExit('Live Indonesian site is not fully synchronized')
+          print(f'FINAL PASS: 16 ID HTML pages, {len(live_routes)} canonical live pages, ID 404, site.js')
+          PY
+
+      - name: Delete only temporary branches created in this Indonesian completion session
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init /tmp/id-clean
+          cd /tmp/id-clean
+          git remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          for branch in \
+            id-remaining-export-20260830 \
+            id-upload-payload-20260830 \
+            id-remaining-deploy-20260830 \
+            id-remaining-deploy-v2-20260830 \
+            id-final-verification-cleanup-20260830 \
+            id-cleanup-remaining-20260830 \
+            id-release-asset-test \
+            id-release-asset-test-2 \
+            id-release-asset-test-3 \
+            id-release-asset-test-4 \
+            id-release-probe \
+            id-release-probe-2 \
+            id-release-probe-3 \
+            id-upload-payload-20260830; do
+              git push origin --delete "$branch" || true
+          done
