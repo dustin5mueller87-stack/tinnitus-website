@@ -1,0 +1,53 @@
+name: Apply audited Spanish biography part 1 corrections
+
+on:
+  push:
+    branches:
+      - review/es-biografie-teil-1-2026-08-30
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: review/es-biografie-teil-1-2026-08-30
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install exact dependencies
+        run: |
+          python -m pip install --quiet 'Pillow==12.3.0' 'opencv-python-headless==4.13.0.92'
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-core fonts-comic-neue
+      - name: Apply audited corrections
+        run: python .audit-tmp/es-bio1-apply.py
+      - name: Upload exact corrected files
+        uses: actions/upload-artifact@v4
+        with:
+          name: es-biografie-teil-1-corrected-exact
+          path: |
+            es/mi-historia-parte-1.html
+            img/es-hero-bio1.webp
+            img/es-atp-wilden-forschung.webp
+          if-no-files-found: error
+          retention-days: 7
+      - name: Commit only this page and its two corrected images
+        run: |
+          rm -rf .audit-tmp .github/workflows/es-bio1-apply-corrections.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          changed="$(git diff --cached --name-only | sort)"
+          expected="$(printf '%s\n' .audit-tmp/es-bio1-apply.py .audit-tmp/es-bio1-patch.part1 .audit-tmp/es-bio1-patch.part2 .audit-tmp/es-bio1-patch.part3 .audit-tmp/es-bio1-patch.part4 .github/workflows/es-bio1-apply-corrections.yml es/mi-historia-parte-1.html img/es-atp-wilden-forschung.webp img/es-hero-bio1.webp | sort)"
+          if [ "$changed" != "$expected" ]; then
+            printf 'Unexpected staged paths:\n%s\n' "$changed"
+            exit 1
+          fi
+          git commit -m "Correct audited Spanish biography part 1"
+          git push origin HEAD:review/es-biografie-teil-1-2026-08-30
