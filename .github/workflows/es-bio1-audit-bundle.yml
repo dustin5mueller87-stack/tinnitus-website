@@ -1,0 +1,215 @@
+name: Build Spanish biography part 1 audit bundle
+
+on:
+  push:
+    branches:
+      - review/es-biografie-teil-1-2026-08-30
+
+permissions:
+  contents: write
+
+jobs:
+  bundle:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out exact review branch
+        uses: actions/checkout@v4
+        with:
+          ref: review/es-biografie-teil-1-2026-08-30
+          fetch-depth: 0
+
+      - name: Install audit helpers
+        shell: bash
+        run: |
+          python -m pip install --quiet beautifulsoup4 lxml
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-deu tesseract-ocr-spa imagemagick
+
+      - name: Build single-page audit bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf audit_bundle
+          mkdir -p audit_bundle/images
+          cp meine-geschichte-teil-1.html audit_bundle/source_de.html
+          cp es/mi-historia-parte-1.html audit_bundle/target_es_before.html
+          cp site.css site.js audit_bundle/
+
+          python - <<'PY'
+          from __future__ import annotations
+          import csv, hashlib, json, os, re, shutil
+          from pathlib import Path
+          from bs4 import BeautifulSoup, NavigableString, Tag
+
+          root = Path('.')
+          out = Path('audit_bundle')
+          source_path = root / 'meine-geschichte-teil-1.html'
+          target_path = root / 'es/mi-historia-parte-1.html'
+
+          def sha256(path: Path) -> str:
+              h = hashlib.sha256()
+              with path.open('rb') as f:
+                  for chunk in iter(lambda: f.read(1024 * 1024), b''):
+                      h.update(chunk)
+              return h.hexdigest()
+
+          def clean(text: str) -> str:
+              return ' '.join(text.split())
+
+          def units(path: Path, lang: str):
+              html = path.read_text(encoding='utf-8')
+              soup = BeautifulSoup(html, 'lxml')
+              rows = []
+              ordinal = 0
+              def add(area, tag, key, value, attrs=None):
+                  nonlocal ordinal
+                  value = clean(value)
+                  if not value:
+                      return
+                  ordinal += 1
+                  rows.append({
+                      'ordinal': ordinal,
+                      'area': area,
+                      'tag': tag,
+                      'key': key,
+                      'text': value,
+                      'attrs': json.dumps(attrs or {}, ensure_ascii=False, sort_keys=True),
+                  })
+
+              add('head', 'html', 'lang', soup.html.get('lang','') if soup.html else '')
+              if soup.title: add('head','title','text',soup.title.get_text(' ', strip=True))
+              for meta in soup.find_all('meta'):
+                  key = meta.get('name') or meta.get('property') or meta.get('http-equiv')
+                  if key and meta.get('content'):
+                      add('head','meta',key,meta['content'])
+              for link in soup.find_all('link'):
+                  if link.get('rel') and ('canonical' in link.get('rel') or 'alternate' in link.get('rel')):
+                      add('head','link','/'.join(link.get('rel')),link.get('href',''), {'hreflang':link.get('hreflang','')})
+              for script in soup.find_all('script', attrs={'type':'application/ld+json'}):
+                  add('head','script','json-ld',script.string or script.get_text())
+
+              body = soup.body
+              if body:
+                  for node in body.find_all(['a','button','summary','div','span','h1','h2','h3','p','li','aside','footer'], recursive=True):
+                      # include editorial leaf-like units; skip containers that duplicate child text
+                      if node.name in {'div','span','aside','footer'} and node.find(['p','li','h1','h2','h3','a','button','summary'], recursive=False):
+                          continue
+                      text = clean(node.get_text(' ', strip=True))
+                      if text:
+                          attrs = {k: node.get(k) for k in ['id','class','href','aria-label','title','data-lightbox','lang'] if node.get(k) is not None}
+                          add('body', node.name, 'text', text, attrs)
+                      for attr in ['aria-label','title','alt','data-lightbox']:
+                          if node.get(attr):
+                              add('attribute', node.name, attr, node.get(attr), {'id':node.get('id',''),'src':node.get('src',''),'href':node.get('href','')})
+
+              # Extract every explicit runtime string pair in the Spanish localizer.
+              for script in soup.find_all('script'):
+                  txt = script.string or script.get_text() or ''
+                  if 'voiceflowText' in txt:
+                      for m in re.finditer(r"'([^'\\]*(?:\\.[^'\\]*)*)'\s*:\s*'([^'\\]*(?:\\.[^'\\]*)*)'", txt):
+                          add('runtime','script','voiceflow',m.group(2), {'source_key':m.group(1)})
+              return html, soup, rows
+
+          de_html, de_soup, de_rows = units(source_path, 'de')
+          es_html, es_soup, es_rows = units(target_path, 'es')
+
+          for name, rows in [('source_units.tsv',de_rows),('target_units.tsv',es_rows)]:
+              with (out/name).open('w',encoding='utf-8',newline='') as f:
+                  w=csv.DictWriter(f,fieldnames=['ordinal','area','tag','key','text','attrs'],delimiter='\t')
+                  w.writeheader(); w.writerows(rows)
+
+          with (out/'paired_units.tsv').open('w',encoding='utf-8',newline='') as f:
+              w=csv.writer(f,delimiter='\t')
+              w.writerow(['pair','de_ordinal','de_area','de_tag','source_de','es_ordinal','es_area','es_tag','target_es'])
+              count=max(len(de_rows),len(es_rows))
+              for i in range(count):
+                  d=de_rows[i] if i<len(de_rows) else {}
+                  e=es_rows[i] if i<len(es_rows) else {}
+                  w.writerow([i+1,d.get('ordinal',''),d.get('area',''),d.get('tag',''),d.get('text',''),e.get('ordinal',''),e.get('area',''),e.get('tag',''),e.get('text','')])
+
+          def image_refs(soup: BeautifulSoup, base: Path):
+              refs=[]
+              for img in soup.find_all('img'):
+                  src=img.get('src','')
+                  if src.startswith(('http://','https://','data:')): continue
+                  p=(base/src).resolve()
+                  try: rel=p.relative_to(root.resolve())
+                  except ValueError: continue
+                  refs.append({'src':src,'path':str(rel),'alt':img.get('alt','')})
+              return refs
+
+          images={'de':image_refs(de_soup,Path('.')),'es':image_refs(es_soup,Path('es'))}
+          copied=[]
+          for side, refs in images.items():
+              for ref in refs:
+                  p=root/ref['path']
+                  if p.exists():
+                      dest=out/'images'/side/ref['path'].replace('/','__')
+                      dest.parent.mkdir(parents=True,exist_ok=True)
+                      shutil.copy2(p,dest)
+                      ref['sha256']=sha256(p)
+                      ref['bytes']=p.stat().st_size
+                      ref['bundle_path']=str(dest.relative_to(out))
+                      copied.append(str(dest))
+                  else:
+                      ref['missing']=True
+
+          ids=[x.get('id') for x in es_soup.find_all(attrs={'id':True})]
+          dup_ids=sorted({x for x in ids if ids.count(x)>1})
+          anchors={x.get('id') for x in es_soup.find_all(attrs={'id':True})}
+          fragment_links=[a.get('href')[1:] for a in es_soup.find_all('a',href=True) if a.get('href','').startswith('#')]
+          missing_fragments=sorted(set(fragment_links)-anchors)
+
+          manifest={
+              'base_commit': os.environ.get('GITHUB_SHA'),
+              'source': {'path':str(source_path),'sha256':sha256(source_path),'bytes':source_path.stat().st_size,'unit_count':len(de_rows)},
+              'target': {'path':str(target_path),'sha256':sha256(target_path),'bytes':target_path.stat().st_size,'unit_count':len(es_rows)},
+              'images':images,
+              'duplicate_ids':dup_ids,
+              'missing_fragments':missing_fragments,
+              'html_lang': es_soup.html.get('lang') if es_soup.html else None,
+              'canonical': (es_soup.find('link',rel='canonical') or {}).get('href') if es_soup.find('link',rel='canonical') else None,
+              'title': es_soup.title.get_text(strip=True) if es_soup.title else None,
+              'meta_description': (es_soup.find('meta',attrs={'name':'description'}) or {}).get('content') if es_soup.find('meta',attrs={'name':'description'}) else None,
+              'hreflangs': [{'hreflang':x.get('hreflang'),'href':x.get('href')} for x in es_soup.find_all('link',rel='alternate')],
+          }
+          (out/'technical_inventory.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+          (out/'README.txt').write_text(
+              'Single-page audit bundle: German biography part 1 and Spanish biography part 1 only.\n'
+              f"Source units: {len(de_rows)}\nTarget units: {len(es_rows)}\n"
+              'The raw pairing is ordinal and must be adjudicated manually; it is not itself a translation verdict.\n',
+              encoding='utf-8')
+          PY
+
+          REPORT=audit_bundle/image_ocr.txt
+          : > "$REPORT"
+          find audit_bundle/images -type f -print0 | sort -z | while IFS= read -r -d '' f; do
+            printf '============================================================\nFILE: %s\n' "$f" >> "$REPORT"
+            identify -format 'FORMAT=%m WIDTH=%w HEIGHT=%h FILESIZE=%b\n' "$f" >> "$REPORT" 2>&1 || true
+            printf '\nOCR deu+spa+eng PSM 6:\n' >> "$REPORT"
+            tesseract "$f" stdout -l deu+spa+eng --psm 6 2>/dev/null >> "$REPORT" || true
+            printf '\nOCR deu+spa+eng PSM 11:\n' >> "$REPORT"
+            tesseract "$f" stdout -l deu+spa+eng --psm 11 2>/dev/null >> "$REPORT" || true
+            printf '\n\n' >> "$REPORT"
+          done
+
+          sha256sum audit_bundle/* audit_bundle/images/* 2>/dev/null | sort > audit_bundle/SHA256SUMS.txt || true
+
+      - name: Upload audit bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: es-biografie-teil-1-audit-input
+          path: audit_bundle
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Remove one-shot workflow from review branch
+        shell: bash
+        run: |
+          rm -f .github/workflows/es-bio1-audit-bundle.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/es-bio1-audit-bundle.yml
+          git commit -m "Remove one-shot Spanish biography audit workflow"
+          git push origin HEAD:review/es-biografie-teil-1-2026-08-30
