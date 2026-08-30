@@ -1,0 +1,1104 @@
+Focused OCR comparison for first-healing image
+
+============================================================
+GERMAN: img/kurz-erste-heilung.webp
+
+VARIANT gray, PSM 11:
+Nive c
+
+“J
+
+TINNITUS}
+
+hy N)
+
+NN
+
+LERNEN SI
+
+N
+
+N
+
+NE
+
+DAMIT zu
+
+LEBEN,
+
+er?
+
+j a
+
+Wwe)
+
+\
+
+> er
+
+HNO
+
+[
+
+TONAUDIOMETRIE
+
+He tee
+
+KR
+
++ Sage
+
+i]
+
+14
+
+gee
+
+if
+
+it]
+
+aye |
+
+hy
+
+A
+
+Wi
+
+Ben
+
+kop
+
+I,
+
+u
+
+“
+
+A
+
+RN
+
+N
+
+ea
+
+*
+
+r
+
+er
+
+a a BE
+
+rs.
+
+ae a
+
+et
+
+=
+
+VARIANT gray, PSM 12:
+Nive
+
+9
+
+TINNITUS}
+
+uf
+
+Y
+
+Nm
+
+¥)
+
+i\
+
+LERNEN SI
+
+N
+
+)
+
+ANGE
+
+DAMIT zu
+
+&
+
+LEBEN,
+
+er?
+
+j a
+
+Wwe)
+
+\
+
+>
+
+A
+
+Hi
+
+IN
+
+O
+
+TONAUDIOMETRIE
+
+He tee
+
+KR
+
++ Sage
+
+i]
+
+| |
+
+gee
+
+if
+
+chy @
+
+|
+
+A
+
+Ben
+
+kop
+
+|
+
+'
+
+u
+
+|
+
+\
+
+aT
+
+*
+
+\
+
+€
+
+P,
+
+*
+
+I
+
+Te
+
+‘o/
+
+-
+
+bef
+
+s*
+
+nd ow
+
+«%
+
+PA
+
+f
+
+c}
+
+Mn
+
+FED
+
+r
+
+1%
+
+'%
+
+4
+
+=
+
+VARIANT threshold, PSM 11:
+—
+
+TINNITUS
+
+r
+
+LERNEN sie
+
+DAMIT zu
+
+LEBEN.
+
+i
+
+ino
+
+were
+
+ONAUDIOMETRIE
+
+.
+
+; ange
+
+b
+
+= ame
+
+6
+
+tat
+
+fy
+
+pr
+
+d\
+
+«|
+
+fe
+
+VARIANT threshold, PSM 12:
+—
+
+TINNITUS
+
+r
+
+LERNEN sie
+
+DAMIT zu
+
+LEBEN.
+
+SE
+
+i
+
+HNO
+
+were
+
+ONAUDIOMETRIE
+
+.
+
+2 7E
+
+agi
+
+6
+
+|
+
+tat
+
+fy
+
+pr
+
+d\
+
+«|
+
+fe
+
+VARIANT normalize, PSM 11:
+Nor ©
+
+TINNITUS
+
+«2
+
+N
+
+7
+
+NWT
+
+f
+
+\\
+
+LERNEN SIE,
+
+>
+
+Yu
+
+N
+
+DAMIT zu
+
+WX
+
+OSs) es
+
+LEBEN
+
+I 2)
+
+IE
+
+er
+
+EFT
+
+4 VO)
+
+—
+
+TONAUDIOMETRIE
+
+EEE
+
+Ay ap. 7 hd
+
+abe
+
+if
+
+if
+
+ee
+
+le
+
+eh
+
+7
+
+RiTT |
+
+u
+
+AN
+
+ED
+
+oa
+
+LTM
+
+*
+
+r,
+
+4,
+
+Val
+
+EN
+
+.
+
+> h.
+
+— cs
+
+IE a= rt
+
+A
+
+VARIANT normalize, PSM 12:
+Nor ©
+
+TINNITUS
+
+«2
+
+N
+
+7
+
+NWT
+
+\\
+
+LERNEN SIE,
+
+>
+
+Yu
+
+N
+
+DAMIT zu
+
+WX
+
+J rn? =
+
+6
+
+en
+
+LEBEN,
+
+j v
+
+IE
+
+er
+
+EFT
+
+N
+
+VO
+
+TONAUDIE NEISSE
+
+EEE
+
+IA, Adele
+
+N
+
+Ly
+
+abe
+
+if
+
+ah)
+
+4
+
+le
+
+|
+
+7
+
+|
+
+,
+
+“ Be
+
+-
+
+|
+
+|
+
+ED
+
+>
+
+t
+
+“ 4
+
+“4
+
+¢
+
+Ky
+
+*
+
+ray
+
+*
+
+y P
+
+u
+
+-
+
+be
+
+,*
+
+C
+
++
+
+|
+
+f
+
+oF)
+
+KR
+
+7
+
+:
+
+=
+
+r
+
+1%
+
+_
+
+‘
+
+a
+
+A
+
+
+============================================================
+SPANISH: img/es-kurz-erste-heilung.webp
+
+VARIANT gray, PSM 11:
+> “
+
+¿ACUFENOS)
+
+PRUEBA
+
+"EN
+
+APRENDA A
+
+>
+
+ACÚFENOS
+
+A
+
+VIVIR CON
+
+DOLOR
+
+ELLOS,
+
+SENSACIÓN 0 toy
+
+4
+
+eE
+
+sai
+
+r
+
+Ll
+
+NSULTA
+
+ORL
+
+AUDIOMETRÍA TONAL
+
+111)
+
+)
+
+MP de A
+
+Ni)
+
+it [Es oeye
+
+. |
+
+y/'
+
+Ibid
+
+SR 3 4 |
+
+?
+
+A
+
+j
+
+4
+
+a
+
+4
+
+de
+
+Hen
+
+a |
+
+y
+
+ON
+
+1!
+
+ee
+
+i
+
+e
+
+Le
+
+i. 7,
+
+>
+
+ARS
+
+y. os
+
+We
+
+7.
+
+Ae
+
+VARIANT gray, PSM 12:
+> “
+
+¿ACUFENOS)
+
+PRUEBA
+
+ll
+
+AN
+
+APRENDA A
+
+>
+
+ACÚFENOS
+
+om
+
+A
+
+VIVIR CON
+
+DOLOR
+
+Pat
+
+ELLOS,
+
+SENSACIÓN 0 toy
+
+4
+
+sai
+
+Ll
+
+NSULTA
+
+ORL
+
+AUDIOMETRÍA cr
+
+)
+
+MP de A
+
+ME
+
++ O: Y
+
+Pe
+
+i]
+
+. |
+
+ays
+
+|
+
+AFA
+
+i
+
+y 4
+
+|
+
+He
+
+1%
+
+ee
+
+|
+
+|
+
+|
+
+WA
+
+e
+
+>
+
+Ye
+
+2
+
+>
+
+y
+
+x
+
+a
+
+A
+
+Y
+
+VARIANT threshold, PSM 11:
+¿ACÚFENOS)
+
+APRENDA A
+
+VIVIR CON
+
+As
+
+Y |
+
+ELLOS.
+
+SENSACIÓN Mena
+
+|
+
+RUIDOS BELO
+
+CONSULTA
+
+ORL
+
+||
+
+_RUDIOMETRIA TONAL
+
+<
+
+e 70 fe
+
+{2
+
+ape
+
+po]
+
+pi
+
+)
+
+a
+
+di
+
+a
+
+P
+
+/
+
+=
+
+jh
+
+VARIANT threshold, PSM 12:
+¿ACÚFENOS)
+
+APRENDA A
+
+VIVIR CON
+
+ELLOS.
+
+SENSACIÓN Mena
+
+=,
+
+|
+
+RUIDOS BELO
+
+CONSULTA
+
+ORL
+
+||
+
+_RUDIOMETRIA TONAL
+
+<
+
+an 11
+
+¿yr
+
+|
+
+ape
+
+y
+
+lis
+
+pi
+
+)
+
+a
+
+di
+
+a
+
+P
+
+/
+
+jh
+
+VARIANT normalize, PSM 11:
+PRUEBA
+
+¿ACUFENOS>
+
+APRENDA A
+
+W \
+
+VIVIR CON
+
+y)
+
+DOLOR
+
+SENSACIÓN ere,
+
+Se
+
+ELLOS
+
+4
+
+RUIDOS ENELODO
+
+« MSULIA
+
+ORL
+
+AUDIOMETRIA TONAL
+
+i]
+
+aw 4
+
+e A
+
+ES ese
+
+1 Pe del
+
+hh
+
+do
+
+MW
+
+HE N
+
+pm
+
+i]
+
+A]
+
+4
+
+’
+
+—_——
+
+y
+
+ON
+
+a
+
++ |
+
+1)
+
+WA
+
+e
+
+e
+
+>.
+
+es
+
+>
+
+*
+
+-
+
+y: a
+
+Y
+
+ANS
+
+—, Ey
+
+An e
+
+21
+
+Ko
+
+VARIANT normalize, PSM 12:
+a Y
+
+PRUEBA
+
+¿ACUFENOS>
+
+APRENDA A
+
+"SN
+
+y)
+
+A A
+
+‘
+
+VIVIR CON
+
+DOLOR
+
+SENSACIÓN ere,
+
+Se
+
+ELLOS
+
+4
+
+RUIDOS ENELODO
+
+« MSULIA
+
+ORL
+
+AUDIOMETRIA TONAL
+
+|
+
+i
+
+My
+
+/
+
+aw 4
+
+e A
+
+"E
+
++ pepa
+
+; |
+
+Il ee
+
+|
+
+Sain ae?
+
+zap mys
+
+i]
+
+Pe IN
+
+Mi
+
+MW
+
+HE N
+
+pm
+
+|
+
+|
+
+—_——
+
+y
+
+ON
+
+A
+
+| |
+
+e
+
+E
+
+Mi
+
+E
+
+>.
+
+A
+
+>
+
+y: a
+
+PE
+
+Be 2
+
+An a
+
+21
+
+pas
+
+'
+
+
