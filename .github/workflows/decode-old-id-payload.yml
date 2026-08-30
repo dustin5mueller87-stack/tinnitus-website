@@ -1,0 +1,37 @@
+name: Decode old Indonesian payload
+
+on:
+  push:
+    branches:
+      - id-decode-old-payload-20260830
+
+permissions:
+  contents: read
+
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out payload branch
+        uses: actions/checkout@v4
+        with:
+          ref: id-payload-check
+          fetch-depth: 1
+
+      - name: Decode and inspect
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/decoded
+          cat id/_payload/all-id-pages-*.txt | base64 -d | gzip -dc > /tmp/decoded/payload.bin
+          file /tmp/decoded/payload.bin
+          head -c 200 /tmp/decoded/payload.bin | xxd
+          cp /tmp/decoded/payload.bin /tmp/decoded/payload.txt
+          wc -c /tmp/decoded/payload.bin
+
+      - name: Upload decoded payload
+        uses: actions/upload-artifact@v4
+        with:
+          name: decoded-old-id-payload
+          path: /tmp/decoded
+          retention-days: 1
