@@ -1,0 +1,136 @@
+name: One-shot Spanish short biography correction
+
+on:
+  push:
+    branches:
+      - review/es-kurzbiografie-2026-08-30
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out review branch
+        uses: actions/checkout@v4
+        with:
+          ref: review/es-kurzbiografie-2026-08-30
+          fetch-depth: 0
+
+      - name: Apply audited local corrections and validate
+        shell: bash
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+          import json
+          import re
+          import subprocess
+          from pathlib import Path
+
+          path = Path('es/mi-historia-con-los-acufenos.html')
+          expected_blob = 'cec7da31140c99545095ad3d5f70d35a451a0234'
+          actual_blob = subprocess.check_output(['git', 'hash-object', str(path)], text=True).strip()
+          if actual_blob != expected_blob:
+              raise SystemExit(f'Source drift: expected {expected_blob}, found {actual_blob}')
+
+          text = path.read_text(encoding='utf-8')
+          replacements = [
+              (
+                  'el informe de ATP documenta un valor de 0,37 durante su etapa de SFC. Durante una fase separada con SFC y síntomas psicosomáticos',
+                  'el informe de ATP documenta un valor de 0,37 durante su etapa con síndrome de fatiga crónica (SFC). Durante una fase separada con SFC y síntomas psicosomáticos',
+              ),
+              (
+                  'escuché música a todo volumen para «distraerme»',
+                  'escuché música a un volumen alto para «distraerme»',
+              ),
+              (
+                  'Vegetariano desde los 15 años y con gastritis crónica: la fórmula perfecta para un déficit masivo de vitamina B12.',
+                  'Vegetariano desde los 15 años y con gastritis crónica: el escenario perfecto para sospechar un déficit importante de vitamina B12.',
+              ),
+              (
+                  'La combinación de una alimentación sin carne y un estómago enfermo era la fórmula perfecta para un déficit masivo de vitamina B12.',
+                  'La combinación de una alimentación sin carne y un estómago enfermo me hizo sospechar un déficit importante de vitamina B12.',
+              ),
+              (
+                  'me introduje profundamente los tapones en los oídos para comprobarlo',
+                  'me metí los tapones bien adentro para comprobarlo',
+              ),
+              (
+                  'Sin embargo, este hundimiento que amenazó mi vida no fue el «precio» de la curación de los acúfenos',
+                  'Sin embargo, este hundimiento, que viví como una amenaza para mi vida, no fue el «precio» de la curación de los acúfenos',
+              ),
+              (
+                  'una gigantesca oleada de sangre se disparó por mis venas',
+                  'una gigantesca oleada de sangre me recorrió las venas',
+              ),
+              (
+                  'durante unos segundos está físicamente muerta y «muda» (periodo refractario)',
+                  'durante unos segundos queda temporalmente fuera de servicio y «muda» (período refractario)',
+              ),
+              (
+                  'Ahora, años después, mi digestión estaba perfectamente intacta gracias al saneamiento intestinal.',
+                  'Ahora, años después, mi digestión funcionaba perfectamente porque había recuperado la salud intestinal.',
+              ),
+              (
+                  'Pero precisamente por eso aquí lo cuento todo con absoluta franqueza.',
+                  'Pero precisamente por eso pongo aquí todas mis cartas, boca arriba, sobre la mesa.',
+              ),
+          ]
+
+          for number, (old, new) in enumerate(replacements, start=1):
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'Replacement {number}: expected one occurrence, found {count}: {old}')
+              text = text.replace(old, new, 1)
+
+          head_ru = '  <link rel="alternate" hreflang="ru" href="https://tinnitusbioregulation.com/ru/moya-istoriya-o-tinnituse/">'
+          head_cs = '  <link rel="alternate" hreflang="cs" href="https://tinnitusbioregulation.com/cs/tinnitus-geheilt-erfahrungsbericht">'
+          menu_ru = '        <a href="/ru/moya-istoriya-o-tinnituse/" hreflang="ru"><span class="lang-code">RU</span><span class="lang-name" lang="ru">Русский</span></a>'
+          menu_cs = '        <a href="/cs/tinnitus-geheilt-erfahrungsbericht" hreflang="cs"><span class="lang-code">CS</span><span class="lang-name" lang="cs">Čeština</span></a>'
+
+          if head_cs not in text:
+              if text.count(head_ru) != 1:
+                  raise SystemExit('Russian head anchor missing or duplicated')
+              text = text.replace(head_ru, head_ru + '\n' + head_cs, 1)
+          if menu_cs not in text:
+              if text.count(menu_ru) != 1:
+                  raise SystemExit('Russian menu anchor missing or duplicated')
+              text = text.replace(menu_ru, menu_ru + '\n' + menu_cs, 1)
+
+          if '<html lang="es">' not in text:
+              raise SystemExit('html lang is not es')
+          if text.count('hreflang="cs"') != 2:
+              raise SystemExit('Expected exactly two Czech language entries')
+          for old, _new in replacements:
+              if old in text:
+                  raise SystemExit(f'Old wording remains: {old}')
+          for _old, new in replacements:
+              if new not in text:
+                  raise SystemExit(f'New wording missing: {new}')
+
+          ids = re.findall(r'\bid="([^"]+)"', text)
+          duplicates = sorted({item for item in ids if ids.count(item) > 1})
+          if duplicates:
+              raise SystemExit(f'Duplicate IDs: {duplicates}')
+          missing_anchors = sorted(set(re.findall(r'href="#([^"]+)"', text)) - set(ids))
+          if missing_anchors:
+              raise SystemExit(f'Missing anchor targets: {missing_anchors}')
+          for raw in re.findall(r'<script type="application/ld\+json">(.*?)</script>', text, flags=re.S):
+              json.loads(raw)
+          for img in re.findall(r'<img\b[^>]*>', text, flags=re.I):
+              match = re.search(r'\balt="([^"]*)"', img, flags=re.I)
+              if not match or not match.group(1).strip():
+                  raise SystemExit(f'Image without alt text: {img[:120]}')
+
+          path.write_text(text, encoding='utf-8', newline='\n')
+          print('Spanish short biography corrections applied and local checks passed.')
+          PY
+
+          rm -f .github/workflows/es-shortbio-one-shot.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add es/mi-historia-con-los-acufenos.html .github/workflows/es-shortbio-one-shot.yml
+          git commit -m "Correct reviewed Spanish short biography"
+          git push origin HEAD:review/es-kurzbiografie-2026-08-30
