@@ -1,0 +1,68 @@
+name: Focused OCR on short biography healing image
+
+on:
+  push:
+    branches:
+      - review/es-kurzbiografie-2026-08-30
+
+permissions:
+  contents: write
+
+jobs:
+  focused-ocr:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out review branch
+        uses: actions/checkout@v4
+        with:
+          ref: review/es-kurzbiografie-2026-08-30
+          fetch-depth: 0
+
+      - name: Install OCR languages and ImageMagick
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-deu tesseract-ocr-spa imagemagick
+
+      - name: Run focused preprocessing variants
+        shell: bash
+        run: |
+          mkdir -p audit /tmp/ocr
+          REPORT=audit/es-shortbio-first-healing-focused-ocr.txt
+          : > "$REPORT"
+          printf 'Focused OCR comparison for first-healing image\n\n' >> "$REPORT"
+
+          run_one() {
+            src="$1"
+            lang="$2"
+            label="$3"
+            printf '============================================================\n' >> "$REPORT"
+            printf '%s: %s\n' "$label" "$src" >> "$REPORT"
+            for variant in gray threshold normalize; do
+              out="/tmp/ocr/${label// /_}-${variant}.png"
+              case "$variant" in
+                gray)
+                  convert "$src" -resize 250% -colorspace Gray -sharpen 0x1 "$out" ;;
+                threshold)
+                  convert "$src" -resize 250% -colorspace Gray -contrast-stretch 2%x2% -threshold 60% "$out" ;;
+                normalize)
+                  convert "$src" -resize 300% -colorspace Gray -normalize -unsharp 0x1 "$out" ;;
+              esac
+              printf '\nVARIANT %s, PSM 11:\n' "$variant" >> "$REPORT"
+              tesseract "$out" stdout -l "$lang" --psm 11 2>/dev/null >> "$REPORT" || true
+              printf '\nVARIANT %s, PSM 12:\n' "$variant" >> "$REPORT"
+              tesseract "$out" stdout -l "$lang" --psm 12 2>/dev/null >> "$REPORT" || true
+            done
+            printf '\n\n' >> "$REPORT"
+          }
+
+          run_one img/kurz-erste-heilung.webp deu+eng GERMAN
+          run_one img/es-kurz-erste-heilung.webp spa+eng SPANISH
+
+          rm -f .github/workflows/es-shortbio-first-healing-ocr.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$REPORT" .github/workflows/es-shortbio-first-healing-ocr.yml
+          git commit -m "Record focused healing-image OCR comparison"
+          git push origin HEAD:review/es-kurzbiografie-2026-08-30
