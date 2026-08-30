@@ -1,0 +1,27 @@
+name: Export current main for Indonesian completion repair
+
+on:
+  push:
+    branches:
+      - id-current-export-repair-20260830
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+      - run: git rev-parse HEAD > SOURCE_COMMIT.txt
+      - run: rm -rf .git
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tinnitus-current-main-id-repair
+          path: .
+          include-hidden-files: true
+          retention-days: 1
+          compression-level: 6
