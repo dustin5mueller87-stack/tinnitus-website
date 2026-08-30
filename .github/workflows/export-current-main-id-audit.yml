@@ -1,0 +1,40 @@
+name: Export current main for Indonesian audit
+
+on:
+  push:
+    branches:
+      - id-audit-export-20260831
+    paths:
+      - .github/workflows/export-current-main-id-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out exact latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Prepare audit snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/id-audit
+          cp -a id /tmp/id-audit/
+          cp site.js sitemap.xml /tmp/id-audit/
+          git rev-parse HEAD > /tmp/id-audit/MAIN_COMMIT.txt
+          find /tmp/id-audit -type f -printf '%P\t%s bytes\n' | sort > /tmp/id-audit/FILES.txt
+
+      - name: Upload audit snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: tinnitus-current-main-id-audit-20260831
+          path: /tmp/id-audit
+          if-no-files-found: error
+          retention-days: 1
