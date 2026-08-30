@@ -1,0 +1,31 @@
+name: Export Indonesian repair chunks for byte diff
+
+on:
+  push:
+    branches:
+      - id-final-complete-repair-v2-20260830
+    paths:
+      - .github/workflows/export-id-repair-chunks-for-diff.yml
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: id-final-complete-repair-v2-20260830
+      - name: Inventory chunks
+        run: |
+          set -euo pipefail
+          find .id-repair-payload -maxdepth 1 -type f -printf '%f\t%s bytes\n' | sort
+          sha256sum .id-repair-payload/chunk-*.b64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: id-repair-chunks-v2-byte-diff
+          path: .id-repair-payload
+          if-no-files-found: error
+          retention-days: 1
