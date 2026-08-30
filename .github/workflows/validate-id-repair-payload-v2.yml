@@ -1,0 +1,36 @@
+name: Validate Indonesian repair payload v2
+
+on:
+  push:
+    branches:
+      - id-final-complete-repair-v2-20260830
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out payload branch
+        uses: actions/checkout@v4
+        with:
+          ref: id-final-complete-repair-v2-20260830
+          fetch-depth: 1
+
+      - name: Reassemble, verify and inspect payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(find .id-repair-payload -maxdepth 1 -name 'chunk-*.b64' -type f | wc -l)" -eq 5
+          cat .id-repair-payload/chunk-*.b64 | tr -d '\r\n' | base64 --decode > /tmp/id-min-payload.tar.gz
+          echo 'b726c019fbe291d6d37436436032561fa4651752ee7b993b1a0fd302bc6eadb5  /tmp/id-min-payload.tar.gz' | sha256sum --check --strict
+          gzip --test /tmp/id-min-payload.tar.gz
+          mkdir -p /tmp/id-payload
+          tar -xzf /tmp/id-min-payload.tar.gz -C /tmp/id-payload
+          echo '=== PAYLOAD FILES ==='
+          find /tmp/id-payload -type f -printf '%P\t%s bytes\n' | sort
+          echo '=== HTML COUNT ==='
+          test "$(find /tmp/id-payload -type f -name '*.html' | wc -l)" -eq 7
+          echo 'PAYLOAD_VALIDATION_PASS'
