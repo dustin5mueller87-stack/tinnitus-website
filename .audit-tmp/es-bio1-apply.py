@@ -12,6 +12,12 @@ TMP = Path('.audit-tmp')
 def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def font_path(pattern: str) -> str:
+    path = subprocess.check_output(['fc-match', '-f', '%{file}', pattern], text=True).strip()
+    if not path or not Path(path).exists():
+        raise SystemExit(f'Font not found: {pattern} -> {path!r}')
+    return path
+
 before = {
     HTML: 'bc98ce87b36669cb3127f4533bb173a5d244c7fdf3e0e0f2f41e939edf1b4baa',
     HERO: 'd077a9cf8afd8ef8f272848bb6f891583e2020efa07aa4251bbb99f9704e75cf',
@@ -28,6 +34,10 @@ patch_path = Path('/tmp/es-bio1-final.patch')
 patch_path.write_text(patch, encoding='utf-8')
 subprocess.run(['git', 'apply', '--unsafe-paths', str(patch_path)], check=True)
 
+regular_font_path = font_path('Noto Sans')
+condensed_font_path = font_path('Noto Sans Condensed')
+hand_font_path = font_path('Comic Neue')
+
 def inpaint_rect(image: Image.Image, rect: tuple[int, int, int, int], radius: int) -> Image.Image:
     array = np.array(image)
     bgr = cv2.cvtColor(array, cv2.COLOR_RGB2BGR)
@@ -41,8 +51,8 @@ hero = Image.open(HERO).convert('RGB')
 hero = inpaint_rect(hero, (28, 301, 393, 333), 7)
 hero = inpaint_rect(hero, (27, 442, 430, 470), 7)
 draw = ImageDraw.Draw(hero)
-draw.text((33, 302), 'El momento en que todo dio un vuelco.', font=ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf', 20), fill=(130, 132, 143))
-draw.text((33, 441), 'mareo, una desviación hacia la izquierda.', font=ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf', 18), fill=(238, 238, 236))
+draw.text((33, 302), 'El momento en que todo dio un vuelco.', font=ImageFont.truetype(regular_font_path, 20), fill=(130, 132, 143))
+draw.text((33, 441), 'mareo, una desviación hacia la izquierda.', font=ImageFont.truetype(regular_font_path, 18), fill=(238, 238, 236))
 hero.save(HERO, 'WEBP', quality=95, method=6)
 
 original = Image.open(ATP).convert('RGB')
@@ -84,9 +94,9 @@ base_array[y0:y1, x0:x1] = (crop * (1 - alpha[:, :, None]) + background * alpha[
 base = Image.fromarray(base_array)
 layer = Image.new('RGBA', base.size, (0, 0, 0, 0))
 draw = ImageDraw.Draw(layer)
-font_heading = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Condensed.ttf', 11)
-font_bullet = ImageFont.truetype('/usr/share/fonts/truetype/noto/NotoSans-Condensed.ttf', 9)
-font_hand = ImageFont.truetype('/usr/share/fonts/opentype/comic-neue/ComicNeue-Regular.otf', 20)
+font_heading = ImageFont.truetype(condensed_font_path, 11)
+font_bullet = ImageFont.truetype(condensed_font_path, 9)
+font_hand = ImageFont.truetype(hand_font_path, 20)
 draw.text((652, 285), 'Principalmente, la LLLT', font=font_heading, fill=(28, 28, 27, 230))
 for y, text in zip([390, 405, 420, 435], ['Aumento del ATP', 'Regeneración celular', 'Reducción de los acúfenos', 'Mejora del riego sanguíneo']):
     draw.ellipse((650, y + 5, 654, y + 9), fill=(22, 22, 21, 235))
@@ -109,7 +119,8 @@ for image_path in [HERO, ATP]:
         raise SystemExit(f'Unexpectedly small image output for {image_path}: {image_path.stat().st_size}')
 (TMP / 'output-hashes.txt').write_text(
     f'html {sha(HTML)}\nhero {sha(HERO)}\natp {sha(ATP)}\n'
-    f'Pillow {__import__("PIL").__version__}\nOpenCV {cv2.__version__}\n',
+    f'Pillow {__import__("PIL").__version__}\nOpenCV {cv2.__version__}\n'
+    f'font_regular {regular_font_path}\nfont_condensed {condensed_font_path}\nfont_hand {hand_font_path}\n',
     encoding='utf-8'
 )
 
