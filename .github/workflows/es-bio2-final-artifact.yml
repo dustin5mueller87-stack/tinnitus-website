@@ -1,0 +1,46 @@
+name: Export final Spanish biography part 2 review file
+
+on:
+  push:
+    branches:
+      - review/es-biografie-teil-2-2026-08-31
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: review/es-biografie-teil-2-2026-08-31
+          fetch-depth: 0
+      - name: Validate exact file before export
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('es/mi-historia-parte-2.html')
+          text = p.read_text(encoding='utf-8')
+          assert 'de que, quizá, para lograr la curación completa y definitiva tendría' in text
+          assert 'de que, quizá, para lograr la curación completa y definitiva, quizá tendría' not in text
+          assert text.count('hreflang="cs"') == 2
+          print(p.stat().st_size)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: es-biografie-teil-2-final-reviewed
+          path: es/mi-historia-parte-2.html
+          if-no-files-found: error
+          retention-days: 7
+      - name: Remove one-shot workflow
+        shell: bash
+        run: |
+          rm -f .github/workflows/es-bio2-final-artifact.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/workflows/es-bio2-final-artifact.yml
+          git commit -m "Remove one-shot Spanish biography part 2 export workflow"
+          git push origin HEAD:review/es-biografie-teil-2-2026-08-31
