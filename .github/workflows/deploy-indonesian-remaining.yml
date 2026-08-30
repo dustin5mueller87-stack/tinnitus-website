@@ -1,0 +1,465 @@
+name: Deploy remaining Indonesian pages safely
+
+on:
+  push:
+    branches:
+      - id-remaining-deploy-20260830
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out latest main with history
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download exact source snapshot and reviewed Indonesian payload
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/id-source /tmp/id-payload /tmp/id-stage
+          mkdir -p /tmp/id-source /tmp/id-payload /tmp/id-stage
+
+          gh run download 33287851706 \
+            --repo "$GITHUB_REPOSITORY" \
+            --name tinnitus-main-id-remaining \
+            --dir /tmp/id-source
+
+          python -m pip install --quiet gdown
+          DRIVE_FILE_ID='1w14JX41aYYtY_IR4-Y-3Awusp8SfJ7mm'
+          if ! gdown "https://drive.google.com/uc?id=${DRIVE_FILE_ID}" -O /tmp/id-payload.zip; then
+            curl --fail --location --retry 5 --retry-all-errors \
+              "https://drive.usercontent.google.com/download?id=${DRIVE_FILE_ID}&export=download&confirm=t" \
+              --output /tmp/id-payload.zip
+          fi
+          unzip -t /tmp/id-payload.zip >/dev/null
+          unzip -q /tmp/id-payload.zip -d /tmp/id-payload
+          test -s /tmp/id-source/SOURCE_COMMIT.txt
+
+      - name: Validate arsenal gate, page completeness, image-text audit and build overlay
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlparse
+          import hashlib, html, json, os, re, shutil, sys
+
+          repo = Path.cwd()
+          source = Path('/tmp/id-source')
+          unpack = Path('/tmp/id-payload')
+          stage = Path('/tmp/id-stage')
+          stage.mkdir(parents=True, exist_ok=True)
+
+          source_commit = source.joinpath('SOURCE_COMMIT.txt').read_text(encoding='utf-8').strip()
+          if not re.fullmatch(r'[0-9a-f]{40}', source_commit):
+              raise SystemExit(f'Invalid source commit marker: {source_commit!r}')
+
+          # Find the reviewed release root. It must contain the complete Indonesian directory.
+          id_dirs = [p for p in unpack.rglob('id') if p.is_dir() and (p / 'index.html').is_file()]
+          if not id_dirs:
+              raise SystemExit('Reviewed payload contains no complete id/index.html tree')
+          id_dir = max(id_dirs, key=lambda p: len(list(p.glob('*.html'))))
+          release_root = id_dir.parent
+
+          def find_report(name):
+              matches = list(unpack.rglob(name))
+              if not matches:
+                  raise SystemExit(f'Missing required review report: {name}')
+              return matches[0]
+
+          gate = find_report('FINAL_RELEASE_GATE.md').read_text(encoding='utf-8', errors='replace')
+          validation = find_report('LOCAL_AUTOMATED_VALIDATION.txt').read_text(encoding='utf-8', errors='replace')
+          image_audit = find_report('BILDTEXT_AUDIT_RESTSEITEN.md').read_text(encoding='utf-8', errors='replace')
+          qa = find_report('QA_RESULT_RESTSEITEN.txt').read_text(encoding='utf-8', errors='replace')
+
+          gate_upper = gate.upper()
+          if 'PASS' not in gate_upper or 'FAIL' in gate_upper:
+              raise SystemExit('Final release gate is not PASS')
+          if not re.search(r'Errors?\s*:\s*0\b', validation, re.I):
+              raise SystemExit('Local automated validation does not report zero errors')
+          if len(image_audit.strip()) < 500:
+              raise SystemExit('Image-text audit is unexpectedly empty')
+          if re.search(r'\b(FAIL|FAILED|NICHT BESTANDEN)\b', image_audit, re.I):
+              raise SystemExit('Image-text audit contains a failure marker')
+          if len(qa.strip()) < 500 or re.search(r'\b(FAIL|FAILED|NICHT BESTANDEN)\b', qa, re.I):
+              raise SystemExit('QA report is missing or contains a failure marker')
+
+          html_files = sorted(id_dir.glob('*.html'))
+          if len(html_files) != 16:
+              raise SystemExit(f'Expected exactly 16 Indonesian HTML pages, found {len(html_files)}')
+          if not (id_dir / '404.html').is_file():
+              raise SystemExit('Missing Indonesian 404 page')
+
+          expected_german = {
+              '/',
+              '/tinnitus-geheilt-erfahrungsbericht',
+              '/meine-geschichte-teil-1',
+              '/meine-geschichte-teil-2',
+              '/laermbedingter-tinnitus',
+              '/stressbedingter-tinnitus',
+              '/medikamente-gifte-tinnitus',
+              '/mein-loesungsansatz',
+              '/produkte',
+              '/wissenschaftliche-quellen',
+              '/erfahrungsberichte',
+              '/faq',
+              '/kontakt',
+              '/impressum',
+              '/datenschutz',
+          }
+
+          def norm_path(value):
+              parsed = urlparse(html.unescape(value))
+              path = parsed.path or '/'
+              if path != '/':
+                  path = path.rstrip('/')
+                  if path.endswith('.html'):
+                      path = path[:-5]
+              return path or '/'
+
+          route_map = {}
+          canonical_by_file = {}
+          all_ids = set()
+          for f in html_files:
+              text = f.read_text(encoding='utf-8')
+              if '<html lang="id"' not in text and "<html lang='id'" not in text:
+                  raise SystemExit(f'{f.name}: missing lang=id')
+              if not re.search(r'<meta\s+name=["\']robots["\']\s+content=["\']noindex,\s*follow["\']', text, re.I):
+                  raise SystemExit(f'{f.name}: missing noindex, follow')
+              if re.search(r'\bAnda\b', re.sub(r'<[^>]+>', ' ', text)):
+                  raise SystemExit(f'{f.name}: forbidden Anda form remains')
+
+              ids = re.findall(r'\bid=["\']([^"\']+)["\']', text, re.I)
+              if len(ids) != len(set(ids)):
+                  raise SystemExit(f'{f.name}: duplicate HTML IDs')
+
+              for block in re.findall(r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', text, re.I | re.S):
+                  json.loads(html.unescape(block.strip()))
+
+              if f.name == '404.html':
+                  continue
+              de = re.search(r'<a\s+[^>]*href=["\']([^"\']+)["\'][^>]*hreflang=["\']de["\']', text, re.I)
+              if not de:
+                  de = re.search(r'<link\s+[^>]*hreflang=["\']de["\'][^>]*href=["\']([^"\']+)["\']', text, re.I)
+              canonical = re.search(r'<link\s+[^>]*rel=["\']canonical["\'][^>]*href=["\']([^"\']+)["\']', text, re.I)
+              if not de or not canonical:
+                  raise SystemExit(f'{f.name}: missing German alternate or canonical')
+              de_path = norm_path(de.group(1))
+              id_path = norm_path(canonical.group(1))
+              if not id_path.startswith('/id'):
+                  raise SystemExit(f'{f.name}: canonical is not Indonesian: {id_path}')
+              if de_path in route_map and route_map[de_path] != id_path:
+                  raise SystemExit(f'Duplicate German route mapping: {de_path}')
+              route_map[de_path] = id_path
+              canonical_by_file[f.name] = id_path
+
+          if set(route_map) != expected_german:
+              missing = sorted(expected_german - set(route_map))
+              extra = sorted(set(route_map) - expected_german)
+              raise SystemExit(f'Incomplete route map. Missing={missing}; extra={extra}')
+
+          # Copy the complete reviewed Indonesian directory into a staging overlay.
+          shutil.copytree(id_dir, stage / 'id', dirs_exist_ok=True)
+
+          # Collect explicitly reviewed localized image assets from asset map and deploy manifest.
+          def strings(obj):
+              if isinstance(obj, str):
+                  yield obj
+              elif isinstance(obj, list):
+                  for v in obj:
+                      yield from strings(v)
+              elif isinstance(obj, dict):
+                  for v in obj.values():
+                      yield from strings(v)
+
+          deploy_jsons = list(unpack.rglob('deploy_files.json'))
+          asset_jsons = list(unpack.rglob('asset_map_id.json'))
+          referenced_paths = set()
+          for jf in deploy_jsons + asset_jsons:
+              try:
+                  data = json.loads(jf.read_text(encoding='utf-8'))
+              except Exception as exc:
+                  raise SystemExit(f'Invalid JSON in {jf}: {exc}')
+              for s in strings(data):
+                  s = s.replace('\\', '/').lstrip('./').lstrip('/')
+                  if s.startswith('img/') or s.startswith('id/') or s == 'site.js':
+                      referenced_paths.add(s)
+
+          # Also include localized image files physically present in the reviewed release.
+          image_exts = {'.webp', '.png', '.jpg', '.jpeg', '.svg', '.avif'}
+          for p in release_root.rglob('*'):
+              if p.is_file() and p.suffix.lower() in image_exts:
+                  rel = p.relative_to(release_root).as_posix()
+                  if rel.startswith('img/'):
+                      referenced_paths.add(rel)
+
+          for rel in sorted(referenced_paths):
+              if rel == 'site.js' or rel.startswith('id/'):
+                  continue
+              if not rel.startswith('img/'):
+                  raise SystemExit(f'Unsafe payload path: {rel}')
+              src = release_root / rel
+              if not src.is_file():
+                  # Some manifests are stored beside a nested release root; search uniquely.
+                  matches = [p for p in unpack.rglob(Path(rel).name) if p.is_file()]
+                  if len(matches) != 1:
+                      raise SystemExit(f'Localized asset not found uniquely: {rel}')
+                  src = matches[0]
+              dest = stage / rel
+              dest.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copy2(src, dest)
+
+          # Resolve every local asset referenced by the complete Indonesian HTML set.
+          overlay_paths = {p.relative_to(stage).as_posix() for p in stage.rglob('*') if p.is_file()}
+          for f in (stage / 'id').glob('*.html'):
+              text = f.read_text(encoding='utf-8')
+              refs = re.findall(r'(?:src|href)=["\']([^"\']+)["\']', text, re.I)
+              refs += re.findall(r'url\(["\']?([^"\')]+)', text, re.I)
+              for ref in refs:
+                  ref = html.unescape(ref).split('#', 1)[0].split('?', 1)[0]
+                  if not ref or ref.startswith(('http://', 'https://', 'mailto:', 'tel:', 'data:', '#')):
+                      continue
+                  candidate = (Path('id') / ref).resolve() if not ref.startswith('/') else (repo / ref.lstrip('/')).resolve()
+                  try:
+                      rel = candidate.relative_to(repo.resolve()).as_posix()
+                  except ValueError:
+                      continue
+                  if rel.startswith('id/../'):
+                      rel = rel[6:]
+                  if rel in overlay_paths or (repo / rel).exists():
+                      continue
+                  # Extensionless HTML routes are checked separately.
+                  if '.' not in Path(rel).name:
+                      continue
+                  raise SystemExit(f'{f.name}: unresolved local asset {ref} -> {rel}')
+
+          # All internal Indonesian extensionless links must resolve to a reviewed page.
+          valid_routes = set(route_map.values()) | {'/id'}
+          for f in (stage / 'id').glob('*.html'):
+              text = f.read_text(encoding='utf-8')
+              for href in re.findall(r'href=["\']([^"\']+)["\']', text, re.I):
+                  path = norm_path(href)
+                  if path.startswith('/id') and path not in valid_routes and path != '/id/404':
+                      raise SystemExit(f'{f.name}: unresolved Indonesian route {path}')
+
+          # No German fallbacks may remain for pages that now exist in Indonesian.
+          fallback_pairs = {
+              '/produkte', '/wissenschaftliche-quellen', '/erfahrungsberichte', '/faq',
+              '/kontakt', '/impressum', '/datenschutz'
+          }
+          for f in (stage / 'id').glob('*.html'):
+              text = f.read_text(encoding='utf-8')
+              for path in fallback_pairs:
+                  if re.search(r'href=["\']' + re.escape(path) + r'["\'][^>]*data-language-fallback=["\']de["\']', text):
+                      raise SystemExit(f'{f.name}: obsolete German fallback remains for {path}')
+
+          # Collision safety: every existing target must still equal the exported source snapshot.
+          target_paths = sorted(p.relative_to(stage).as_posix() for p in stage.rglob('*') if p.is_file())
+          for rel in target_paths:
+              current = repo / rel
+              original = source / rel
+              payload = stage / rel
+              if original.exists():
+                  if not current.exists():
+                      raise SystemExit(f'Concurrent deletion detected for {rel}')
+                  if hashlib.sha256(original.read_bytes()).digest() != hashlib.sha256(current.read_bytes()).digest():
+                      raise SystemExit(f'Concurrent modification detected for {rel}; refusing to overwrite')
+              elif current.exists():
+                  if hashlib.sha256(current.read_bytes()).digest() != hashlib.sha256(payload.read_bytes()).digest():
+                      raise SystemExit(f'Concurrent new file conflict detected for {rel}')
+
+          # Apply reviewed overlay to working tree.
+          for rel in target_paths:
+              src = stage / rel
+              dst = repo / rel
+              dst.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copy2(src, dst)
+
+          # Patch only the Indonesian portions of the latest shared site.js.
+          site_js = repo / 'site.js'
+          js = site_js.read_text(encoding='utf-8')
+          map_pattern = re.compile(r'(var indonesianRoutesByGermanPath\s*=\s*\{)(.*?)(\n\s*\};)', re.S)
+          match = map_pattern.search(js)
+          if not match:
+              raise SystemExit('Could not locate Indonesian route map in current site.js')
+          ordered = sorted(route_map.items(), key=lambda kv: (kv[0] != '/', kv[0]))
+          entries = ',\n'.join(f"      {json.dumps(k, ensure_ascii=False)}: {json.dumps(v + ('/' if v == '/id' else ''), ensure_ascii=False)}" for k, v in ordered)
+          js = js[:match.start()] + match.group(1) + '\n' + entries + match.group(3) + js[match.end():]
+
+          if "pageLang.indexOf('id') === 0 ?" not in js:
+              label_anchor = ": pageLang.indexOf('ko') === 0 ? {\n      viewer: '이미지 뷰어',"
+              idx = js.find(label_anchor)
+              if idx < 0:
+                  raise SystemExit('Could not locate image-viewer language chain in site.js')
+              # Insert Indonesian branch after the complete Korean block and before German default.
+              german_default = "    } : {\n      viewer: 'Bildansicht',"
+              pos = js.find(german_default, idx)
+              if pos < 0:
+                  raise SystemExit('Could not locate viewer default branch')
+              id_block = "    } : pageLang.indexOf('id') === 0 ? {\n      viewer: 'Penampil gambar',\n      close: 'Tutup',\n      previous: 'Gambar sebelumnya',\n      next: 'Gambar berikutnya',\n      translationRegion: 'Terjemahan dokumen dalam bahasa Indonesia',\n      translationShow: 'Tampilkan terjemahan bahasa Indonesia',\n      translationOriginal: 'Tampilkan dokumen asli berbahasa Jerman'\n"
+              js = js[:pos] + id_block + js[pos + len("    }"):]
+
+          # Translation toggle defaults use a separate language chain.
+          defaults_marker = "pageLang.indexOf('id') === 0 ? {\n      show: 'Tampilkan terjemahan bahasa Indonesia'"
+          if defaults_marker not in js:
+              defaults_anchor = "    } : pageLang.indexOf('ko') === 0 ? {\n      show: '문서 번역 보기',"
+              start = js.find(defaults_anchor)
+              if start < 0:
+                  raise SystemExit('Could not locate translation-default language chain')
+              german_default = "    } : {\n      show: 'Übersetzung anzeigen',"
+              pos = js.find(german_default, start)
+              if pos < 0:
+                  raise SystemExit('Could not locate translation-default fallback')
+              id_block = "    } : pageLang.indexOf('id') === 0 ? {\n      show: 'Tampilkan terjemahan bahasa Indonesia',\n      original: 'Tampilkan dokumen asli berbahasa Jerman'\n"
+              js = js[:pos] + id_block + js[pos + len("    }"):]
+
+          site_js.write_text(js, encoding='utf-8')
+          target_paths.append('site.js')
+
+          # Final diff safety and machine-readable metadata for later steps.
+          allowed = sorted(set(target_paths))
+          Path('/tmp/id-target-paths.json').write_text(json.dumps(allowed, ensure_ascii=False, indent=2), encoding='utf-8')
+          Path('/tmp/id-routes.json').write_text(json.dumps(canonical_by_file, ensure_ascii=False, indent=2), encoding='utf-8')
+          Path('/tmp/id-source-commit.txt').write_text(source_commit + '\n', encoding='utf-8')
+
+          changed = sorted(os.popen('git diff --name-only').read().splitlines())
+          if changed != allowed:
+              raise SystemExit(f'Unexpected diff set. Expected={allowed}; actual={changed}')
+          if any(p.startswith('.github/') for p in changed):
+              raise SystemExit('Workflow files must never enter the production commit')
+
+          print(f'Validated {len(html_files)} Indonesian HTML pages, {len(allowed)} deploy files, source {source_commit}')
+          PY
+
+      - name: Commit onto latest main without overwriting parallel agent work
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          BASE_COMMIT=$(git rev-parse HEAD)
+          TARGETS=$(python - <<'PY'
+          import json
+          print('\n'.join(json.load(open('/tmp/id-target-paths.json'))))
+          PY
+          )
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          while IFS= read -r path; do git add -- "$path"; done <<< "$TARGETS"
+          git commit -m 'Complete Indonesian site translation for review'
+
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          pushed=0
+          for attempt in 1 2 3; do
+            git fetch origin main
+            REMOTE=$(git rev-parse origin/main)
+            if [[ "$REMOTE" != "$BASE_COMMIT" ]]; then
+              mapfile -t concurrent < <(git diff --name-only "$BASE_COMMIT".."$REMOTE")
+              for changed in "${concurrent[@]}"; do
+                if grep -Fxq "$changed" /tmp/id-target-paths.json; then
+                  echo "Concurrent overlap detected: $changed"
+                  exit 1
+                fi
+                if python - "$changed" <<'PY'
+          import json, sys
+          changed = sys.argv[1]
+          targets = set(json.load(open('/tmp/id-target-paths.json')))
+          raise SystemExit(0 if changed in targets else 1)
+          PY
+                then
+                  echo "Concurrent overlap detected: $changed"
+                  exit 1
+                fi
+              done
+              git rebase origin/main
+              BASE_COMMIT=$REMOTE
+            fi
+            if git push origin HEAD:main; then
+              pushed=1
+              break
+            fi
+            sleep 3
+          done
+          test "$pushed" = 1
+          echo "PUBLISHED_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Verify Netlify production bytes, Indonesian routing and noindex
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlparse
+          import hashlib, json, os, subprocess, time
+
+          routes = json.load(open('/tmp/id-routes.json'))
+          commit = os.environ['PUBLISHED_COMMIT']
+          expected = {}
+          for filename, route in routes.items():
+              expected[route] = Path('id', filename)
+
+          def fetch(route, out):
+              url = f'https://tinnitusbioregulation.com{route}?v={commit}'
+              result = subprocess.run(['curl', '--fail', '--location', '--silent', '--show-error', '--output', str(out), url])
+              return result.returncode == 0
+
+          verified = False
+          tmp = Path('/tmp/id-live-remaining')
+          tmp.mkdir(exist_ok=True)
+          for _ in range(40):
+              ok = True
+              for route, local in expected.items():
+                  out = tmp / local.name
+                  if not fetch(route, out):
+                      ok = False
+                      break
+                  if hashlib.sha256(out.read_bytes()).digest() != hashlib.sha256(local.read_bytes()).digest():
+                      ok = False
+                      break
+                  text = out.read_text(encoding='utf-8')
+                  if '<html lang="id"' not in text or 'noindex, follow' not in text:
+                      ok = False
+                      break
+              if ok:
+                  site_out = tmp / 'site.js'
+                  if fetch('/site.js', site_out):
+                      live_js = site_out.read_text(encoding='utf-8')
+                      local_js = Path('site.js').read_text(encoding='utf-8')
+                      ok = hashlib.sha256(site_out.read_bytes()).digest() == hashlib.sha256(Path('site.js').read_bytes()).digest()
+                      ok = ok and '/id/produk' in live_js and '/id/kontak' in live_js and "pageLang.indexOf('id')" in live_js
+                  else:
+                      ok = False
+              if ok:
+                  missing = tmp / '404.html'
+                  url = f'https://tinnitusbioregulation.com/id/__halaman-tidak-ada-{commit}'
+                  subprocess.run(['curl', '--location', '--silent', '--show-error', '--output', str(missing), url], check=True)
+                  text = missing.read_text(encoding='utf-8', errors='replace')
+                  ok = '<html lang="id"' in text and 'noindex' in text.lower()
+              if ok:
+                  verified = True
+                  break
+              time.sleep(5)
+          if not verified:
+              raise SystemExit('Production verification did not converge')
+          print(f'Production verified for {len(expected)} Indonesian routes at {commit}')
+          PY
+
+      - name: Remove temporary workflow branch
+        if: success()
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git remote set-url origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push origin --delete id-remaining-deploy-20260830 || true
