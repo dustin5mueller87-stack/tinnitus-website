@@ -1,0 +1,148 @@
+name: Verify Indonesian production live v2
+
+on:
+  push:
+    branches:
+      - id-live-verification-v2-20260830
+    paths:
+      - .github/workflows/verify-indonesian-production-live-v2.yml
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out verification branch
+        uses: actions/checkout@v4
+        with:
+          ref: id-live-verification-v2-20260830
+          fetch-depth: 0
+
+      - name: Refresh current main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --quiet
+          git reset --hard origin/main
+
+      - name: Verify repository and production
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError, URLError
+          import time, re, subprocess
+
+          expected = {
+              'index.html', 'tinnitus-sembuh-kisah-saya.html',
+              'kisah-tinnitus-saya-bagian-1.html', 'kisah-tinnitus-saya-bagian-2.html',
+              'tinnitus-akibat-kebisingan.html', 'tinnitus-akibat-stres.html',
+              'tinnitus-akibat-obat-dan-zat-beracun.html', 'pendekatan-saya.html',
+              'produk.html', 'sumber-ilmiah.html', 'kisah-pengalaman.html',
+              'faq.html', 'kontak.html', 'informasi-hukum.html',
+              'kebijakan-privasi.html', '404.html'
+          }
+          actual = {p.name for p in Path('id').glob('*.html')}
+          if actual != expected:
+              raise SystemExit(f'Repository page set mismatch: missing={sorted(expected-actual)} extra={sorted(actual-expected)}')
+
+          js = Path('site.js').read_text(encoding='utf-8')
+          for needle in (
+              "'/produkte': '/id/produk'",
+              "'/wissenschaftliche-quellen': '/id/sumber-ilmiah'",
+              "'/erfahrungsberichte': '/id/kisah-pengalaman'",
+              "'/faq': '/id/faq'",
+              "'/kontakt': '/id/kontak'",
+              "'/impressum': '/id/informasi-hukum'",
+              "'/datenschutz': '/id/kebijakan-privasi'",
+              "pageLang.indexOf('id') === 0",
+          ):
+              if needle not in js:
+                  raise SystemExit(f'Missing site.js integration: {needle}')
+          subprocess.run(['node', '--check', 'site.js'], check=True)
+
+          sitemap = Path('sitemap.xml').read_text(encoding='utf-8')
+          for route in ('/id/produk', '/id/sumber-ilmiah'):
+              if sitemap.count('https://tinnitusbioregulation.com' + route) != 1:
+                  raise SystemExit(f'Sitemap route absent or duplicated: {route}')
+
+          for image in ('img/quellen-laser-atp-id.webp', 'img/quellen-naehrstoffe-atp-id.webp'):
+              p = Path(image)
+              if not p.is_file() or p.stat().st_size < 10000:
+                  raise SystemExit(f'Missing localized repository image: {image}')
+
+          base = 'https://tinnitusbioregulation.com'
+          routes = (
+              '/id/', '/id/produk', '/id/sumber-ilmiah', '/id/kisah-pengalaman',
+              '/id/faq', '/id/kontak', '/id/informasi-hukum', '/id/kebijakan-privasi'
+          )
+          pages = None
+          last_error = None
+          for attempt in range(36):
+              try:
+                  current = {}
+                  for route in routes:
+                      req = Request(base + route, headers={'User-Agent': 'Mozilla/5.0 IndonesianReleaseVerifier/2.0'})
+                      with urlopen(req, timeout=30) as response:
+                          if response.status != 200:
+                              raise RuntimeError(f'{route}: HTTP {response.status}')
+                          body = response.read().decode('utf-8', errors='replace')
+                      if not re.search(r'<html\b[^>]*\blang=["\']id(?:[-_][^"\']*)?["\']', body, re.I):
+                          raise RuntimeError(f'{route}: lang=id missing')
+                      current[route] = body
+
+                  home = current['/id/']
+                  for href in ('/id/produk', '/id/sumber-ilmiah', '/id/kisah-pengalaman', '/id/kontak'):
+                      if f'href="{href}"' not in home and f"href='{href}'" not in home:
+                          raise RuntimeError(f'Homepage navigation missing {href}')
+                  if 'data-language-fallback="de"' in home or "data-language-fallback='de'" in home:
+                      raise RuntimeError('Homepage still exposes German fallback navigation')
+                  if not re.search(r'Sumber|ilmiah|Penelitian', current['/id/sumber-ilmiah'], re.I):
+                      raise RuntimeError('Scientific sources page lacks expected Indonesian content')
+
+                  for asset in ('/img/quellen-laser-atp-id.webp', '/img/quellen-naehrstoffe-atp-id.webp'):
+                      req = Request(base + asset, headers={'User-Agent': 'Mozilla/5.0 IndonesianReleaseVerifier/2.0'})
+                      with urlopen(req, timeout=30) as response:
+                          data = response.read()
+                          content_type = response.headers.get('Content-Type', '').lower()
+                          if response.status != 200:
+                              raise RuntimeError(f'{asset}: HTTP {response.status}')
+                      if len(data) < 10000 or 'image/' not in content_type:
+                          raise RuntimeError(f'{asset}: invalid image response')
+                  pages = current
+                  break
+              except Exception as exc:
+                  last_error = exc
+                  print(f'Live verification attempt {attempt + 1} not ready: {exc}')
+                  time.sleep(5)
+
+          if pages is None:
+              raise SystemExit(f'Production did not pass live verification: {last_error}')
+          print('REPOSITORY_AND_PRODUCTION_PASS')
+          PY
+
+      - name: Record verification marker on isolated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          cat > ID_LIVE_VERIFICATION.txt <<EOF
+          Indonesian production verification: PASS
+          Main commit: ${sha}
+          Verified UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          Repository pages: 16
+          Live routes checked: 8
+          Localized images checked: 2
+          Navigation fallback check: PASS
+          Sitemap check: PASS
+          EOF
+          git config user.name 'OpenAI Verification Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add ID_LIVE_VERIFICATION.txt
+          git commit -m 'Record Indonesian production verification v2'
+          git push --force origin HEAD:id-live-verification-v2-20260830
