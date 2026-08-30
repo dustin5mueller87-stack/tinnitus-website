@@ -46,7 +46,13 @@
       '/stressbedingter-tinnitus': '/ko/stressbedingter-tinnitus',
       '/medikamente-gifte-tinnitus': '/ko/medikamente-gifte-tinnitus',
       '/mein-loesungsansatz': '/ko/mein-loesungsansatz',
-      '/wissenschaftliche-quellen': '/ko/wissenschaftliche-quellen'
+      '/wissenschaftliche-quellen': '/ko/wissenschaftliche-quellen',
+      '/produkte': '/ko/produkte',
+      '/erfahrungsberichte': '/ko/erfahrungsberichte',
+      '/faq': '/ko/faq',
+      '/kontakt': '/ko/kontakt',
+      '/impressum': '/ko/impressum',
+      '/datenschutz': '/ko/datenschutz'
     };
 
     document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
@@ -88,6 +94,119 @@
     });
   }
 
+  function ensureJapaneseLanguageOption() {
+    var japaneseRoutesByGermanPath = {
+      '/': '/ja/',
+      '/tinnitus-geheilt-erfahrungsbericht': '/ja/tinnitus-geheilt-erfahrungsbericht',
+      '/meine-geschichte-teil-1': '/ja/meine-geschichte-teil-1',
+      '/meine-geschichte-teil-2': '/ja/meine-geschichte-teil-2',
+      '/laermbedingter-tinnitus': '/ja/laermbedingter-tinnitus',
+      '/stressbedingter-tinnitus': '/ja/stressbedingter-tinnitus',
+      '/medikamente-gifte-tinnitus': '/ja/medikamente-gifte-tinnitus',
+      '/mein-loesungsansatz': '/ja/mein-loesungsansatz',
+      '/produkte': '/ja/produkte',
+      '/wissenschaftliche-quellen': '/ja/wissenschaftliche-quellen',
+      '/erfahrungsberichte': '/ja/erfahrungsberichte',
+      '/faq': '/ja/faq',
+      '/kontakt': '/ja/kontakt',
+      '/impressum': '/ja/impressum',
+      '/datenschutz': '/ja/datenschutz'
+    };
+
+    document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
+      if (menu.querySelector('a[hreflang="ja"]')) return;
+
+      var germanLink = menu.querySelector('a[hreflang="de"]');
+      if (!germanLink) return;
+
+      var germanPath = '/';
+      try {
+        germanPath = new URL(germanLink.getAttribute('href'), window.location.origin).pathname;
+        germanPath = germanPath.replace(/\/+$/, '') || '/';
+      } catch (error) {
+        return;
+      }
+
+      var japaneseRoute = japaneseRoutesByGermanPath[germanPath];
+      if (!japaneseRoute) return;
+
+      var japaneseLink = document.createElement('a');
+      japaneseLink.href = japaneseRoute;
+      japaneseLink.setAttribute('hreflang', 'ja');
+
+      if (document.documentElement.lang.toLowerCase().indexOf('ja') === 0) {
+        japaneseLink.classList.add('active');
+        japaneseLink.setAttribute('aria-current', 'page');
+      }
+
+      var languageCode = document.createElement('span');
+      languageCode.className = 'lang-code';
+      languageCode.textContent = 'JA';
+
+      var languageName = document.createElement('span');
+      languageName.className = 'lang-name';
+      languageName.setAttribute('lang', 'ja');
+      languageName.textContent = '日本語';
+
+      japaneseLink.appendChild(languageCode);
+      japaneseLink.appendChild(languageName);
+      menu.insertBefore(japaneseLink, menu.querySelector('a[hreflang="ko"], a[hreflang="id"]'));
+    });
+  }
+
+  function ensureIndonesianLanguageOption() {
+    var indonesianRoutesByGermanPath = {
+      '/': '/id/',
+      '/tinnitus-geheilt-erfahrungsbericht': '/id/tinnitus-sembuh-kisah-saya',
+      '/meine-geschichte-teil-1': '/id/kisah-tinnitus-saya-bagian-1',
+      '/meine-geschichte-teil-2': '/id/kisah-tinnitus-saya-bagian-2',
+      '/laermbedingter-tinnitus': '/id/tinnitus-akibat-kebisingan',
+      '/stressbedingter-tinnitus': '/id/tinnitus-akibat-stres',
+      '/medikamente-gifte-tinnitus': '/id/tinnitus-akibat-obat-dan-zat-beracun',
+      '/mein-loesungsansatz': '/id/pendekatan-saya'
+    };
+
+    document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
+      if (menu.querySelector('a[hreflang="id"]')) return;
+
+      var germanLink = menu.querySelector('a[hreflang="de"]');
+      if (!germanLink) return;
+
+      var germanPath = '/';
+      try {
+        germanPath = new URL(germanLink.getAttribute('href'), window.location.origin).pathname;
+        germanPath = germanPath.replace(/\/+$/, '') || '/';
+      } catch (error) {
+        return;
+      }
+
+      var indonesianRoute = indonesianRoutesByGermanPath[germanPath];
+      if (!indonesianRoute) return;
+
+      var indonesianLink = document.createElement('a');
+      indonesianLink.href = indonesianRoute;
+      indonesianLink.setAttribute('hreflang', 'id');
+
+      if (document.documentElement.lang.toLowerCase().indexOf('id') === 0) {
+        indonesianLink.classList.add('active');
+        indonesianLink.setAttribute('aria-current', 'page');
+      }
+
+      var languageCode = document.createElement('span');
+      languageCode.className = 'lang-code';
+      languageCode.textContent = 'ID';
+
+      var languageName = document.createElement('span');
+      languageName.className = 'lang-name';
+      languageName.setAttribute('lang', 'id');
+      languageName.textContent = 'Bahasa Indonesia';
+
+      indonesianLink.appendChild(languageCode);
+      indonesianLink.appendChild(languageName);
+      menu.appendChild(indonesianLink);
+    });
+  }
+
   function ensureHindiLanguageOption() {
     var hindiRoutesByGermanPath = {
       '/': '/hi/',
@@ -96,36 +215,28 @@
       '/meine-geschichte-teil-2': '/hi/meine-geschichte-teil-2',
       '/laermbedingter-tinnitus': '/hi/laermbedingter-tinnitus',
       '/stressbedingter-tinnitus': '/hi/stressbedingter-tinnitus',
-      '/medikamente-gifte-tinnitus': '/hi/medikamente-gifte-tinnitus',
-      '/mein-loesungsansatz': '/hi/mein-loesungsansatz',
-      '/wissenschaftliche-quellen': '/hi/wissenschaftliche-quellen',
-      '/produkte': '/hi/produkte',
-      '/erfahrungsberichte': '/hi/erfahrungsberichte',
-      '/faq': '/hi/faq',
-      '/kontakt': '/hi/kontakt',
-      '/impressum': '/hi/impressum',
-      '/datenschutz': '/hi/datenschutz',
-      '/404': '/hi/404.html',
-      '/404.html': '/hi/404.html'
+      '/medikamente-gifte-tinnitus': '/hi/medikamente-gifte-tinnitus'
     };
 
     document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
       if (menu.querySelector('a[hreflang="hi"]')) return;
 
       var germanLink = menu.querySelector('a[hreflang="de"]');
-      var germanPath = '/';
+      if (!germanLink) return;
 
-      if (germanLink) {
-        try {
-          germanPath = new URL(germanLink.getAttribute('href'), window.location.origin).pathname;
-          germanPath = germanPath.replace(/\/+$/, '') || '/';
-        } catch (error) {
-          germanPath = '/';
-        }
+      var germanPath = '/';
+      try {
+        germanPath = new URL(germanLink.getAttribute('href'), window.location.origin).pathname;
+        germanPath = germanPath.replace(/\/+$/, '') || '/';
+      } catch (error) {
+        return;
       }
 
+      var hindiRoute = hindiRoutesByGermanPath[germanPath];
+      if (!hindiRoute) return;
+
       var hindiLink = document.createElement('a');
-      hindiLink.href = hindiRoutesByGermanPath[germanPath] || '/hi/';
+      hindiLink.href = hindiRoute;
       hindiLink.setAttribute('hreflang', 'hi');
 
       if (document.documentElement.lang.toLowerCase().indexOf('hi') === 0) {
@@ -149,7 +260,9 @@
   }
 
   function initHeaderControls() {
+    ensureJapaneseLanguageOption();
     ensureKoreanLanguageOption();
+    ensureIndonesianLanguageOption();
     ensureHindiLanguageOption();
 
     var header = document.getElementById('siteHeader');
