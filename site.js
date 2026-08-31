@@ -215,7 +215,8 @@
       '/meine-geschichte-teil-2': '/hi/meine-geschichte-teil-2',
       '/laermbedingter-tinnitus': '/hi/laermbedingter-tinnitus',
       '/stressbedingter-tinnitus': '/hi/stressbedingter-tinnitus',
-      '/medikamente-gifte-tinnitus': '/hi/medikamente-gifte-tinnitus'
+      '/medikamente-gifte-tinnitus': '/hi/medikamente-gifte-tinnitus',
+      '/mein-loesungsansatz': '/hi/mein-loesungsansatz'
     };
 
     document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
