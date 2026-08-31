@@ -1,0 +1,105 @@
+name: Salvage Indonesian text payload
+
+on:
+  push:
+    branches:
+      - id-payload-salvage-20260831
+    paths:
+      - .github/workflows/salvage-id-text-payload.yml
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  salvage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out payload branch
+        uses: actions/checkout@v4
+        with:
+          ref: id-payload-salvage-20260831
+          fetch-depth: 1
+
+      - name: Recover first valid gzip member from duplicated base64 stream
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import base64, gzip, hashlib, io, json, re, tarfile, zlib
+
+          parts = sorted(Path('.id-repair-payload').glob('chunk-*.b64'))
+          if not parts:
+              raise SystemExit('No payload chunks found')
+          raw = ''.join(re.sub(r'\s+', '', p.read_text(encoding='utf-8')) for p in parts)
+          starts = [m.start() for m in re.finditer('H4sI', raw)]
+          print('chunks:', [(p.name, p.stat().st_size) for p in parts])
+          print('base64 length:', len(raw), 'gzip markers:', starts)
+
+          expected = {
+              '404.html', 'faq.html', 'informasi-hukum.html',
+              'kebijakan-privasi.html', 'kisah-pengalaman.html',
+              'kontak.html', 'sumber-ilmiah.html'
+          }
+          recovered = None
+          chosen = None
+          diagnostics = []
+          for start in starts or [0]:
+              candidate = raw[start:]
+              candidate += '=' * ((4 - len(candidate) % 4) % 4)
+              try:
+                  data = base64.b64decode(candidate, validate=False)
+              except Exception as exc:
+                  diagnostics.append((start, 'base64', str(exc)))
+                  continue
+              try:
+                  dec = zlib.decompressobj(16 + zlib.MAX_WBITS)
+                  tar_bytes = dec.decompress(data) + dec.flush()
+                  if not dec.eof:
+                      diagnostics.append((start, 'gzip', 'no end-of-stream'))
+                      continue
+                  with tarfile.open(fileobj=io.BytesIO(tar_bytes), mode='r:') as tf:
+                      names = {Path(m.name).name for m in tf.getmembers() if m.isfile() and m.name.endswith('.html')}
+                  missing = expected - names
+                  print('candidate', start, 'tar bytes', len(tar_bytes), 'html', sorted(names), 'missing', sorted(missing))
+                  if not missing:
+                      recovered = tar_bytes
+                      chosen = start
+                      break
+              except Exception as exc:
+                  diagnostics.append((start, 'decode', repr(exc)))
+
+          if recovered is None:
+              print('diagnostics:', diagnostics)
+              raise SystemExit('No complete Indonesian text payload could be salvaged')
+
+          out = Path('/tmp/id-text-payload-salvaged.tar.gz')
+          out.write_bytes(gzip.compress(recovered, compresslevel=9, mtime=0))
+          digest = hashlib.sha256(out.read_bytes()).hexdigest()
+          manifest = {
+              'source_chunks': [p.name for p in parts],
+              'source_base64_length': len(raw),
+              'chosen_base64_offset': chosen,
+              'sha256': digest,
+              'size': out.stat().st_size,
+              'expected_html': sorted(expected),
+          }
+          Path('/tmp/ID_PAYLOAD_SALVAGE_MANIFEST.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
+          print(json.dumps(manifest, indent=2))
+          PY
+          gzip -t /tmp/id-text-payload-salvaged.tar.gz
+          mkdir -p /tmp/id-salvaged-check
+          tar -xzf /tmp/id-text-payload-salvaged.tar.gz -C /tmp/id-salvaged-check
+          find /tmp/id-salvaged-check -type f -printf '%P\t%s bytes\n' | sort
+
+      - name: Upload recovered text payload
+        uses: actions/upload-artifact@v4
+        with:
+          name: id-text-payload-salvaged-20260831
+          path: |
+            /tmp/id-text-payload-salvaged.tar.gz
+            /tmp/ID_PAYLOAD_SALVAGE_MANIFEST.json
+          retention-days: 3
+          if-no-files-found: error
