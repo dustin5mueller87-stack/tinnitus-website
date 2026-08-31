@@ -1,0 +1,102 @@
+name: Correct reviewed Spanish noise cascade image
+
+on:
+  push:
+    branches:
+      - review/es-laerm-2026-08-31
+
+permissions:
+  contents: write
+
+jobs:
+  fix-image:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: review/es-laerm-2026-08-31
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install exact image dependencies
+        shell: bash
+        run: |
+          python -m pip install --quiet 'Pillow==12.3.0'
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-roboto
+      - name: Correct only the two audited embedded labels
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageDraw, ImageFont
+          import hashlib
+
+          path = Path('img/es-cascada-acufenos.webp')
+          raw = path.read_bytes()
+          source_sha256 = hashlib.sha256(raw).hexdigest()
+          expected_source = '8547aaa6a90af4e4a28107032b67849089a1f852662c1367588e4a8ce5cf2f16'
+          if source_sha256 != expected_source:
+              raise SystemExit(f'Source image drift: expected {expected_source}, found {source_sha256}')
+
+          image = Image.open(path).convert('RGB')
+          if image.size != (1240, 827):
+              raise SystemExit(f'Unexpected image dimensions: {image.size}')
+
+          draw = ImageDraw.Draw(image)
+          # Remove only the old embedded Spanish wording. The surrounding
+          # diagram, arrows, leader lines and all other labels remain intact.
+          draw.rectangle((165, 116, 315, 174), fill=(0, 0, 0))
+          draw.rectangle((10, 240, 136, 299), fill=(0, 0, 0))
+          draw.rectangle((10, 299, 90, 316), fill=(0, 0, 0))
+
+          candidates = [
+              Path('/usr/share/fonts/truetype/roboto/unhinted/RobotoCondensed-Regular.ttf'),
+              Path('/usr/share/fonts/truetype/roboto/RobotoCondensed-Regular.ttf'),
+          ]
+          font_path = next((candidate for candidate in candidates if candidate.exists()), None)
+          if font_path is None:
+              raise SystemExit('Roboto Condensed Regular was not found')
+          font = ImageFont.truetype(str(font_path), 16)
+          text_fill = (235, 235, 235)
+
+          draw.multiline_text(
+              (168, 120),
+              'Haz de estereocilios\ninclinado',
+              font=font,
+              fill=text_fill,
+              spacing=2,
+          )
+          draw.multiline_text(
+              (17, 247),
+              'El canal iónico\nqueda demasiado\nabierto',
+              font=font,
+              fill=text_fill,
+              spacing=2,
+          )
+
+          image.save(path, 'WEBP', quality=95, method=6)
+          result = Image.open(path)
+          if result.size != (1240, 827):
+              raise SystemExit('Corrected image dimensions changed')
+          if hashlib.sha256(path.read_bytes()).hexdigest() == source_sha256:
+              raise SystemExit('Image was not changed')
+          print('Corrected image SHA-256:', hashlib.sha256(path.read_bytes()).hexdigest())
+          PY
+      - name: Commit only the corrected cascade image
+        shell: bash
+        run: |
+          rm -f .github/workflows/es-noise-image-fix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add img/es-cascada-acufenos.webp .github/workflows/es-noise-image-fix.yml
+          changed="$(git diff --cached --name-only | sort)"
+          expected="$(printf '%s\n' .github/workflows/es-noise-image-fix.yml img/es-cascada-acufenos.webp | sort)"
+          if [ "$changed" != "$expected" ]; then
+            printf 'Unexpected staged paths:\n%s\n' "$changed"
+            exit 1
+          fi
+          git commit -m "Correct audited Spanish noise cascade image"
+          git push origin HEAD:review/es-laerm-2026-08-31
