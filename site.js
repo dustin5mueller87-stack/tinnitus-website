@@ -2192,7 +2192,7 @@
                           : pageLang.indexOf('ko') === 0
                             ? "이명은 정해진 운명이 아닙니다. 제가 이명 지옥에서 빠져나온 과정이나 영양소 프로토콜에 관해 궁금한 점이 있나요?"
                             : pageLang.indexOf('hi') === 0
-                              ? "टिनिटस कोई अटल नियति नहीं है। टिनिटस के नर्क से बाहर निकलने के मेरे रास्ते या पोषक तत्व प्रोटोकॉल के बारे में आपके सवाल हैं?"
+                              ? "टिनिटस कोई अटल नियति नहीं है। टिनिटस के नर्क से बाहर निकलने के मेरे रास्ते या पोषक-तत्त्व प्रोटोकॉल के बारे में आपके सवाल हैं?"
                               : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
               window.voiceflow.chat.proactive.push({
                 type: 'text',
