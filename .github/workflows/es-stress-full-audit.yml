@@ -1,0 +1,138 @@
+name: Exhaustive Arsenal audit for Spanish stress page
+
+on:
+  push:
+    branches:
+      - review/es-stress-2026-08-31
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  QWEN_MODEL: /tmp/qwen2.5-7b-instruct-q5_k_m.gguf
+
+jobs:
+  audit:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - name: Check out isolated stress-page branch
+        uses: actions/checkout@v4
+        with:
+          ref: review/es-stress-2026-08-31
+          fetch-depth: 0
+
+      - name: Fetch latest main without touching it
+        shell: bash
+        run: git fetch origin main
+
+      - name: Install exact audit and rendering dependencies
+        shell: bash
+        run: |
+          python -m pip install --quiet --upgrade \
+            'llama-cpp-python==0.3.16' \
+            --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+          python -m pip install --quiet \
+            'beautifulsoup4==4.13.5' \
+            'lxml==6.0.1' \
+            'playwright==1.55.0'
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            unzip imagemagick \
+            tesseract-ocr tesseract-ocr-spa tesseract-ocr-deu tesseract-ocr-eng
+          python -m playwright install --with-deps chromium
+
+      - name: Download the stress input and the complete Arsenal source package
+        shell: bash
+        run: |
+          rm -rf /tmp/es-stress-input
+          mkdir -p /tmp/es-stress-input/stress /tmp/es-stress-input/arsenal-source
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9744993347/zip > /tmp/es-stress-input/stress.zip
+          unzip -q /tmp/es-stress-input/stress.zip -d /tmp/es-stress-input/stress
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/9741668827/zip > /tmp/es-stress-input/arsenal-source.zip
+          unzip -q /tmp/es-stress-input/arsenal-source.zip -d /tmp/es-stress-input/arsenal-source
+          find /tmp/es-stress-input -type f -printf '%p\n' | sort > /tmp/es-stress-input/INPUT_MANIFEST.txt
+          test -s /tmp/es-stress-input/INPUT_MANIFEST.txt
+
+      - name: Download pinned multilingual audit model
+        shell: bash
+        run: |
+          if [ ! -s "$QWEN_MODEL" ]; then
+            URL1='https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF/resolve/main/qwen2.5-7b-instruct-q5_k_m.gguf?download=true'
+            URL2='https://huggingface.co/Qwen/Qwen2.5-7B-Instruct-GGUF/resolve/main/qwen2.5-7b-instruct-q4_k_m.gguf?download=true'
+            curl -fL --retry 8 --retry-all-errors "$URL1" -o "$QWEN_MODEL" || \
+              curl -fL --retry 8 --retry-all-errors "$URL2" -o "$QWEN_MODEL"
+          fi
+          test "$(stat -c%s "$QWEN_MODEL")" -gt 3000000000
+
+      - name: Apply source-preserving audit-engine patch
+        shell: bash
+        run: python .audit-tmp/patch-es-stress-audit.py
+
+      - name: Audit every unit, image and technical surface
+        shell: bash
+        run: python .audit-tmp/es-stress-audit.py
+
+      - name: Verify complete real output before packaging
+        shell: bash
+        run: |
+          test -f /tmp/es-stress-audit/output/READY
+          test -f /tmp/es-stress-audit/ES_Stress_Pruefkoffer_2026-08-31.zip
+          test -f /tmp/es-stress-audit/ES_Stress_Pruefkoffer_2026-08-31.zip.sha256
+          test -f /tmp/es-stress-audit/output/ES_Stress_Blockmatrix_2026-08-31.csv
+          test -f /tmp/es-stress-audit/output/MASTER_ARBEITSAKTE_SPANISCH_WEBSITEPRUEFUNG_2026-08-31.md
+          (cd /tmp/es-stress-audit && sha256sum -c ES_Stress_Pruefkoffer_2026-08-31.zip.sha256)
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path('/tmp/es-stress-audit/output/ES_Stress_Blockmatrix_2026-08-31.csv')
+          rows=list(csv.DictReader(p.open(encoding='utf-8-sig')))
+          assert len(rows)>=40, len(rows)
+          assert all(r['status'] in {'KORRIGIERT','BEIBEHALTEN'} for r in rows)
+          print('Verified matrix rows:',len(rows))
+          PY
+
+      - name: Upload the genuine stress-page audit suitcase
+        uses: actions/upload-artifact@v4
+        with:
+          name: ES_Stress_Pruefkoffer_2026-08-31
+          path: |
+            /tmp/es-stress-audit/ES_Stress_Pruefkoffer_2026-08-31.zip
+            /tmp/es-stress-audit/ES_Stress_Pruefkoffer_2026-08-31.zip.sha256
+            /tmp/es-stress-audit/output/ES_Stress_Arsenal_Pruefbericht_2026-08-31.md
+            /tmp/es-stress-audit/output/ES_Stress_Blockmatrix_2026-08-31.csv
+            /tmp/es-stress-audit/output/ES_Stress_23_Brillen_2026-08-31.md
+            /tmp/es-stress-audit/output/ES_Stress_Bildpruefung_2026-08-31.md
+            /tmp/es-stress-audit/output/ES_Stress_STATUS.txt
+            /tmp/es-stress-audit/output/MASTER_ARBEITSAKTE_SPANISCH_WEBSITEPRUEFUNG_2026-08-31.md
+            /tmp/es-stress-audit/output/geprueft/acufenos-por-estres_GEPRUEFT.html
+            /tmp/es-stress-audit/output/ES_Stress_Aenderungen.diff
+            /tmp/es-stress-audit/output/technical-validation.json
+            /tmp/es-stress-audit/output/render/*.png
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Rebuild the review branch cleanly on the newest main
+        shell: bash
+        run: |
+          mkdir -p /tmp/es-stress-final
+          cp es/acufenos-por-estres.html /tmp/es-stress-final/acufenos-por-estres.html
+          git checkout -B review/es-stress-2026-08-31 origin/main
+          cp /tmp/es-stress-final/acufenos-por-estres.html es/acufenos-por-estres.html
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add es/acufenos-por-estres.html
+          CHANGED="$(git diff --cached --name-only)"
+          if [ -n "$CHANGED" ] && [ "$CHANGED" != "es/acufenos-por-estres.html" ]; then
+            echo "Unexpected files: $CHANGED" >&2
+            exit 1
+          fi
+          if git diff --cached --quiet; then
+            git commit --allow-empty -m "Audit Spanish stress-related tinnitus page without textual changes"
+          else
+            git commit -m "Prepare audited Spanish stress-related tinnitus page"
+          fi
+          git push --force-with-lease origin HEAD:review/es-stress-2026-08-31
