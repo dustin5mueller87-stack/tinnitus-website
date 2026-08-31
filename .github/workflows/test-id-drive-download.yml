@@ -1,0 +1,32 @@
+name: Test Indonesian package download
+
+on:
+  push:
+    branches:
+      - id-drive-download-test-20260831
+    paths:
+      - .github/workflows/test-id-drive-download.yml
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Download and verify package
+        shell: bash
+        run: |
+          set -euo pipefail
+          id='15HvWYaiv75cwz2LHHIfpgHPbhKAw7UQ1'
+          python -m pip install --quiet gdown
+          if ! gdown "https://drive.google.com/uc?id=${id}" -O /tmp/id.zip; then
+            curl --fail --location --retry 2 --retry-all-errors \
+              "https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t" \
+              --output /tmp/id.zip
+          fi
+          test -s /tmp/id.zip
+          echo '73c239ccd66e09fe9006695361a5d497f87e2476b6a8739d0a80524f991b3e98  /tmp/id.zip' | sha256sum --check --strict
+          unzip -t /tmp/id.zip >/dev/null
+          echo DOWNLOAD_PASS
