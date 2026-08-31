@@ -1,0 +1,408 @@
+name: Salvage and safely publish Indonesian pages v2
+
+on:
+  push:
+    branches:
+      - id-payload-salvage-20260831
+    paths:
+      - .github/workflows/salvage-and-publish-indonesian-v2.yml
+
+concurrency:
+  group: indonesian-safe-publication
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out salvage payload branch
+        uses: actions/checkout@v4
+        with:
+          ref: id-payload-salvage-20260831
+          path: payload
+          fetch-depth: 1
+
+      - name: Check out newest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: repo
+          fetch-depth: 0
+
+      - name: Recover reconstructed Indonesian pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import base64, io, re, tarfile, zlib
+
+          parts = sorted(Path('payload/.id-repair-payload').glob('chunk-*.b64'))
+          raw = ''.join(re.sub(r'\s+', '', p.read_text(encoding='utf-8')) for p in parts)
+          expected = {
+              '404.html', 'faq.html', 'informasi-hukum.html',
+              'kebijakan-privasi.html', 'kisah-pengalaman.html',
+              'kontak.html', 'sumber-ilmiah.html'
+          }
+          recovered = None
+          for match in list(re.finditer('H4sI', raw)) or [None]:
+              start = match.start() if match else 0
+              encoded = raw[start:]
+              encoded += '=' * ((4 - len(encoded) % 4) % 4)
+              try:
+                  data = base64.b64decode(encoded, validate=False)
+                  decoder = zlib.decompressobj(16 + zlib.MAX_WBITS)
+                  tar_bytes = decoder.decompress(data) + decoder.flush()
+                  if not decoder.eof:
+                      continue
+                  with tarfile.open(fileobj=io.BytesIO(tar_bytes), mode='r:') as archive:
+                      names = {Path(member.name).name for member in archive.getmembers() if member.isfile() and member.name.endswith('.html')}
+                  if expected <= names:
+                      recovered = tar_bytes
+                      print(f'RECOVERY_PASS offset={start} files={sorted(names)}')
+                      break
+              except Exception as exc:
+                  print(f'Recovery candidate {start} rejected: {exc!r}')
+          if recovered is None:
+              raise SystemExit('Could not recover all seven reconstructed Indonesian pages')
+
+          destination = Path('/tmp/id-recovered-v2')
+          destination.mkdir(parents=True, exist_ok=True)
+          with tarfile.open(fileobj=io.BytesIO(recovered), mode='r:') as archive:
+              archive.extractall(destination)
+          for name in expected:
+              matches = list(destination.rglob(name))
+              if len(matches) != 1:
+                  raise SystemExit(f'Recovered payload contains {len(matches)} copies of {name}')
+          PY
+
+      - name: Rebase the repair on the newest production state and integrate narrowly
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C repo fetch origin main --quiet
+          git -C repo reset --hard origin/main
+          git -C repo clean -fdx
+          git -C repo rev-parse HEAD | tee /tmp/id-v2-base.txt
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlparse
+          import html, re, shutil, subprocess
+
+          repo = Path('repo')
+          id_dir = repo / 'id'
+          recovered = Path('/tmp/id-recovered-v2')
+          expected_new = {
+              '404.html', 'faq.html', 'informasi-hukum.html',
+              'kebijakan-privasi.html', 'kisah-pengalaman.html',
+              'kontak.html', 'sumber-ilmiah.html'
+          }
+
+          for name in sorted(expected_new):
+              source_matches = list(recovered.rglob(name))
+              source = source_matches[0]
+              target = id_dir / name
+              if target.exists() and target.read_bytes() != source.read_bytes():
+                  history = subprocess.run(
+                      ['git', '-C', str(repo), 'log', '-1', '--format=%s', '--', f'id/{name}'],
+                      check=True, capture_output=True, text=True
+                  ).stdout.strip()
+                  if history != 'Publish complete Indonesian pages and navigation':
+                      raise SystemExit(f'Existing different {name} was not created by the Indonesian repair; refusing overwrite')
+              shutil.copy2(source, target)
+
+          # Remove staging-only noindex directives now that this is the complete public release.
+          robots_noindex = re.compile(
+              r'\s*<meta\b(?=[^>]*\bname=["\']robots["\'])(?=[^>]*\bcontent=["\'][^"\']*noindex[^"\']*["\'])[^>]*>\s*',
+              re.I
+          )
+          for name in sorted(expected_new - {'404.html'}):
+              page = id_dir / name
+              text = page.read_text(encoding='utf-8')
+              text = robots_noindex.sub('\n', text)
+              page.write_text(text, encoding='utf-8')
+
+          # Keep the source page functional with the existing original-document images.
+          sources = id_dir / 'sumber-ilmiah.html'
+          source_text = sources.read_text(encoding='utf-8')
+          source_text = source_text.replace('quellen-laser-atp-id.webp', 'quellen-laser-atp.webp')
+          source_text = source_text.replace('quellen-naehrstoffe-atp-id.webp', 'quellen-naehrstoffe-atp.webp')
+          sources.write_text(source_text, encoding='utf-8')
+
+          localized_routes = {
+              '/produkte': '/id/produk',
+              '/wissenschaftliche-quellen': '/id/sumber-ilmiah',
+              '/erfahrungsberichte': '/id/kisah-pengalaman',
+              '/faq': '/id/faq',
+              '/kontakt': '/id/kontak',
+              '/impressum': '/id/informasi-hukum',
+              '/datenschutz': '/id/kebijakan-privasi',
+          }
+          anchor_pattern = re.compile(r'<a\b[^>]*>', re.I)
+          href_pattern = re.compile(r'\bhref=(?P<quote>["\'])(?P<value>.*?)(?P=quote)', re.I)
+          german_language = re.compile(r'\bhreflang=["\']de["\']', re.I)
+          fallback_marker = re.compile(r'\s+data-language-fallback=["\']de["\']', re.I)
+
+          def patch_anchor(match):
+              tag = match.group(0)
+              href = href_pattern.search(tag)
+              if not href or german_language.search(tag):
+                  return tag
+              path = urlparse(html.unescape(href.group('value'))).path.rstrip('/') or '/'
+              new_path = localized_routes.get(path)
+              if not new_path:
+                  return tag
+              replacement = f"href={href.group('quote')}{new_path}{href.group('quote')}"
+              tag = tag[:href.start()] + replacement + tag[href.end():]
+              return fallback_marker.sub('', tag)
+
+          for page in sorted(id_dir.glob('*.html')):
+              text = page.read_text(encoding='utf-8')
+              page.write_text(anchor_pattern.sub(patch_anchor, text), encoding='utf-8')
+
+          js_path = repo / 'site.js'
+          js = js_path.read_text(encoding='utf-8')
+          routes = [
+              ("/produkte", "/id/produk"),
+              ("/wissenschaftliche-quellen", "/id/sumber-ilmiah"),
+              ("/erfahrungsberichte", "/id/kisah-pengalaman"),
+              ("/faq", "/id/faq"),
+              ("/kontakt", "/id/kontak"),
+              ("/impressum", "/id/informasi-hukum"),
+              ("/datenschutz", "/id/kebijakan-privasi"),
+          ]
+          missing = [f"      '{de}': '{identifier}'" for de, identifier in routes if f"'{de}': '{identifier}'" not in js]
+          if missing:
+              marker = "      '/mein-loesungsansatz': '/id/pendekatan-saya'"
+              if marker not in js:
+                  raise SystemExit('Indonesian route map changed concurrently; refusing a blind site.js edit')
+              js = js.replace(marker, marker + ',\n' + ',\n'.join(missing), 1)
+          js_path.write_text(js, encoding='utf-8')
+
+          sitemap_path = repo / 'sitemap.xml'
+          sitemap = sitemap_path.read_text(encoding='utf-8')
+          blocks = []
+          for loc in (
+              'https://tinnitusbioregulation.com/id/produk',
+              'https://tinnitusbioregulation.com/id/sumber-ilmiah',
+          ):
+              if f'<loc>{loc}</loc>' not in sitemap:
+                  blocks.append(
+                      '  <url>\n'
+                      f'    <loc>{loc}</loc>\n'
+                      '    <lastmod>2026-08-31</lastmod>\n'
+                      '    <changefreq>monthly</changefreq>\n'
+                      '    <priority>0.8</priority>\n'
+                      '  </url>\n'
+                  )
+          if blocks:
+              if '</urlset>' not in sitemap:
+                  raise SystemExit('sitemap.xml structure changed concurrently')
+              sitemap = sitemap.replace('</urlset>', ''.join(blocks) + '</urlset>', 1)
+          sitemap_path.write_text(sitemap, encoding='utf-8')
+          PY
+
+      - name: Full pre-push validation including preservation of Hindi work
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check repo/site.js
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlparse
+          import html, json, re
+
+          repo = Path('repo')
+          id_dir = repo / 'id'
+          expected = {
+              'index.html', 'tinnitus-sembuh-kisah-saya.html',
+              'kisah-tinnitus-saya-bagian-1.html', 'kisah-tinnitus-saya-bagian-2.html',
+              'tinnitus-akibat-kebisingan.html', 'tinnitus-akibat-stres.html',
+              'tinnitus-akibat-obat-dan-zat-beracun.html', 'pendekatan-saya.html',
+              'produk.html', 'sumber-ilmiah.html', 'kisah-pengalaman.html',
+              'faq.html', 'kontak.html', 'informasi-hukum.html',
+              'kebijakan-privasi.html', '404.html'
+          }
+          errors = []
+          actual = {p.name for p in id_dir.glob('*.html')}
+          if actual != expected:
+              errors.append(f'Indonesian page set mismatch: missing={sorted(expected-actual)} extra={sorted(actual-expected)}')
+
+          legacy = {'/produkte', '/wissenschaftliche-quellen', '/erfahrungsberichte', '/faq', '/kontakt', '/impressum', '/datenschutz'}
+          source_links = 0
+          for page in sorted(id_dir.glob('*.html')):
+              text = page.read_text(encoding='utf-8')
+              if not re.search(r'<html\b[^>]*\blang=["\']id(?:[-_][^"\']*)?["\']', text, re.I):
+                  errors.append(f'{page.name}: lang=id missing')
+              ids = re.findall(r'\bid=["\']([^"\']+)["\']', text, re.I)
+              if len(ids) != len(set(ids)):
+                  errors.append(f'{page.name}: duplicate HTML IDs')
+              if 'TRANSLATE_ME' in text or 'TODO_TRANSLATION' in text:
+                  errors.append(f'{page.name}: translation placeholder')
+              if page.name != '404.html':
+                  canonical = re.search(r'<link\b(?=[^>]*\brel=["\']canonical["\'])[^>]*\bhref=["\']([^"\']+)["\']', text, re.I)
+                  if not canonical or not urlparse(html.unescape(canonical.group(1))).path.startswith('/id'):
+                      errors.append(f'{page.name}: Indonesian canonical missing')
+                  if re.search(r'<meta\b(?=[^>]*\bname=["\']robots["\'])[^>]*\bcontent=["\'][^"\']*noindex', text, re.I):
+                      errors.append(f'{page.name}: noindex remains')
+              for block in re.findall(r'<script\b[^>]*type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', text, re.I | re.S):
+                  try:
+                      json.loads(html.unescape(block.strip()))
+                  except Exception as exc:
+                      errors.append(f'{page.name}: invalid JSON-LD: {exc}')
+              for tag in re.findall(r'<a\b[^>]*>', text, re.I):
+                  href = re.search(r'\bhref=["\']([^"\']+)["\']', tag, re.I)
+                  if href:
+                      path = urlparse(html.unescape(href.group(1))).path.rstrip('/') or '/'
+                      if path in legacy and not re.search(r'\bhreflang=["\']de["\']', tag, re.I):
+                          errors.append(f'{page.name}: legacy German menu route {path}')
+              if re.search(r'data-language-fallback=["\']de["\']', text, re.I):
+                  errors.append(f'{page.name}: DE fallback marker remains')
+              if page.name == 'sumber-ilmiah.html':
+                  source_links = len(re.findall(r'<a\b[^>]*\bhref=["\']https?://', text, re.I))
+
+          if source_links < 50:
+              errors.append(f'sumber-ilmiah.html: only {source_links} external references')
+          source_text = (id_dir / 'sumber-ilmiah.html').read_text(encoding='utf-8')
+          for image in ('quellen-laser-atp.webp', 'quellen-naehrstoffe-atp.webp'):
+              if image not in source_text or not (repo / 'img' / image).is_file():
+                  errors.append(f'sumber-ilmiah.html: source image unavailable: {image}')
+
+          js = (repo / 'site.js').read_text(encoding='utf-8')
+          required = (
+              "'/produkte': '/id/produk'",
+              "'/wissenschaftliche-quellen': '/id/sumber-ilmiah'",
+              "'/erfahrungsberichte': '/id/kisah-pengalaman'",
+              "'/faq': '/id/faq'",
+              "'/kontakt': '/id/kontak'",
+              "'/impressum': '/id/informasi-hukum'",
+              "'/datenschutz': '/id/kebijakan-privasi'",
+              'function ensureHindiLanguageOption()',
+              "'/': '/hi/'",
+          )
+          for needle in required:
+              if needle not in js:
+                  errors.append(f'site.js missing preserved/integrated entry: {needle}')
+
+          if not (repo / 'hi' / 'index.html').is_file():
+              errors.append('Hindi homepage disappeared')
+          sitemap = (repo / 'sitemap.xml').read_text(encoding='utf-8')
+          for route in ('/id/produk', '/id/sumber-ilmiah'):
+              if sitemap.count('https://tinnitusbioregulation.com' + route) != 1:
+                  errors.append(f'sitemap route absent or duplicated: {route}')
+
+          if errors:
+              print('\n'.join('ERROR: ' + item for item in errors))
+              raise SystemExit(f'Validation failed with {len(errors)} errors')
+          print(f'PRE_PUSH_PASS pages=16 source_links={source_links} hindi=preserved')
+          PY
+
+          cd repo
+          unexpected="$(git diff --name-only | grep -Ev '^(id/[^/]+\.html|site\.js|sitemap\.xml)$' || true)"
+          if [ -n "$unexpected" ]; then
+            printf 'Unexpected changed paths:\n%s\n' "$unexpected" >&2
+            exit 51
+          fi
+
+      - name: Commit without force and replay atop any unrelated concurrent deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd repo
+          git config user.name 'OpenAI Indonesian Repair'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add id/*.html site.js sitemap.xml
+          if git diff --cached --quiet; then
+            echo 'Repository already contains the complete Indonesian integration.'
+          else
+            git commit -m 'Publish complete Indonesian pages and navigation'
+          fi
+
+          success=0
+          for attempt in 1 2 3; do
+            git fetch origin main --quiet
+            if ! git merge-base --is-ancestor origin/main HEAD; then
+              git rebase origin/main || {
+                git rebase --abort || true
+                echo 'Concurrent publication touched the same paths; refusing overwrite.' >&2
+                exit 61
+              }
+            fi
+            if git diff --quiet origin/main HEAD; then
+              success=1
+              break
+            fi
+            if git push origin HEAD:main; then
+              success=1
+              break
+            fi
+            echo "Non-forced push race ${attempt}; retrying from newest main."
+          done
+          test "$success" -eq 1
+          git rev-parse HEAD | tee /tmp/id-v2-published-sha.txt
+
+      - name: Verify the actual Netlify production pages and menu
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha="$(cat /tmp/id-v2-published-sha.txt)"
+          base='https://tinnitusbioregulation.com'
+          routes=(
+            '/id/' '/id/produk' '/id/sumber-ilmiah' '/id/kisah-pengalaman'
+            '/id/faq' '/id/kontak' '/id/informasi-hukum' '/id/kebijakan-privasi'
+          )
+          live=0
+          for attempt in $(seq 1 84); do
+            live=1
+            rm -rf /tmp/id-live-v2 && mkdir -p /tmp/id-live-v2
+            for route in "${routes[@]}"; do
+              safe="$(printf '%s' "$route" | tr '/-' '__')"
+              code="$(curl --silent --show-error --location --output "/tmp/id-live-v2/${safe}.html" --write-out '%{http_code}' "${base}${route}?id-release=${sha}")"
+              if [ "$code" != '200' ] || ! grep -Eqi '<html[^>]+lang=["'"']id' "/tmp/id-live-v2/${safe}.html"; then
+                live=0
+                break
+              fi
+            done
+            if [ "$live" -eq 1 ]; then
+              home='/tmp/id-live-v2/_id_.html'
+              for href in '/id/produk' '/id/sumber-ilmiah' '/id/kisah-pengalaman' '/id/kontak'; do
+                grep -q "href=\"${href}\"" "$home" || live=0
+              done
+              ! grep -q 'data-language-fallback="de"' "$home" || live=0
+              grep -Eqi 'Sumber|ilmiah|Penelitian' '/tmp/id-live-v2/_id_sumber_ilmiah.html' || live=0
+            fi
+            if [ "$live" -eq 1 ]; then
+              echo "PRODUCTION_PASS sha=${sha} attempt=${attempt}"
+              break
+            fi
+            sleep 5
+          done
+          test "$live" -eq 1
+
+          cat > /tmp/ID_INDONESIAN_PUBLICATION_STATUS.txt <<EOF
+          Indonesian production publication: PASS
+          Main commit: ${sha}
+          Verified UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          Indonesian HTML pages: 16
+          Live routes checked: 8
+          Menu fallbacks: removed
+          Hindi publication: preserved
+          Push method: non-forced, rebased on latest main
+          EOF
+
+      - name: Store a verifiable status marker on an isolated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd repo
+          git fetch origin main --quiet
+          git checkout -B id-publication-status-20260831 origin/main
+          cp /tmp/ID_INDONESIAN_PUBLICATION_STATUS.txt ID_INDONESIAN_PUBLICATION_STATUS.txt
+          git add ID_INDONESIAN_PUBLICATION_STATUS.txt
+          git commit -m 'Record verified Indonesian production publication' || true
+          git push --force origin HEAD:id-publication-status-20260831
