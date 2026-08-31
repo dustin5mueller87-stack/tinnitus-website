@@ -260,11 +260,74 @@
     });
   }
 
+  function ensureArabicLanguageOption() {
+    var arabicRoutesByGermanPath = {
+      '/': '/ar/',
+      '/tinnitus-geheilt-erfahrungsbericht': '/ar/tinnitus-geheilt-erfahrungsbericht',
+      '/meine-geschichte-teil-1': '/ar/meine-geschichte-teil-1',
+      '/meine-geschichte-teil-2': '/ar/meine-geschichte-teil-2',
+      '/laermbedingter-tinnitus': '/ar/laermbedingter-tinnitus',
+      '/stressbedingter-tinnitus': '/ar/stressbedingter-tinnitus',
+      '/medikamente-gifte-tinnitus': '/ar/medikamente-gifte-tinnitus',
+      '/mein-loesungsansatz': '/ar/mein-loesungsansatz',
+      '/produkte': '/ar/produkte',
+      '/wissenschaftliche-quellen': '/ar/wissenschaftliche-quellen',
+      '/erfahrungsberichte': '/ar/erfahrungsberichte',
+      '/faq': '/ar/faq',
+      '/kontakt': '/ar/kontakt',
+      '/impressum': '/ar/impressum',
+      '/datenschutz': '/ar/datenschutz'
+    };
+
+    document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
+      if (menu.querySelector('a[hreflang="ar"]')) return;
+
+      var germanLink = menu.querySelector('a[hreflang="de"]');
+      if (!germanLink) return;
+
+      var germanPath = '/';
+      try {
+        germanPath = new URL(germanLink.getAttribute('href'), window.location.origin).pathname;
+        germanPath = germanPath.replace(/\/+$/, '') || '/';
+      } catch (error) {
+        return;
+      }
+
+      var arabicRoute = arabicRoutesByGermanPath[germanPath];
+      if (!arabicRoute) return;
+
+      var arabicLink = document.createElement('a');
+      arabicLink.href = arabicRoute;
+      arabicLink.setAttribute('hreflang', 'ar');
+
+      if (document.documentElement.lang.toLowerCase().indexOf('ar') === 0) {
+        arabicLink.classList.add('active');
+        arabicLink.setAttribute('aria-current', 'page');
+      }
+
+      var languageCode = document.createElement('span');
+      languageCode.className = 'lang-code';
+      languageCode.setAttribute('dir', 'ltr');
+      languageCode.textContent = 'AR';
+
+      var languageName = document.createElement('span');
+      languageName.className = 'lang-name';
+      languageName.setAttribute('lang', 'ar');
+      languageName.setAttribute('dir', 'rtl');
+      languageName.textContent = 'العربية';
+
+      arabicLink.appendChild(languageCode);
+      arabicLink.appendChild(languageName);
+      menu.appendChild(arabicLink);
+    });
+  }
+
   function initHeaderControls() {
     ensureJapaneseLanguageOption();
     ensureKoreanLanguageOption();
     ensureIndonesianLanguageOption();
     ensureHindiLanguageOption();
+    ensureArabicLanguageOption();
 
     var header = document.getElementById('siteHeader');
     var burger = document.getElementById('navBurger');
@@ -344,6 +407,7 @@
   function injectOverlay() {
     if (document.getElementById('lightbox')) return;
     var pageLang = document.documentElement.lang.toLowerCase();
+    var isRtl = document.documentElement.dir.toLowerCase() === 'rtl';
     var labels = pageLang.indexOf('en') === 0 ? {
       viewer: 'Image viewer',
       close: 'Close',
@@ -417,6 +481,14 @@
       translationRegion: 'दस्तावेज़ का हिंदी अनुवाद',
       translationShow: 'हिंदी अनुवाद दिखाएँ',
       translationOriginal: 'जर्मन मूल दस्तावेज़ दिखाएँ'
+    } : pageLang.indexOf('ar') === 0 ? {
+      viewer: 'عارض الصور',
+      close: 'إغلاق',
+      previous: 'الصورة السابقة',
+      next: 'الصورة التالية',
+      translationRegion: 'ترجمة الوثيقة',
+      translationShow: 'عرض الترجمة العربية',
+      translationOriginal: 'عرض الأصل الألماني'
     } : {
       viewer: 'Bildansicht',
       close: 'Schließen',
@@ -430,10 +502,12 @@
     overlay.setAttribute('aria-modal', 'true');
     overlay.setAttribute('aria-label', labels.viewer);
     overlay.setAttribute('aria-describedby', 'lightboxCaption');
+    overlay.setAttribute('lang', pageLang.split('-')[0] || 'de');
+    overlay.setAttribute('dir', document.documentElement.dir || 'ltr');
     overlay.innerHTML =
       '<button class="lightbox-close" type="button" aria-label="' + labels.close + '">×</button>' +
-      '<button class="lightbox-nav lightbox-prev" type="button" aria-label="' + labels.previous + '" style="position: absolute; left: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">‹</button>' +
-      '<button class="lightbox-nav lightbox-next" type="button" aria-label="' + labels.next + '" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">›</button>' +
+      '<button class="lightbox-nav lightbox-prev" type="button" aria-label="' + labels.previous + '" style="position: absolute; left: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">' + (isRtl ? '›' : '‹') + '</button>' +
+      '<button class="lightbox-nav lightbox-next" type="button" aria-label="' + labels.next + '" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%); background: rgba(20, 18, 14, 0.4); border: 1px solid rgba(243, 236, 220, 0.3); color: #f3ecdc; width: 48px; height: 48px; border-radius: 50%; font-size: 24px; cursor: pointer; z-index: 1010; display: none; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; outline: none; user-select: none;">' + (isRtl ? '‹' : '›') + '</button>' +
       '<div class="lightbox-frame">' +
       '  <div class="lightbox-document-stage">' +
       '    <img id="lightboxImg" alt="">' +
@@ -448,6 +522,7 @@
   function init() {
     injectOverlay();
     var pageLang = document.documentElement.lang.toLowerCase();
+    var isRtl = document.documentElement.dir.toLowerCase() === 'rtl';
     var translationDefaults = pageLang.indexOf('fr') === 0 ? {
       show: 'Afficher la traduction française',
       original: 'Afficher l’original allemand'
@@ -472,6 +547,9 @@
     } : pageLang.indexOf('hi') === 0 ? {
       show: 'हिंदी अनुवाद दिखाएँ',
       original: 'जर्मन मूल दस्तावेज़ दिखाएँ'
+    } : pageLang.indexOf('ar') === 0 ? {
+      show: 'عرض الترجمة العربية',
+      original: 'عرض الأصل الألماني'
     } : {
       show: 'Übersetzung anzeigen',
       original: 'Original anzeigen'
@@ -771,10 +849,14 @@
           focusWithoutScroll(first);
         }
       } else if (e.key === 'ArrowRight' && uniqueTriggers.length > 1 && !translationMode) {
-        currentIdx = (currentIdx + 1) % uniqueTriggers.length;
+        currentIdx = isRtl
+          ? (currentIdx - 1 + uniqueTriggers.length) % uniqueTriggers.length
+          : (currentIdx + 1) % uniqueTriggers.length;
         updateImage();
       } else if (e.key === 'ArrowLeft' && uniqueTriggers.length > 1 && !translationMode) {
-        currentIdx = (currentIdx - 1 + uniqueTriggers.length) % uniqueTriggers.length;
+        currentIdx = isRtl
+          ? (currentIdx + 1) % uniqueTriggers.length
+          : (currentIdx - 1 + uniqueTriggers.length) % uniqueTriggers.length;
         updateImage();
       }
     });
@@ -993,10 +1075,12 @@
         var isJapanesePage = pageLang.indexOf('ja') === 0;
         var isKoreanPage = pageLang.indexOf('ko') === 0;
         var isHindiPage = pageLang.indexOf('hi') === 0;
+        var isArabicPage = pageLang.indexOf('ar') === 0;
         var czechAiDisclaimer = 'Odpovědi umělé inteligence mohou obsahovat chyby.';
         var japaneseAiDisclaimer = 'AIの回答には誤りが含まれる場合があります。';
         var koreanAiDisclaimer = 'AI 답변에는 오류가 포함될 수 있습니다.';
         var hindiAiDisclaimer = 'AI के जवाबों में गलतियाँ हो सकती हैं।';
+        var arabicAiDisclaimer = 'قد تحتوي إجابات الذكاء الاصطناعي على أخطاء.';
         var voiceflowReady = window.voiceflow.chat.load({
           verify:{projectID:'6a0977f2a62d285256e0577a'},
           url:'https://general-runtime.voiceflow.com',
@@ -1108,6 +1192,23 @@
             inputPlaceholder: 'टिनिटस, Dustin की कहानी या उनके तरीके के बारे में आप क्या जानना चाहते हैं?',
             aiDisclaimer: {
               text: hindiAiDisclaimer,
+              hide: false
+            }
+          } : isArabicPage ? {
+            title: 'مساعد طنين الأذن',
+            description: 'أسئلة عن قصة Dustin ونهجه ومصادره',
+            header: { title: 'مساعد طنين الأذن' },
+            banner: {
+              title: 'مساعد طنين الأذن',
+              description: 'أسئلة عن قصة Dustin ونهجه ومصادره'
+            },
+            launcher: {
+              label: 'مساعد طنين الأذن',
+              title: 'فتح الدردشة'
+            },
+            inputPlaceholder: 'ما الذي يهمك معرفته عن طنين الأذن أو قصة Dustin أو نهجه؟',
+            aiDisclaimer: {
+              text: arabicAiDisclaimer,
               hide: false
             }
           } : isCzechPage ? {
@@ -2005,6 +2106,210 @@
           return true;
         }
 
+        function setArabicHeaderControlLabel(button) {
+          if (!button) return;
+          var currentLabel = [
+            button.getAttribute('title') || '',
+            button.getAttribute('aria-label') || '',
+            (button.textContent || '').trim()
+          ].join(' ');
+          var path = button.querySelector('path');
+          var pathData = path ? (path.getAttribute('d') || '') : '';
+          var label = '';
+
+          if (/restart conversation|restart chat|start new chat|إعادة بدء المحادثة|بدء دردشة جديدة/i.test(currentLabel) ||
+              pathData.indexOf('M5.75 5C5.75 4.58579') === 0) {
+            label = 'إعادة بدء المحادثة';
+          } else if (/hide messages|close chat agent|close chat|إخفاء الرسائل|إغلاق الدردشة/i.test(currentLabel) ||
+                     pathData.indexOf('M17.7478 7.31915') === 0) {
+            label = 'إغلاق الدردشة';
+          }
+
+          if (label) {
+            setAttributeIfChanged(button, 'title', label);
+            setAttributeIfChanged(button, 'aria-label', label);
+          }
+        }
+
+        function ensureArabicWidgetDirection(shadowRoot) {
+          if (!isArabicPage) return;
+          setAttributeIfChanged(shadowRoot.host, 'lang', 'ar');
+          setAttributeIfChanged(shadowRoot.host, 'dir', 'rtl');
+          if (shadowRoot.querySelector('#custom-vf-arabic-styles')) return;
+
+          var style = document.createElement('style');
+          style.id = 'custom-vf-arabic-styles';
+          style.textContent = [
+            ':host {',
+            '  direction: rtl;',
+            '  font-family: "Segoe UI", Tahoma, Arial, sans-serif;',
+            '}',
+            '.vfrc-widget, .vfrc-chat, .vfrc-assistant-info, .vfrc-privacy, .vfrc-proactive {',
+            '  direction: rtl !important;',
+            '}',
+            '.vfrc-header--title, .vfrc-assistant-info--title, .vfrc-assistant-info--description,',
+            '.vfrc-message, .vfrc-privacy__title, .vfrc-privacy__description, textarea {',
+            '  text-align: right !important;',
+            '}',
+            'textarea {',
+            '  direction: rtl !important;',
+            '}'
+          ].join('\n');
+          shadowRoot.appendChild(style);
+        }
+
+        function localizeArabicLauncher(shadowRoot) {
+          var launcher = shadowRoot.querySelector('.vfrc-launcher');
+          if (!launcher) return false;
+
+          var currentTitle = [
+            launcher.getAttribute('title') || '',
+            launcher.getAttribute('aria-label') || ''
+          ].join(' ');
+          var expandedState = launcher.getAttribute('aria-expanded');
+          var chatIsOpen = expandedState === 'true' ||
+            (expandedState === null && /close chat agent|close chat|إغلاق الدردشة/i.test(currentTitle));
+          var actionLabel = chatIsOpen ? 'إغلاق الدردشة' : 'فتح الدردشة';
+          setAttributeIfChanged(launcher, 'title', actionLabel);
+          setAttributeIfChanged(launcher, 'aria-label', actionLabel);
+
+          var launcherLabel = launcher.querySelector('.vfrc-launcher__label');
+          if (launcherLabel && launcherLabel.textContent !== 'مساعد طنين الأذن') {
+            launcherLabel.textContent = 'مساعد طنين الأذن';
+          }
+          return true;
+        }
+
+        function localizeArabicWidget(shadowRoot) {
+          if (!isArabicPage) return true;
+          ensureArabicWidgetDirection(shadowRoot);
+
+          var textMap = {
+            'Tinnitus-Assistent': 'مساعد طنين الأذن',
+            'Fragen zu Dustins Geschichte, Ansatz & Quellen': 'أسئلة عن قصة Dustin ونهجه ومصادره',
+            'Start new chat': 'بدء دردشة جديدة',
+            'Cancel': 'إلغاء',
+            'Restart conversation': 'إعادة بدء المحادثة',
+            'Restart chat': 'إعادة بدء المحادثة',
+            'Drop files to upload': 'أفلت الملفات هنا لرفعها',
+            'open chat': 'فتح الدردشة',
+            'Open chat': 'فتح الدردشة',
+            'Open chat agent': 'فتح الدردشة',
+            'Close chat agent': 'إغلاق الدردشة',
+            'Close chat': 'إغلاق الدردشة',
+            'Chat has ended': 'انتهت المحادثة',
+            'send': 'إرسال',
+            'Send': 'إرسال',
+            'Sent': 'تم الإرسال',
+            'scroll': 'التمرير لأسفل',
+            'Scroll down': 'التمرير لأسفل',
+            'Hide messages': 'إخفاء الرسائل',
+            'system agent avatar': 'صورة المساعد',
+            'See more': 'عرض المزيد',
+            'See less': 'عرض أقل',
+            'Download': 'تنزيل',
+            'Image viewer': 'عارض الصور',
+            'Previous image': 'الصورة السابقة',
+            'Next image': 'الصورة التالية',
+            'Scrollable table': 'جدول قابل للتمرير',
+            'Privacy notice': 'إشعار الخصوصية',
+            'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': 'قبل أن نتمكن من متابعة محادثتك، نرجو منك مراجعة سياسة الخصوصية والموافقة عليها، فهي توضح كيفية تعاملنا مع معلوماتك الشخصية وحمايتها في جميع خدماتنا.',
+            'Submit': 'الموافقة والمتابعة',
+            'Privacy policy': 'سياسة الخصوصية',
+            'Powered by Voiceflow': 'مدعوم من Voiceflow',
+            'AI responses may contain mistakes.': arabicAiDisclaimer,
+            'Close': 'إغلاق'
+          };
+
+          shadowRoot.querySelectorAll('*').forEach(function(element) {
+            if (element.children.length > 0) return;
+            var sourceText = element.textContent.trim();
+            if (Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+              element.textContent = textMap[sourceText];
+            }
+          });
+
+          var textarea = shadowRoot.querySelector('textarea');
+          var placeholder = 'ما الذي يهمك معرفته عن طنين الأذن أو قصة Dustin أو نهجه؟';
+          if (textarea && textarea.getAttribute('placeholder') !== placeholder) {
+            textarea.setAttribute('placeholder', placeholder);
+          }
+
+          shadowRoot.querySelectorAll('[aria-label], [title], [label], [alt]').forEach(function(element) {
+            ['aria-label', 'title', 'label', 'alt'].forEach(function(attribute) {
+              var sourceText = element.getAttribute(attribute);
+              if (sourceText && Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+                setAttributeIfChanged(element, attribute, textMap[sourceText]);
+              }
+            });
+          });
+
+          var headerButtons = shadowRoot.querySelectorAll('.vfrc-header--button');
+          for (var i = 0; i < headerButtons.length; i++) {
+            setArabicHeaderControlLabel(headerButtons[i]);
+          }
+
+          var sendButton = shadowRoot.querySelector('.vfrc-chat-input__send');
+          setAttributeIfChanged(sendButton, 'title', 'إرسال');
+          setAttributeIfChanged(sendButton, 'aria-label', 'إرسال');
+
+          var scrollIcon = shadowRoot.querySelector('[title="scroll"], [title="Scroll down"], [title="التمرير لأسفل"]');
+          if (scrollIcon) {
+            setAttributeIfChanged(scrollIcon, 'title', 'التمرير لأسفل');
+            setAttributeIfChanged(scrollIcon.closest('button'), 'aria-label', 'التمرير لأسفل');
+          }
+
+          var privacyPrimary = shadowRoot.querySelector('.vfrc-privacy__primary-button');
+          var privacySecondary = shadowRoot.querySelector('.vfrc-privacy__secondary-button');
+          setAttributeIfChanged(privacyPrimary, 'aria-label', 'الموافقة والمتابعة');
+          setAttributeIfChanged(privacySecondary, 'aria-label', 'سياسة الخصوصية');
+
+          var proactiveClose = shadowRoot.querySelector('.vfrc-proactive__close-button');
+          setAttributeIfChanged(proactiveClose, 'title', 'إخفاء الرسائل');
+          setAttributeIfChanged(proactiveClose, 'aria-label', 'إخفاء الرسائل');
+
+          return localizeArabicLauncher(shadowRoot);
+        }
+
+        function localizeArabicPortal() {
+          if (!isArabicPage) return false;
+          var dialogs = document.querySelectorAll(
+            '[role="dialog"][aria-label="Image viewer"], ' +
+            '[role="dialog"][aria-label="عارض الصور"]'
+          );
+          if (!dialogs.length) return false;
+
+          var portalMap = {
+            'Image viewer': 'عارض الصور',
+            'Download': 'تنزيل',
+            'Close': 'إغلاق',
+            'Previous image': 'الصورة السابقة',
+            'Next image': 'الصورة التالية'
+          };
+
+          dialogs.forEach(function(dialog) {
+            setAttributeIfChanged(dialog, 'lang', 'ar');
+            setAttributeIfChanged(dialog, 'dir', 'rtl');
+            setAttributeIfChanged(dialog, 'aria-label', 'عارض الصور');
+            dialog.querySelectorAll('*').forEach(function(element) {
+              if (element.children.length > 0) return;
+              var sourceText = (element.textContent || '').trim();
+              if (Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                element.textContent = portalMap[sourceText];
+              }
+            });
+            dialog.querySelectorAll('[aria-label], [title], [alt]').forEach(function(element) {
+              ['aria-label', 'title', 'alt'].forEach(function(attribute) {
+                var sourceText = element.getAttribute(attribute);
+                if (sourceText && Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                  setAttributeIfChanged(element, attribute, portalMap[sourceText]);
+                }
+              });
+            });
+          });
+          return true;
+        }
+
         var dutchObserver = null;
         var russianObserver = null;
         var czechObserver = null;
@@ -2015,6 +2320,8 @@
         var koreanPortalObserver = null;
         var hindiObserver = null;
         var hindiPortalObserver = null;
+        var arabicObserver = null;
+        var arabicPortalObserver = null;
 
         // Listen for shadow host creation to inject styles
         var shadowInterval = setInterval(function() {
@@ -2162,6 +2469,33 @@
                 });
               }
               clearInterval(shadowInterval);
+            } else if (isArabicPage) {
+              localizeArabicWidget(shadowHost.shadowRoot);
+              localizeArabicPortal();
+              if (!arabicObserver) {
+                arabicObserver = new MutationObserver(function() {
+                  localizeArabicWidget(shadowHost.shadowRoot);
+                });
+                arabicObserver.observe(shadowHost.shadowRoot, {
+                  childList: true,
+                  subtree: true,
+                  characterData: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'label', 'placeholder', 'alt', 'aria-expanded']
+                });
+              }
+              if (!arabicPortalObserver) {
+                arabicPortalObserver = new MutationObserver(function() {
+                  localizeArabicPortal();
+                });
+                arabicPortalObserver.observe(document.body, {
+                  childList: true,
+                  subtree: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'alt']
+                });
+              }
+              clearInterval(shadowInterval);
             } else if (localizeLauncher(shadowHost.shadowRoot)) {
               clearInterval(shadowInterval);
             }
@@ -2194,7 +2528,9 @@
                             ? "이명은 정해진 운명이 아닙니다. 제가 이명 지옥에서 빠져나온 과정이나 영양소 프로토콜에 관해 궁금한 점이 있나요?"
                             : pageLang.indexOf('hi') === 0
                               ? "टिनिटस कोई अटल नियति नहीं है। टिनिटस के नर्क से बाहर निकलने के मेरे रास्ते या पोषक-तत्त्व प्रोटोकॉल के बारे में आपके सवाल हैं?"
-                              : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+                              : pageLang.indexOf('ar') === 0
+                                ? "طنين الأذن ليس قدرًا محتومًا. هل لديك أسئلة عن طريقي للخروج من جحيم طنين الأذن أو عن بروتوكول العناصر الغذائية؟"
+                                : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
               window.voiceflow.chat.proactive.push({
                 type: 'text',
                 payload: {
@@ -2219,6 +2555,9 @@
   };
 
   var findTargetElement = function() {
+    var explicitTarget = document.querySelector('[data-voiceflow-trigger]');
+    if (explicitTarget) return explicitTarget;
+
     // Try to find the specific paragraph about lying awake at night
     var paragraphs = document.querySelectorAll('p');
     for (var i = 0; i < paragraphs.length; i++) {
@@ -2306,7 +2645,10 @@
     '/ko/index.html': true,
     '/hi': true,
     '/hi/': true,
-    '/hi/index.html': true
+    '/hi/index.html': true,
+    '/ar': true,
+    '/ar/': true,
+    '/ar/index.html': true
   };
   var isHomepage = Boolean(homepagePaths[pathname]);
 
