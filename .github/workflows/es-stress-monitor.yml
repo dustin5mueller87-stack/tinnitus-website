@@ -1,0 +1,80 @@
+name: Monitor Spanish stress audit to completion
+
+on:
+  push:
+    branches:
+      - monitor/es-stress-2026-08-31
+
+permissions:
+  contents: write
+  actions: read
+
+env:
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  monitor:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: monitor/es-stress-2026-08-31
+          fetch-depth: 0
+
+      - name: Wait for the audit run to finish
+        shell: bash
+        run: |
+          RUN_ID=""
+          for i in $(seq 1 300); do
+            RUN_JSON="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs?branch=review%2Fes-stress-2026-08-31&per_page=100")"
+            RUN_ID="$(printf '%s' "$RUN_JSON" | jq -r '[.workflow_runs[] | select(.name=="Exhaustive Arsenal audit for Spanish stress page")] | sort_by(.created_at) | last | .id // empty')"
+            STATUS="$(printf '%s' "$RUN_JSON" | jq -r --argjson id "${RUN_ID:-0}" '.workflow_runs[] | select(.id==$id) | .status // empty')"
+            CONCLUSION="$(printf '%s' "$RUN_JSON" | jq -r --argjson id "${RUN_ID:-0}" '.workflow_runs[] | select(.id==$id) | .conclusion // empty')"
+            echo "attempt=$i run=$RUN_ID status=$STATUS conclusion=$CONCLUSION"
+            if [ "$STATUS" = "completed" ]; then
+              break
+            fi
+            sleep 60
+          done
+          test -n "$RUN_ID"
+          test "$STATUS" = "completed"
+          mkdir -p /tmp/es-stress-monitor
+          printf '%s' "$RUN_JSON" > /tmp/es-stress-monitor/runs.json
+          printf '{"run_id":%s,"status":"%s","conclusion":"%s"}\n' "$RUN_ID" "$STATUS" "$CONCLUSION" > /tmp/es-stress-monitor/status.json
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/jobs?per_page=100" > /tmp/es-stress-monitor/jobs.json
+          echo "RUN_ID=$RUN_ID" >> "$GITHUB_ENV"
+          echo "CONCLUSION=$CONCLUSION" >> "$GITHUB_ENV"
+
+      - name: Collect job logs for diagnosis
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p /tmp/es-stress-monitor/logs
+          if [ -s /tmp/es-stress-monitor/jobs.json ]; then
+            jq -r '.jobs[].id' /tmp/es-stress-monitor/jobs.json | while read -r JOB_ID; do
+              gh api "repos/${GITHUB_REPOSITORY}/actions/jobs/${JOB_ID}/logs" > "/tmp/es-stress-monitor/logs/${JOB_ID}.txt" || true
+            done
+          fi
+
+      - name: Commit stable status snapshot
+        if: always()
+        shell: bash
+        run: |
+          git fetch origin main
+          git checkout -B monitor/es-stress-2026-08-31 origin/main
+          rm -rf audit-status/es-stress-2026-08-31
+          mkdir -p audit-status/es-stress-2026-08-31
+          cp -a /tmp/es-stress-monitor/. audit-status/es-stress-2026-08-31/ || true
+          if [ "${CONCLUSION:-unknown}" = "success" ]; then
+            touch audit-status/es-stress-2026-08-31/SUCCESS
+          else
+            touch audit-status/es-stress-2026-08-31/FAILURE
+          fi
+          rm -f .github/workflows/es-stress-monitor.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add audit-status/es-stress-2026-08-31 .github/workflows/es-stress-monitor.yml
+          git commit -m "Record Spanish stress audit completion status"
+          git push --force-with-lease origin HEAD:monitor/es-stress-2026-08-31
