@@ -1,0 +1,425 @@
+name: Publish Indonesian recovery v4 safely
+
+on:
+  push:
+    branches:
+      - id-final-complete-repair-20260830
+    paths:
+      - .github/workflows/publish-indonesian-recovery-v4.yml
+
+concurrency:
+  group: publish-indonesian-recovery-v4
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  recover-publish-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Check out recovery payload branch
+        uses: actions/checkout@v4
+        with:
+          ref: id-final-complete-repair-20260830
+          path: payload
+          fetch-depth: 1
+
+      - name: Check out newest production main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: target
+          fetch-depth: 0
+
+      - name: Reassemble and validate preserved recovery payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(find payload/.id-repair-payload -maxdepth 1 -type f -name 'chunk-*.b64' | wc -l)" -eq 4
+          cat payload/.id-repair-payload/chunk-*.b64 | tr -d '\r\n' | base64 --decode > /tmp/id-recovery.tar.gz
+          gzip --test /tmp/id-recovery.tar.gz
+          rm -rf /tmp/id-recovery
+          mkdir -p /tmp/id-recovery
+          tar -xzf /tmp/id-recovery.tar.gz -C /tmp/id-recovery
+          echo '=== RECOVERY PAYLOAD ==='
+          find /tmp/id-recovery -type f -printf '%P\t%s bytes\n' | sort
+
+      - name: Overlay only missing Indonesian pages and repair navigation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from bs4 import BeautifulSoup
+          import re, shutil, sys
+
+          unpack = Path('/tmp/id-recovery')
+          repo = Path('target')
+          id_dir = repo / 'id'
+          id_dir.mkdir(parents=True, exist_ok=True)
+
+          aliases = {
+              'sumber-ilmiah.html': ('sumber-ilmiah.html', 'wissenschaftliche-quellen.html', 'scientific-sources.html'),
+              'kisah-pengalaman.html': ('kisah-pengalaman.html', 'erfahrungsberichte.html', 'testimonials.html'),
+              'faq.html': ('faq.html',),
+              'kontak.html': ('kontak.html', 'kontakt.html', 'contact.html'),
+              'informasi-hukum.html': ('informasi-hukum.html', 'impressum.html', 'legal-notice.html'),
+              'kebijakan-privasi.html': ('kebijakan-privasi.html', 'datenschutz.html', 'privacy.html'),
+              '404.html': ('404.html',),
+          }
+
+          def locate(target_name, names):
+              candidates = []
+              for name in names:
+                  candidates.extend(p for p in unpack.rglob(name) if p.is_file())
+              unique = []
+              seen = set()
+              for p in candidates:
+                  key = p.resolve()
+                  if key not in seen:
+                      seen.add(key)
+                      unique.append(p)
+              if len(unique) != 1:
+                  raise SystemExit(f'{target_name}: expected exactly one recovery source, found {len(unique)}: {unique}')
+              return unique[0]
+
+          sources = {target: locate(target, names) for target, names in aliases.items()}
+          for target_name, source in sources.items():
+              destination = id_dir / target_name
+              if destination.exists():
+                  old = destination.read_bytes()
+                  new = source.read_bytes()
+                  if old != new:
+                      raise SystemExit(f'Refusing to overwrite an independently added Indonesian page: {destination}')
+                  print(f'Existing identical page retained: {destination}')
+              else:
+                  shutil.copy2(source, destination)
+                  print(f'Restored: {destination} <- {source}')
+
+          replacements = {
+              '/produkte': '/id/produk',
+              '/wissenschaftliche-quellen': '/id/sumber-ilmiah',
+              '/erfahrungsberichte': '/id/kisah-pengalaman',
+              '/faq': '/id/faq',
+              '/kontakt': '/id/kontak',
+              '/impressum': '/id/informasi-hukum',
+              '/datenschutz': '/id/kebijakan-privasi',
+          }
+
+          home_text = (id_dir / 'index.html').read_text(encoding='utf-8')
+          home_noindex = bool(re.search(r'<meta\s+[^>]*name=["\']robots["\'][^>]*content=["\'][^"\']*noindex', home_text, re.I))
+
+          html_files = sorted(id_dir.glob('*.html'))
+          for file in html_files:
+              text = file.read_text(encoding='utf-8')
+              for old, new in replacements.items():
+                  text = re.sub(r'(?P<q>["\'])' + re.escape(old) + r'/?(?P=q)', lambda m, n=new: f'{m.group("q")}{n}{m.group("q")}', text)
+              text = re.sub(r'\s+data-language-fallback=["\']de["\']', '', text, flags=re.I)
+
+              if not home_noindex and file.name != '404.html':
+                  text = re.sub(r'\s*<meta\s+[^>]*name=["\']robots["\'][^>]*content=["\'][^"\']*noindex[^"\']*["\'][^>]*>\s*', '\n', text, flags=re.I)
+
+              file.write_text(text, encoding='utf-8')
+
+          site_js = repo / 'site.js'
+          js = site_js.read_text(encoding='utf-8')
+          match = re.search(
+              r'(function\s+ensureIndonesianLanguageOption\s*\(\)\s*\{.*?var\s+indonesianRoutesByGermanPath\s*=\s*\{)(.*?)(\n\s*\};)',
+              js,
+              re.S,
+          )
+          if not match:
+              raise SystemExit('Could not locate Indonesian route map in current site.js')
+
+          route_block = match.group(2)
+          route_pairs = [
+              ('/produkte', '/id/produk'),
+              ('/wissenschaftliche-quellen', '/id/sumber-ilmiah'),
+              ('/erfahrungsberichte', '/id/kisah-pengalaman'),
+              ('/faq', '/id/faq'),
+              ('/kontakt', '/id/kontak'),
+              ('/impressum', '/id/informasi-hukum'),
+              ('/datenschutz', '/id/kebijakan-privasi'),
+          ]
+          additions = []
+          for german, indo in route_pairs:
+              if re.search(rf'["\']{re.escape(german)}["\']\s*:\s*["\']{re.escape(indo)}["\']', route_block):
+                  continue
+              additions.append(f"      '{german}': '{indo}',")
+          if additions:
+              stripped = route_block.rstrip()
+              if stripped and not stripped.rstrip().endswith(','):
+                  stripped += ','
+              route_block = stripped + '\n' + '\n'.join(additions)
+              js = js[:match.start(2)] + route_block + js[match.end(2):]
+          site_js.write_text(js, encoding='utf-8')
+
+          sitemap = repo / 'sitemap.xml'
+          xml = sitemap.read_text(encoding='utf-8')
+          routes_to_add = [
+              '/id/produk',
+              '/id/sumber-ilmiah',
+              '/id/kisah-pengalaman',
+              '/id/faq',
+              '/id/kontak',
+          ]
+          blocks = []
+          for route in routes_to_add:
+              url = 'https://tinnitusbioregulation.com' + route
+              if url in xml:
+                  continue
+              blocks.append(f'  <url>\n    <loc>{url}</loc>\n  </url>')
+          if blocks:
+              if '</urlset>' not in xml:
+                  raise SystemExit('sitemap.xml has no closing urlset')
+              xml = xml.replace('</urlset>', '\n' + '\n'.join(blocks) + '\n</urlset>')
+              sitemap.write_text(xml, encoding='utf-8')
+
+          localized_assets = {
+              'quellen-laser-atp-id.webp',
+              'quellen-naehrstoffe-atp-id.webp',
+          }
+          target_img = repo / 'img'
+          target_img.mkdir(parents=True, exist_ok=True)
+          for asset in localized_assets:
+              matches = [p for p in unpack.rglob(asset) if p.is_file()]
+              if len(matches) > 1:
+                  raise SystemExit(f'Ambiguous localized asset {asset}: {matches}')
+              if len(matches) == 1:
+                  shutil.copy2(matches[0], target_img / asset)
+                  print(f'Restored localized asset: {asset}')
+          PY
+
+      - name: Validate reconstructed Indonesian website
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet beautifulsoup4
+          node --check target/site.js
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlparse
+          from bs4 import BeautifulSoup
+          import html, json, re
+
+          repo = Path('target')
+          id_dir = repo / 'id'
+          expected = {
+              'index.html',
+              'tinnitus-sembuh-kisah-saya.html',
+              'kisah-tinnitus-saya-bagian-1.html',
+              'kisah-tinnitus-saya-bagian-2.html',
+              'tinnitus-akibat-kebisingan.html',
+              'tinnitus-akibat-stres.html',
+              'tinnitus-akibat-obat-dan-zat-beracun.html',
+              'pendekatan-saya.html',
+              'produk.html',
+              'sumber-ilmiah.html',
+              'kisah-pengalaman.html',
+              'faq.html',
+              'kontak.html',
+              'informasi-hukum.html',
+              'kebijakan-privasi.html',
+              '404.html',
+          }
+          actual = {p.name for p in id_dir.glob('*.html')}
+          errors = []
+          if actual != expected:
+              errors.append(f'Page set mismatch: missing={sorted(expected-actual)} extra={sorted(actual-expected)}')
+
+          required_nav = (
+              '/id/produk', '/id/sumber-ilmiah', '/id/kisah-pengalaman', '/id/kontak'
+          )
+          fallback_paths = {
+              '/produkte', '/wissenschaftliche-quellen', '/erfahrungsberichte',
+              '/faq', '/kontakt', '/impressum', '/datenschutz'
+          }
+          external_source_links = 0
+
+          for file in sorted(id_dir.glob('*.html')):
+              text = file.read_text(encoding='utf-8')
+              soup = BeautifulSoup(text, 'html.parser')
+              tag = soup.find('html')
+              if not tag or not str(tag.get('lang', '')).lower().startswith('id'):
+                  errors.append(f'{file.name}: missing lang=id')
+              if 'data-language-fallback="de"' in text or "data-language-fallback='de'" in text:
+                  errors.append(f'{file.name}: German fallback marker remains')
+              ids = [x.get('id') for x in soup.find_all(attrs={'id': True})]
+              if len(ids) != len(set(ids)):
+                  errors.append(f'{file.name}: duplicate HTML ids')
+              for script in soup.find_all('script', attrs={'type': 'application/ld+json'}):
+                  try:
+                      json.loads(html.unescape(script.get_text().strip()))
+                  except Exception as exc:
+                      errors.append(f'{file.name}: invalid JSON-LD: {exc}')
+
+              links = [html.unescape(a.get('href', '')).strip() for a in soup.find_all('a', href=True)]
+              if file.name != '404.html':
+                  for route in required_nav:
+                      if route not in [urlparse(h).path.rstrip('/') or '/' for h in links]:
+                          errors.append(f'{file.name}: navigation route missing: {route}')
+                  canonical = soup.find('link', rel=lambda value: value and 'canonical' in value)
+                  canonical_path = urlparse(canonical.get('href', '')).path if canonical else ''
+                  if not canonical_path.startswith('/id'):
+                      errors.append(f'{file.name}: canonical is not Indonesian')
+
+              for a in soup.find_all('a', href=True):
+                  href = html.unescape(a.get('href', '')).strip()
+                  path = urlparse(href).path.rstrip('/') or '/'
+                  hreflang = str(a.get('hreflang', '')).lower()
+                  if path in fallback_paths and hreflang != 'de':
+                      errors.append(f'{file.name}: German fallback route remains: {href}')
+                  if file.name == 'sumber-ilmiah.html' and href.startswith(('https://', 'http://')):
+                      external_source_links += 1
+
+          source_page = id_dir / 'sumber-ilmiah.html'
+          if source_page.stat().st_size < 10000:
+              errors.append('sumber-ilmiah.html is unexpectedly small')
+          if external_source_links < 30:
+              errors.append(f'sumber-ilmiah.html has only {external_source_links} external links')
+          if (id_dir / 'kisah-pengalaman.html').stat().st_size < 7000:
+              errors.append('kisah-pengalaman.html is unexpectedly small')
+
+          js = (repo / 'site.js').read_text(encoding='utf-8')
+          for needle in (
+              "'/produkte': '/id/produk'",
+              "'/wissenschaftliche-quellen': '/id/sumber-ilmiah'",
+              "'/erfahrungsberichte': '/id/kisah-pengalaman'",
+              "'/faq': '/id/faq'",
+              "'/kontakt': '/id/kontak'",
+              "'/impressum': '/id/informasi-hukum'",
+              "'/datenschutz': '/id/kebijakan-privasi'",
+          ):
+              if needle not in js:
+                  errors.append(f'site.js missing {needle}')
+          if 'Hindi' not in js and 'hreflang", "hi"' not in js and "hreflang', 'hi'" not in js and 'hreflang="hi"' not in js:
+              errors.append('site.js no longer appears to contain the recent Hindi integration')
+
+          sitemap = (repo / 'sitemap.xml').read_text(encoding='utf-8')
+          for route in ('/id/produk', '/id/sumber-ilmiah', '/id/kisah-pengalaman', '/id/faq', '/id/kontak'):
+              url = 'https://tinnitusbioregulation.com' + route
+              if sitemap.count(url) != 1:
+                  errors.append(f'sitemap route absent or duplicated: {route}')
+
+          if errors:
+              print('\n'.join('ERROR: ' + item for item in errors))
+              raise SystemExit(f'Validation failed with {len(errors)} error(s)')
+          print(f'VALIDATION_PASS pages=16 external_source_links={external_source_links}')
+          PY
+
+      - name: Refresh main and refuse collisions
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd target
+          original="$(git rev-parse HEAD)"
+          git fetch origin main --quiet
+          newest="$(git rev-parse origin/main)"
+          echo "Original main: $original"
+          echo "Newest main:   $newest"
+          if [ "$newest" != "$original" ]; then
+            changed="$(git diff --name-only "$original".."$newest")"
+            printf '%s\n' "$changed"
+            if printf '%s\n' "$changed" | grep -Eq '^(id/|site\.js$|sitemap\.xml$|img/quellen-(laser-atp|naehrstoffe-atp)-id\.webp$)'; then
+              echo 'Another agent changed Indonesian publication paths. Refusing to overwrite.' >&2
+              exit 41
+            fi
+            git stash push --include-untracked --message id-recovery-work >/dev/null
+            git reset --hard origin/main
+            git stash pop
+          fi
+
+      - name: Commit and push without force
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd target
+          git config user.name 'OpenAI Indonesian Recovery Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add id site.js sitemap.xml
+          for asset in img/quellen-laser-atp-id.webp img/quellen-naehrstoffe-atp-id.webp; do
+            [ ! -f "$asset" ] || git add "$asset"
+          done
+          staged="$(git diff --cached --name-only)"
+          printf '%s\n' "$staged"
+          test -n "$staged"
+          unexpected="$(printf '%s\n' "$staged" | grep -Ev '^(id/[^/]+\.html|site\.js|sitemap\.xml|img/quellen-(laser-atp|naehrstoffe-atp)-id\.webp)$' || true)"
+          if [ -n "$unexpected" ]; then
+            echo "Unexpected staged paths:" >&2
+            printf '%s\n' "$unexpected" >&2
+            exit 51
+          fi
+          git commit -m 'Restore complete Indonesian pages and navigation'
+          git push origin HEAD:main
+          git rev-parse HEAD > /tmp/published-main-sha.txt
+
+      - name: Wait for and verify Netlify production
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError, URLError
+          import re, time
+
+          base = 'https://tinnitusbioregulation.com'
+          routes = (
+              '/id/', '/id/produk', '/id/sumber-ilmiah', '/id/kisah-pengalaman',
+              '/id/faq', '/id/kontak', '/id/informasi-hukum', '/id/kebijakan-privasi'
+          )
+          last = None
+          for attempt in range(60):
+              try:
+                  pages = {}
+                  for route in routes:
+                      req = Request(base + route, headers={'User-Agent': 'Mozilla/5.0 IndonesianRecoveryVerifier/4.0'})
+                      with urlopen(req, timeout=30) as response:
+                          if response.status != 200:
+                              raise RuntimeError(f'{route}: HTTP {response.status}')
+                          body = response.read().decode('utf-8', errors='replace')
+                      if not re.search(r'<html\b[^>]*\blang=["\']id(?:[-_][^"\']*)?["\']', body, re.I):
+                          raise RuntimeError(f'{route}: lang=id missing')
+                      pages[route] = body
+
+                  home = pages['/id/']
+                  for href in ('/id/produk', '/id/sumber-ilmiah', '/id/kisah-pengalaman', '/id/kontak'):
+                      if f'href="{href}"' not in home and f"href='{href}'" not in home:
+                          raise RuntimeError(f'Homepage menu missing {href}')
+                  if 'data-language-fallback="de"' in home or "data-language-fallback='de'" in home:
+                      raise RuntimeError('Homepage still contains German fallback navigation')
+                  if len(pages['/id/sumber-ilmiah']) < 10000:
+                      raise RuntimeError('Live scientific sources page is unexpectedly small')
+                  print('LIVE_PRODUCTION_PASS')
+                  break
+              except Exception as exc:
+                  last = exc
+                  print(f'Attempt {attempt + 1}: {exc}')
+                  time.sleep(10)
+          else:
+              raise SystemExit(f'Production never passed verification: {last}')
+          PY
+
+      - name: Record success marker on recovery branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd payload
+          published="$(cat /tmp/published-main-sha.txt)"
+          mkdir -p .id-repair-result
+          cat > .id-repair-result/LIVE_PASS.txt <<EOF
+          Indonesian recovery publication: PASS
+          Published main commit: ${published}
+          Verified live UTC: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          Indonesian HTML pages: 16
+          Live routes verified: 8
+          German menu fallbacks: 0
+          Collision guard: PASS
+          Forced push: NO
+          EOF
+          git config user.name 'OpenAI Indonesian Recovery Bot'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .id-repair-result/LIVE_PASS.txt
+          git commit -m 'Record Indonesian recovery live verification'
+          git push origin HEAD:id-final-complete-repair-20260830
