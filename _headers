@@ -18,17 +18,14 @@
 # sollen aber noch NICHT bei Google auftauchen. Zusaetzlich zum
 # noindex-Meta in jeder Seite steht hier der Riegel auf Server-Ebene.
 #
-# ZUM FREISCHALTEN einer Sprache: den passenden Block hier loeschen
-# UND das Kuerzel in sprachmatrix.py aus GESPERRT entfernen, dann das
-# Skript laufen lassen (setzt Meta-Tags und Sitemap nach).
+# ZUM FREISCHALTEN einer Sprache: den passenden Block hier loeschen,
+# die Sprachsperren-Meta-Tags der indexierbaren Seiten entfernen und
+# genau diese Seiten in sitemap.xml aufnehmen.
 #
 # robots.txt bleibt bewusst auf "Allow: /" — waere dort ein Disallow,
 # koennte Google die Seiten gar nicht erst lesen und damit auch das
 # noindex nicht sehen. Das ist der klassische Fehler an dieser Stelle.
 # ------------------------------------------------------------------
-
-/it/*
-  X-Robots-Tag: noindex, follow
 
 /nl/*
   X-Robots-Tag: noindex, follow

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<title>Pagina non trovata | Tinnitus Bioregulation</title>
+<link rel="stylesheet" href="../site.css">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="manifest" href="/it/site.webmanifest">
+</head>
+<body>
+<header class="site-header" id="siteHeader">
+  <div class="nav-inner">
+    <a class="brand" href="/it/" aria-label="Pagina iniziale">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
+    <nav id="primaryNav" aria-label="Navigazione principale">
+      <ul class="nav-list">
+        <li><a href="/it/">Home</a></li>
+        <li class="nav-dropdown">
+          <button type="button" aria-haspopup="true" aria-expanded="false">La mia storia<span class="nav-caret" aria-hidden="true"></span></button>
+          <ul class="submenu">
+            <li><a href="/it/acufene-la-mia-esperienza">Il mio crollo da acufene (racconto breve)</a></li>
+            <li><a href="/it/la-mia-storia-parte-1">Biografia estesa, parte 1: il viaggio infernale</a></li>
+            <li><a href="/it/la-mia-storia-parte-2">Biografia estesa, parte 2: il test rischioso</a></li>
+          </ul>
+        </li>
+        <li class="nav-dropdown">
+          <button type="button" aria-haspopup="true" aria-expanded="false">Le cause<span class="nav-caret" aria-hidden="true"></span></button>
+          <ul class="submenu">
+            <li><a href="/it/acufene-da-trauma-acustico">Acufene da rumore</a></li>
+            <li><a href="/it/acufene-da-stress">Acufene da stress</a></li>
+            <li><a href="/it/acufene-da-farmaci-ototossici">Acufene da farmaci e sostanze tossiche</a></li>
+          </ul>
+        </li>
+        <li><a href="/it/acufene-il-mio-approccio">Il mio approccio alla soluzione</a></li>
+        <li><a href="/it/prodotti">I miei prodotti</a></li>
+        <li><a href="/it/fonti-scientifiche">Fonti</a></li>
+        <li><a href="/it/testimonianze">Testimonianze</a></li>
+        <li><a href="/it/contatti">Contatti</a></li>
+      </ul>
+    </nav>
+    <details class="lang-switch">
+      <summary aria-label="Lingua: Italiano" title="Lingua: Italiano">
+        <span class="lang-current" aria-hidden="true">IT</span>
+        <span class="lang-switch-caret" aria-hidden="true"></span>
+      </summary>
+      <div class="lang-menu">
+        <a href="/" hreflang="de"><span class="lang-code">DE</span><span class="lang-name" lang="de">Deutsch</span></a>
+        <a href="/en/" hreflang="en"><span class="lang-code">EN</span><span class="lang-name" lang="en">English</span></a>
+        <a href="/it/" hreflang="it" class="active" aria-current="page"><span class="lang-code">IT</span><span class="lang-name" lang="it">Italiano</span></a>
+        <a href="/fr/" hreflang="fr"><span class="lang-code">FR</span><span class="lang-name" lang="fr">Français</span></a>
+        <a href="/nl/" hreflang="nl"><span class="lang-code">NL</span><span class="lang-name" lang="nl">Nederlands</span></a>
+        <a href="/es/" hreflang="es"><span class="lang-code">ES</span><span class="lang-name" lang="es">Español</span></a>
+        <a href="/ru/" hreflang="ru"><span class="lang-code">RU</span><span class="lang-name" lang="ru">Русский</span></a>
+        <a href="/cs/" hreflang="cs"><span class="lang-code">CS</span><span class="lang-name" lang="cs">Čeština</span></a>
+      </div>
+    </details>
+    <button class="nav-burger" id="navBurger" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primaryNav">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+    </button>
+  </div>
+</header>
+<script>
+(function () {
+  var header = document.getElementById('siteHeader');
+  var burger = document.getElementById('navBurger');
+  var onScroll = function () {
+    if (window.scrollY > 8) header.classList.add('is-scrolled');
+    else header.classList.remove('is-scrolled');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  if (burger) {
+    burger.addEventListener('click', function () {
+      var open = header.classList.toggle('is-menu-open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+})();
+</script>
+
+<main>
+  <div class="eyebrow">Errore 404</div>
+  <h1>Questa pagina non è stata trovata.</h1>
+  <p class="lede">L'indirizzo richiesto non esiste oppure è stato spostato. È meglio se torni alla pagina iniziale.</p>
+  <p><a class="cta-link" href="/it/">Torna alla pagina iniziale</a></p>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-links">
+    <a href="/it/note-legali">Note legali</a>
+    <a href="/it/privacy-policy">Privacy</a>
+  </div>
+  <div>©<script>document.write(new Date().getFullYear());</script> Tinnitus Bioregulation – Dustin Müller</div>
+</footer>
+<button class="back-to-top" id="backToTop" type="button" aria-label="Torna su">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+</button>
+<script>
+(function () {
+  var btn = document.getElementById('backToTop');
+  if (!btn) return;
+  var onScroll = function () {
+    if (window.scrollY > 600) btn.classList.add('is-visible');
+    else btn.classList.remove('is-visible');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  btn.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  onScroll();
+})();
+</script>
+
+<script src="../site.js"></script>
+</body>
+</html>
