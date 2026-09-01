@@ -322,12 +322,73 @@
     });
   }
 
+  function ensurePortugueseLanguageOption() {
+    var portugueseRoutesByGermanPath = {
+      '/': '/pt/',
+      '/tinnitus-geheilt-erfahrungsbericht': '/pt/o-meu-colapso-com-acufenos',
+      '/meine-geschichte-teil-1': '/pt/a-minha-historia-parte-1',
+      '/meine-geschichte-teil-2': '/pt/a-minha-historia-parte-2',
+      '/laermbedingter-tinnitus': '/pt/acufenos-causados-pelo-ruido',
+      '/stressbedingter-tinnitus': '/pt/acufenos-causados-pelo-stresse',
+      '/medikamente-gifte-tinnitus': '/pt/acufenos-medicamentos-substancias-toxicas',
+      '/mein-loesungsansatz': '/pt/a-minha-abordagem',
+      '/produkte': '/pt/produtos',
+      '/wissenschaftliche-quellen': '/pt/fontes-cientificas',
+      '/erfahrungsberichte': '/pt/relatos-de-experiencias',
+      '/faq': '/pt/faq',
+      '/kontakt': '/pt/contacto',
+      '/impressum': '/pt/informacao-legal',
+      '/datenschutz': '/pt/politica-de-privacidade'
+    };
+
+    document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
+      if (menu.querySelector('a[hreflang="pt-PT"]')) return;
+
+      var germanLink = menu.querySelector('a[hreflang="de"]');
+      if (!germanLink) return;
+
+      var germanPath = '/';
+      try {
+        germanPath = new URL(germanLink.getAttribute('href'), window.location.origin).pathname;
+        germanPath = germanPath.replace(/\/+$/, '') || '/';
+      } catch (error) {
+        return;
+      }
+
+      var portugueseRoute = portugueseRoutesByGermanPath[germanPath];
+      if (!portugueseRoute) return;
+
+      var portugueseLink = document.createElement('a');
+      portugueseLink.href = portugueseRoute;
+      portugueseLink.setAttribute('hreflang', 'pt-PT');
+
+      if (document.documentElement.lang.toLowerCase().indexOf('pt') === 0) {
+        portugueseLink.classList.add('active');
+        portugueseLink.setAttribute('aria-current', 'page');
+      }
+
+      var languageCode = document.createElement('span');
+      languageCode.className = 'lang-code';
+      languageCode.textContent = 'PT';
+
+      var languageName = document.createElement('span');
+      languageName.className = 'lang-name';
+      languageName.setAttribute('lang', 'pt-PT');
+      languageName.textContent = 'Português (Portugal)';
+
+      portugueseLink.appendChild(languageCode);
+      portugueseLink.appendChild(languageName);
+      menu.appendChild(portugueseLink);
+    });
+  }
+
   function initHeaderControls() {
     ensureJapaneseLanguageOption();
     ensureKoreanLanguageOption();
     ensureIndonesianLanguageOption();
     ensureHindiLanguageOption();
     ensureArabicLanguageOption();
+    ensurePortugueseLanguageOption();
 
     var header = document.getElementById('siteHeader');
     var burger = document.getElementById('navBurger');
@@ -447,6 +508,14 @@
       previous: 'Vorige afbeelding',
       next: 'Volgende afbeelding',
       translationRegion: 'Nederlandse vertaling van het document'
+    } : pageLang.indexOf('pt') === 0 ? {
+      viewer: 'Visualizador de imagens',
+      close: 'Fechar',
+      previous: 'Imagem anterior',
+      next: 'Imagem seguinte',
+      translationRegion: 'Tradução portuguesa do documento',
+      translationShow: 'Mostrar a tradução portuguesa do documento',
+      translationOriginal: 'Mostrar o original em alemão'
     } : pageLang.indexOf('ru') === 0 ? {
       viewer: 'Просмотр изображения',
       close: 'Закрыть',
@@ -541,6 +610,9 @@
     } : pageLang.indexOf('nl') === 0 ? {
       show: 'Nederlandse vertaling bekijken',
       original: 'Duits origineel bekijken'
+    } : pageLang.indexOf('pt') === 0 ? {
+      show: 'Mostrar a tradução portuguesa',
+      original: 'Mostrar o original em alemão'
     } : pageLang.indexOf('pl') === 0 ? {
       show: 'Pokaż tłumaczenie',
       original: 'Pokaż oryginał'
@@ -1080,6 +1152,7 @@
         var isItalianPage = pageLang.indexOf('it') === 0;
         var isFrenchPage = pageLang.indexOf('fr') === 0;
         var isDutchPage = pageLang.indexOf('nl') === 0;
+        var isPortuguesePage = pageLang.indexOf('pt') === 0;
         var isRussianPage = pageLang.indexOf('ru') === 0;
         var isCzechPage = pageLang.indexOf('cs') === 0;
         var isJapanesePage = pageLang.indexOf('ja') === 0;
@@ -1092,6 +1165,7 @@
         var koreanAiDisclaimer = 'AI 답변에는 오류가 포함될 수 있습니다.';
         var hindiAiDisclaimer = 'AI के जवाबों में गलतियाँ हो सकती हैं।';
         var arabicAiDisclaimer = 'قد تحتوي إجابات الذكاء الاصطناعي على أخطاء.';
+        var portugueseAiDisclaimer = 'As respostas da IA podem conter erros.';
         var voiceflowReady = window.voiceflow.chat.load({
           verify:{projectID:'6a0977f2a62d285256e0577a'},
           url:'https://general-runtime.voiceflow.com',
@@ -1154,6 +1228,23 @@
               title: 'Tinnitusassistent'
             },
             inputPlaceholder: 'Wat wil je weten over tinnitus, Dustins verhaal of zijn aanpak?'
+          } : isPortuguesePage ? {
+            title: 'Assistente de acufenos',
+            description: 'Perguntas sobre a história, a abordagem e as fontes de Dustin',
+            header: { title: 'Assistente de acufenos' },
+            banner: {
+              title: 'Assistente de acufenos',
+              description: 'Perguntas sobre a história, a abordagem e as fontes de Dustin'
+            },
+            launcher: {
+              label: 'Assistente de acufenos',
+              title: 'Abrir o chat'
+            },
+            inputPlaceholder: 'O que gostarias de saber sobre os acufenos, a história de Dustin ou a sua abordagem?',
+            aiDisclaimer: {
+              text: portugueseAiDisclaimer,
+              hide: false
+            }
           } : isRussianPage ? {
             title: 'Ассистент по тиннитусу',
             description: 'Вопросы о личной истории Дастина, о его подходе и об источниках',
@@ -1404,32 +1495,35 @@
               ? "Assistente per l'acufene"
               : isDutchPage
                 ? 'Tinnitusassistent'
-                : isRussianPage
-                  ? 'Ассистент по тиннитусу'
-                  : isJapanesePage
-                    ? '耳鳴りアシスタント'
-                    : isKoreanPage
-                      ? '이명 도우미'
-                      : isHindiPage
-                        ? 'टिनिटस सहायक'
-                        : isCzechPage
-                          ? 'Asistent pro tinnitus'
-                          : '';
+                : isPortuguesePage
+                  ? 'Assistente de acufenos'
+                  : isRussianPage
+                    ? 'Ассистент по тиннитусу'
+                    : isJapanesePage
+                      ? '耳鳴りアシスタント'
+                      : isKoreanPage
+                        ? '이명 도우미'
+                        : isHindiPage
+                          ? 'टिनिटस सहायक'
+                          : isCzechPage
+                            ? 'Asistent pro tinnitus'
+                            : '';
           if (!localizedLabel) return true;
           var launcher = shadowRoot.querySelector('.vfrc-launcher');
           if (!launcher) return false;
           var currentLauncherTitle = launcher.getAttribute('title') || '';
-          var launcherActionLabel = (isItalianPage || isCzechPage || isJapanesePage || isKoreanPage || isHindiPage)
+          var launcherActionLabel = (isItalianPage || isCzechPage || isJapanesePage || isKoreanPage || isHindiPage || isPortuguesePage)
             ? (
                 currentLauncherTitle === 'Close chat agent' ||
                 currentLauncherTitle === 'Close chat' ||
                 currentLauncherTitle === 'Chiudi la chat' ||
+                currentLauncherTitle === 'Fechar o chat' ||
                 currentLauncherTitle === 'Zavřít chat' ||
                 currentLauncherTitle === 'チャットを閉じる' ||
                 currentLauncherTitle === '채팅 닫기' ||
                 currentLauncherTitle === 'चैट बंद करें'
-                  ? (isItalianPage ? 'Chiudi la chat' : isJapanesePage ? 'チャットを閉じる' : isKoreanPage ? '채팅 닫기' : isHindiPage ? 'चैट बंद करें' : 'Zavřít chat')
-                  : (isItalianPage ? 'Apri la chat' : isJapanesePage ? 'チャットを開く' : isKoreanPage ? '채팅 열기' : isHindiPage ? 'चैट खोलें' : 'Otevřít chat')
+                  ? (isItalianPage ? 'Chiudi la chat' : isPortuguesePage ? 'Fechar o chat' : isJapanesePage ? 'チャットを閉じる' : isKoreanPage ? '채팅 닫기' : isHindiPage ? 'चैट बंद करें' : 'Zavřít chat')
+                  : (isItalianPage ? 'Apri la chat' : isPortuguesePage ? 'Abrir o chat' : isJapanesePage ? 'チャットを開く' : isKoreanPage ? '채팅 열기' : isHindiPage ? 'चैट खोलें' : 'Otevřít chat')
               )
             : localizedLabel;
           if (launcher.getAttribute('title') !== launcherActionLabel) {
@@ -1489,6 +1583,156 @@
           });
 
           return localizeLauncher(shadowRoot);
+        }
+
+        function setPortugueseHeaderControlLabel(button) {
+          if (!button) return;
+          var currentLabel = [
+            button.getAttribute('title') || '',
+            button.getAttribute('aria-label') || '',
+            (button.textContent || '').trim()
+          ].join(' ');
+          var path = button.querySelector('path');
+          var pathData = path ? (path.getAttribute('d') || '') : '';
+          var label = '';
+
+          if (/restart conversation|restart chat|start new chat|reiniciar conversa|novo chat/i.test(currentLabel) ||
+              pathData.indexOf('M5.75 5C5.75 4.58579') === 0) {
+            label = 'Reiniciar conversa';
+          } else if (/hide messages|close chat agent|close chat|fechar o chat|ocultar mensagens/i.test(currentLabel) ||
+                     pathData.indexOf('M17.7478 7.31915') === 0) {
+            label = 'Fechar o chat';
+          }
+
+          if (label) {
+            setAttributeIfChanged(button, 'title', label);
+            setAttributeIfChanged(button, 'aria-label', label);
+          }
+        }
+
+        function localizePortugueseWidget(shadowRoot) {
+          if (!isPortuguesePage) return true;
+
+          var textMap = {
+            'Tinnitus-Assistent': 'Assistente de acufenos',
+            'Fragen zu Dustins Geschichte, Ansatz & Quellen': 'Perguntas sobre a história, a abordagem e as fontes de Dustin',
+            'Start new chat': 'Novo chat',
+            'Cancel': 'Cancelar',
+            'Restart conversation': 'Reiniciar conversa',
+            'Restart chat': 'Reiniciar conversa',
+            'Drop files to upload': 'Larga aqui os ficheiros para os carregar',
+            'open chat': 'Abrir o chat',
+            'Open chat': 'Abrir o chat',
+            'Open chat agent': 'Abrir o chat',
+            'Close chat agent': 'Fechar o chat',
+            'Close chat': 'Fechar o chat',
+            'Chat has ended': 'A conversa terminou',
+            'send': 'Enviar',
+            'Send': 'Enviar',
+            'Sent': 'Enviado',
+            'scroll': 'Deslocar para baixo',
+            'Scroll down': 'Deslocar para baixo',
+            'Hide messages': 'Ocultar mensagens',
+            'system agent avatar': 'Avatar do assistente',
+            'See more': 'Ver mais',
+            'See less': 'Ver menos',
+            'Download': 'Transferir',
+            'Image viewer': 'Visualizador de imagens',
+            'Previous image': 'Imagem anterior',
+            'Next image': 'Imagem seguinte',
+            'Scrollable table': 'Tabela deslocável',
+            'Privacy notice': 'Aviso de privacidade',
+            'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': 'Antes de podermos continuar a conversa, pedimos-te que leias e aceites a nossa política de privacidade, que explica como tratamos e protegemos os teus dados pessoais nos nossos serviços.',
+            'Submit': 'Aceitar e continuar',
+            'Privacy policy': 'Política de privacidade',
+            'Powered by Voiceflow': 'Com tecnologia Voiceflow',
+            'AI responses may contain mistakes.': portugueseAiDisclaimer,
+            'Close': 'Fechar'
+          };
+
+          shadowRoot.querySelectorAll('*').forEach(function(element) {
+            if (element.children.length > 0) return;
+            var sourceText = (element.textContent || '').trim();
+            if (Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+              element.textContent = textMap[sourceText];
+            }
+          });
+
+          var textarea = shadowRoot.querySelector('textarea');
+          var placeholder = 'O que gostarias de saber sobre os acufenos, a história de Dustin ou a sua abordagem?';
+          setAttributeIfChanged(textarea, 'placeholder', placeholder);
+
+          shadowRoot.querySelectorAll('[aria-label], [title], [label], [alt]').forEach(function(element) {
+            ['aria-label', 'title', 'label', 'alt'].forEach(function(attribute) {
+              var sourceText = element.getAttribute(attribute);
+              if (sourceText && Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
+                setAttributeIfChanged(element, attribute, textMap[sourceText]);
+              }
+            });
+          });
+
+          var headerButtons = shadowRoot.querySelectorAll('.vfrc-header--button');
+          for (var i = 0; i < headerButtons.length; i++) {
+            setPortugueseHeaderControlLabel(headerButtons[i]);
+          }
+
+          var sendButton = shadowRoot.querySelector('.vfrc-chat-input__send');
+          setAttributeIfChanged(sendButton, 'title', 'Enviar');
+          setAttributeIfChanged(sendButton, 'aria-label', 'Enviar');
+
+          var scrollIcon = shadowRoot.querySelector('[title="scroll"], [title="Scroll down"], [title="Deslocar para baixo"]');
+          if (scrollIcon) {
+            setAttributeIfChanged(scrollIcon, 'title', 'Deslocar para baixo');
+            setAttributeIfChanged(scrollIcon.closest('button'), 'aria-label', 'Deslocar para baixo');
+          }
+
+          var privacyPrimary = shadowRoot.querySelector('.vfrc-privacy__primary-button');
+          var privacySecondary = shadowRoot.querySelector('.vfrc-privacy__secondary-button');
+          setAttributeIfChanged(privacyPrimary, 'aria-label', 'Aceitar e continuar');
+          setAttributeIfChanged(privacySecondary, 'aria-label', 'Política de privacidade');
+
+          var proactiveClose = shadowRoot.querySelector('.vfrc-proactive__close-button');
+          setAttributeIfChanged(proactiveClose, 'title', 'Fechar');
+          setAttributeIfChanged(proactiveClose, 'aria-label', 'Fechar');
+
+          return localizeLauncher(shadowRoot);
+        }
+
+        function localizePortuguesePortal() {
+          if (!isPortuguesePage) return false;
+          var dialogs = document.querySelectorAll(
+            '[role="dialog"][aria-label="Image viewer"], ' +
+            '[role="dialog"][aria-label="Visualizador de imagens"]'
+          );
+          if (!dialogs.length) return false;
+
+          var portalMap = {
+            'Image viewer': 'Visualizador de imagens',
+            'Download': 'Transferir',
+            'Close': 'Fechar',
+            'Previous image': 'Imagem anterior',
+            'Next image': 'Imagem seguinte'
+          };
+
+          dialogs.forEach(function(dialog) {
+            setAttributeIfChanged(dialog, 'aria-label', 'Visualizador de imagens');
+            dialog.querySelectorAll('*').forEach(function(element) {
+              if (element.children.length > 0) return;
+              var sourceText = (element.textContent || '').trim();
+              if (Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                element.textContent = portalMap[sourceText];
+              }
+            });
+            dialog.querySelectorAll('[aria-label], [title], [alt]').forEach(function(element) {
+              ['aria-label', 'title', 'alt'].forEach(function(attribute) {
+                var sourceText = element.getAttribute(attribute);
+                if (sourceText && Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                  setAttributeIfChanged(element, attribute, portalMap[sourceText]);
+                }
+              });
+            });
+          });
+          return true;
         }
 
         function localizeRussianWidget(shadowRoot) {
@@ -2498,6 +2742,8 @@
         }
 
         var dutchObserver = null;
+        var portugueseObserver = null;
+        var portuguesePortalObserver = null;
         var russianObserver = null;
         var czechObserver = null;
         var czechPortalObserver = null;
@@ -2557,6 +2803,33 @@
                   characterData: true,
                   attributes: true,
                   attributeFilter: ['aria-label', 'title', 'label', 'placeholder']
+                });
+              }
+              clearInterval(shadowInterval);
+            } else if (isPortuguesePage) {
+              localizePortugueseWidget(shadowHost.shadowRoot);
+              localizePortuguesePortal();
+              if (!portugueseObserver) {
+                portugueseObserver = new MutationObserver(function() {
+                  localizePortugueseWidget(shadowHost.shadowRoot);
+                });
+                portugueseObserver.observe(shadowHost.shadowRoot, {
+                  childList: true,
+                  subtree: true,
+                  characterData: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'label', 'placeholder', 'alt']
+                });
+              }
+              if (!portuguesePortalObserver) {
+                portuguesePortalObserver = new MutationObserver(function() {
+                  localizePortuguesePortal();
+                });
+                portuguesePortalObserver.observe(document.body, {
+                  childList: true,
+                  subtree: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'alt']
                 });
               }
               clearInterval(shadowInterval);
@@ -2730,23 +3003,25 @@
                     ? "Tinnitus hoeft niet je lot te zijn. Heb je vragen over mijn weg uit de tinnitushel of over mijn voedingsstoffenprotocol?"
                     : pageLang.indexOf('fr') === 0
                       ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole nutritionnel ?"
-                      : pageLang.indexOf('tr') === 0
-                        ? "Tinnitus ömür boyu sürecek bir kader değildir. Tinnitus cehenneminden nasıl çıktığım ya da besin öğeleri protokolü hakkında soruların mı var?"
-                        : pageLang.indexOf('pl') === 0
-                          ? "Szumy uszne nie są wyrokiem. Masz pytania o moją drogę wyjścia z piekła szumów usznych albo o protokół oparty na składnikach odżywczych?"
-                          : pageLang.indexOf('ru') === 0
-                            ? "Тиннитус — не приговор. У тебя есть вопросы о моём пути из ада тиннитуса или о протоколе приёма нутриентов?"
-                            : pageLang.indexOf('cs') === 0
-                              ? "Tinnitus není nezvratný osud. Máš otázky k mé cestě z tinnitusového pekla nebo k protokolu založenému na živinách?"
-                              : pageLang.indexOf('ja') === 0
-                              ? "耳鳴りは、変えられない運命ではありません。私が耳鳴りの地獄から抜け出した道のりや、栄養素プロトコルについて質問はありますか？"
-                              : pageLang.indexOf('ko') === 0
-                                ? "이명은 정해진 운명이 아닙니다. 제가 이명 지옥에서 빠져나온 과정이나 영양소 프로토콜에 관해 궁금한 점이 있나요?"
-                                : pageLang.indexOf('hi') === 0
-                                  ? "टिनिटस कोई अटल नियति नहीं है। टिनिटस के नर्क से बाहर निकलने के मेरे रास्ते या पोषक-तत्त्व प्रोटोकॉल के बारे में आपके सवाल हैं?"
-                                  : pageLang.indexOf('ar') === 0
-                                    ? "طنين الأذن ليس قدرًا محتومًا. هل لديك أسئلة عن طريقي للخروج من جحيم طنين الأذن أو عن بروتوكول العناصر الغذائية؟"
-                                    : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
+                      : pageLang.indexOf('pt') === 0
+                        ? "Os acufenos não são uma condenação. Tens perguntas sobre o meu caminho para sair do inferno dos acufenos ou sobre o protocolo de nutrientes?"
+                        : pageLang.indexOf('tr') === 0
+                          ? "Tinnitus ömür boyu sürecek bir kader değildir. Tinnitus cehenneminden nasıl çıktığım ya da besin öğeleri protokolü hakkında soruların mı var?"
+                          : pageLang.indexOf('pl') === 0
+                            ? "Szumy uszne nie są wyrokiem. Masz pytania o moją drogę wyjścia z piekła szumów usznych albo o protokół oparty na składnikach odżywczych?"
+                            : pageLang.indexOf('ru') === 0
+                              ? "Тиннитус — не приговор. У тебя есть вопросы о моём пути из ада тиннитуса или о протоколе приёма нутриентов?"
+                              : pageLang.indexOf('cs') === 0
+                                ? "Tinnitus není nezvratný osud. Máš otázky k mé cestě z tinnitusového pekla nebo k protokolu založenému na živinách?"
+                                : pageLang.indexOf('ja') === 0
+                                  ? "耳鳴りは、変えられない運命ではありません。私が耳鳴りの地獄から抜け出した道のりや、栄養素プロトコルについて質問はありますか？"
+                                  : pageLang.indexOf('ko') === 0
+                                    ? "이명은 정해진 운명이 아닙니다. 제가 이명 지옥에서 빠져나온 과정이나 영양소 프로토콜에 관해 궁금한 점이 있나요?"
+                                    : pageLang.indexOf('hi') === 0
+                                      ? "टिनिटस कोई अटल नियति नहीं है। टिनिटस के नर्क से बाहर निकलने के मेरे रास्ते या पोषक-तत्त्व प्रोटोकॉल के बारे में आपके सवाल हैं?"
+                                      : pageLang.indexOf('ar') === 0
+                                        ? "طنين الأذن ليس قدرًا محتومًا. هل لديك أسئلة عن طريقي للخروج من جحيم طنين الأذن أو عن بروتوكول العناصر الغذائية؟"
+                                        : "Tinnitus ist kein Urteil. Hast du Fragen zu meinem Weg aus der Tinnitus-Hölle oder zum Nährstoff-Protokoll?";
               window.voiceflow.chat.proactive.push({
                 type: 'text',
                 payload: {
@@ -2786,6 +3061,7 @@
           paragraphs[i].textContent.indexOf('leżeć nocą, nie mogąc zasnąć') !== -1 ||
           paragraphs[i].textContent.indexOf('лежать без сна по ночам') !== -1 ||
           paragraphs[i].textContent.indexOf('ležet v noci vzhůru') !== -1 ||
+          paragraphs[i].textContent.indexOf('ficar acordado à noite') !== -1 ||
           paragraphs[i].textContent.indexOf('夜、眠れずに横たわり') !== -1 ||
           paragraphs[i].textContent.indexOf('밤에 깨어 누운 채') !== -1 ||
           paragraphs[i].textContent.indexOf('रात में जागते पड़े रहना') !== -1) {
@@ -2804,6 +3080,7 @@
           headings[i].textContent.indexOf('Dlaczego ta strona istnieje') !== -1 ||
           headings[i].textContent.indexOf('Почему существует этот сайт') !== -1 ||
           headings[i].textContent.indexOf('Proč tento web existuje') !== -1 ||
+          headings[i].textContent.indexOf('Porque existe este site') !== -1 ||
           headings[i].textContent.indexOf('このサイトを作った理由') !== -1 ||
           headings[i].textContent.indexOf('이 사이트가 존재하는 이유') !== -1 ||
           headings[i].textContent.indexOf('यह वेबसाइट क्यों है') !== -1) {
@@ -2855,6 +3132,9 @@
     '/cs': true,
     '/cs/': true,
     '/cs/index.html': true,
+    '/pt': true,
+    '/pt/': true,
+    '/pt/index.html': true,
     '/ja': true,
     '/ja/': true,
     '/ja/index.html': true,
