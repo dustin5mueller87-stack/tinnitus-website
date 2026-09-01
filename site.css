@@ -233,7 +233,6 @@ body {
   transition: background 0.15s ease, color 0.15s ease;
 }
 /* Noch nicht freigegebene Sprachfassungen bleiben aus der Auswahl verborgen. */
-.lang-menu a[hreflang="it"],
 .lang-menu a[hreflang="nl"] {
   display: none;
 }
