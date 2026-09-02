@@ -27,7 +27,7 @@ jobs:
         run: python .github/scripts/apply_english_audit_stage3b.py
 
       - name: Remove one-shot automation files
-        run: git rm .github/workflows/english-audit-stage3b.yml .github/scripts/apply_english_audit_stage3b.py
+        run: git rm .github/workflows/english-audit-stage3b.yml .github/scripts/apply_english_audit_stage3b.py .github/scripts/apply_english_audit_stage3b_original.py
 
       - name: Validate changed paths and whitespace
         shell: bash
@@ -42,6 +42,7 @@ jobs:
               "en/my-approach.html",
               ".github/workflows/english-audit-stage3b.yml",
               ".github/scripts/apply_english_audit_stage3b.py",
+              ".github/scripts/apply_english_audit_stage3b_original.py",
           }
           required = {
               "en/noise-induced-tinnitus.html",
