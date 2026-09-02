@@ -473,7 +473,8 @@
       viewer: 'Image viewer',
       close: 'Close',
       previous: 'Previous image',
-      next: 'Next image'
+      next: 'Next image',
+      translationRegion: 'English translation of the document'
     } : pageLang.indexOf('it') === 0 ? {
       viewer: 'Visualizzatore di immagini',
       close: 'Chiudi',
@@ -598,7 +599,10 @@
     injectOverlay();
     var pageLang = document.documentElement.lang.toLowerCase();
     var isRtl = document.documentElement.dir.toLowerCase() === 'rtl';
-    var translationDefaults = pageLang.indexOf('it') === 0 ? {
+    var translationDefaults = pageLang.indexOf('en') === 0 ? {
+      show: 'View English translation',
+      original: 'View German original'
+    } : pageLang.indexOf('it') === 0 ? {
       show: 'Mostra la traduzione italiana',
       original: "Mostra l'originale tedesco"
     } : pageLang.indexOf('fr') === 0 ? {
