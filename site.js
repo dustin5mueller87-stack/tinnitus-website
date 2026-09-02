@@ -216,7 +216,14 @@
       '/laermbedingter-tinnitus': '/hi/laermbedingter-tinnitus',
       '/stressbedingter-tinnitus': '/hi/stressbedingter-tinnitus',
       '/medikamente-gifte-tinnitus': '/hi/medikamente-gifte-tinnitus',
-      '/mein-loesungsansatz': '/hi/mein-loesungsansatz'
+      '/mein-loesungsansatz': '/hi/mein-loesungsansatz',
+      '/wissenschaftliche-quellen': '/hi/wissenschaftliche-quellen',
+      '/produkte': '/hi/produkte',
+      '/erfahrungsberichte': '/hi/erfahrungsberichte',
+      '/faq': '/hi/faq',
+      '/kontakt': '/hi/kontakt',
+      '/impressum': '/hi/impressum',
+      '/datenschutz': '/hi/datenschutz'
     };
 
     document.querySelectorAll('details.lang-switch .lang-menu').forEach(function (menu) {
