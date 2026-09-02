@@ -1,0 +1,207 @@
+name: Finalize audited English correction release
+
+on:
+  push:
+    branches:
+      - english-audit-fixes-2026-09-02
+
+permissions:
+  contents: write
+
+jobs:
+  finalize-english-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the exact staging branch
+        uses: actions/checkout@v4
+        with:
+          ref: english-audit-fixes-2026-09-02
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Apply final evidence, runtime, and sitemap fixes
+        run: python .github/scripts/finalize_english_audit_release.py
+
+      - name: Remove one-shot automation files
+        run: git rm .github/workflows/finalize-english-audit-release.yml .github/scripts/finalize_english_audit_release.py
+
+      - name: Run full seven-page release validation
+        shell: bash
+        run: |
+          git diff --check
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import urlsplit
+          import html
+          import json
+          import re
+          import subprocess
+          import xml.etree.ElementTree as ET
+
+          root = Path('.')
+          pages = [
+              'en/index.html',
+              'en/my-story-part-1.html',
+              'en/my-story-part-2.html',
+              'en/noise-induced-tinnitus.html',
+              'en/stress-related-tinnitus.html',
+              'en/medication-toxin-tinnitus.html',
+              'en/my-approach.html',
+          ]
+
+          for page in pages:
+              text = (root / page).read_text(encoding='utf-8')
+              if '<html lang="en">' not in text:
+                  raise SystemExit(f'{page}: missing lang=en')
+              if '<link rel="manifest" href="/en/site.webmanifest">' not in text:
+                  raise SystemExit(f'{page}: missing English manifest link')
+              if '<meta name="robots" content="noindex' in text:
+                  raise SystemExit(f'{page}: unexpected noindex')
+              if text.count('<html') != 1 or text.count('</html>') != 1:
+                  raise SystemExit(f'{page}: malformed html boundary')
+              if text.count('<body') != 1 or text.count('</body>') != 1:
+                  raise SystemExit(f'{page}: malformed body boundary')
+              for code in ('ja', 'ko', 'id'):
+                  if f'hreflang="{code}"' not in text:
+                      raise SystemExit(f'{page}: missing static {code} alternate/menu link')
+              for code in ('JA', 'KO', 'ID', 'HI'):
+                  if f'<span class="lang-code">{code}</span>' not in text:
+                      raise SystemExit(f'{page}: missing static {code} menu option')
+
+              for raw in re.findall(r'<script\s+type="application/ld\+json"[^>]*>(.*?)</script>', text, flags=re.S | re.I):
+                  json.loads(html.unescape(raw.strip()))
+
+              for attr, target in re.findall(r'\b(href|src)="([^"]+)"', text, flags=re.I):
+                  if target.startswith(('#', 'mailto:', 'tel:', 'javascript:', 'data:', 'http://', 'https://')):
+                      continue
+                  clean = urlsplit(target).path
+                  if not clean:
+                      continue
+                  if clean.startswith('/'):
+                      candidate = root / clean.lstrip('/')
+                  else:
+                      candidate = (root / page).parent / clean
+                  candidates = [candidate]
+                  if clean.endswith('/'):
+                      candidates.append(candidate / 'index.html')
+                  elif not candidate.suffix:
+                      candidates.extend([candidate.with_suffix('.html'), candidate / 'index.html'])
+                  if not any(path.exists() for path in candidates):
+                      raise SystemExit(f'{page}: unresolved local {attr} target {target}')
+
+          bad_phrases = {
+              'en/my-story-part-1.html': [
+                  'deficiency confirmed, at the very bottom',
+                  'dragged my right ear into it too',
+                  'true high-stakes test',
+              ],
+              'en/my-story-part-2.html': [
+                  'every single piece of physical evidence',
+                  'a brilliant bit of systems biology',
+              ],
+              'en/noise-induced-tinnitus.html': [
+                  'may already have been below my perception threshold',
+                  'For most people affected',
+                  'The ear is not “broken”',
+              ],
+              'en/stress-related-tinnitus.html': [
+                  'The Scientific Proof',
+                  'MEG scanners',
+                  'the operating principle is the same',
+                  'chronic abnormal electrical activity is usually present',
+              ],
+              'en/medication-toxin-tinnitus.html': [
+                  'If tinnitus begins while you are taking medication',
+              ],
+              'en/my-approach.html': [
+                  'My audiometry readings also improved markedly during this period',
+                  'more than nine years',
+                  'dream processing—where the actual healing happens',
+                  'Michael Prgomet calls this “dream processing.”',
+              ],
+          }
+          for page, phrases in bad_phrases.items():
+              text = (root / page).read_text(encoding='utf-8')
+              for phrase in phrases:
+                  if phrase in text:
+                      raise SystemExit(f'{page}: forbidden old phrase remains: {phrase}')
+
+          start = (root / 'en/index.html').read_text(encoding='utf-8')
+          if start.count('data-lightbox-translation="#tr-en-') != 7:
+              raise SystemExit('en/index.html: expected 7 document translation triggers')
+          for source_id in (
+              'tr-en-audiometrie-1', 'tr-en-audiometrie-2', 'tr-en-audiometrie-3',
+              'tr-en-atp-befund-1', 'tr-en-atp-befund-2',
+          ):
+              if start.count(f'id="{source_id}"') != 1:
+                  raise SystemExit(f'en/index.html: invalid translation source count for {source_id}')
+          if '<div class="preview-block" data-nosnippet>' not in start:
+              raise SystemExit('en/index.html: stress preview missing data-nosnippet')
+
+          manifest = json.loads((root / 'en/site.webmanifest').read_text(encoding='utf-8'))
+          if manifest.get('start_url') != '/en/' or manifest.get('scope') != '/en/' or manifest.get('lang') != 'en':
+              raise SystemExit('en/site.webmanifest: language-preserving values invalid')
+
+          site_js = (root / 'site.js').read_text(encoding='utf-8')
+          for phrase in (
+              "translationRegion: 'English translation of the document'",
+              "show: 'View English translation'",
+              "original: 'View German original'",
+          ):
+              if phrase not in site_js:
+                  raise SystemExit(f'site.js: missing English document UI: {phrase}')
+
+          ET.parse(root / 'sitemap.xml')
+          sitemap = (root / 'sitemap.xml').read_text(encoding='utf-8')
+          release_urls = [
+              'https://tinnitusbioregulation.com/en/',
+              'https://tinnitusbioregulation.com/en/my-story-part-1',
+              'https://tinnitusbioregulation.com/en/my-story-part-2',
+              'https://tinnitusbioregulation.com/en/noise-induced-tinnitus',
+              'https://tinnitusbioregulation.com/en/stress-related-tinnitus',
+              'https://tinnitusbioregulation.com/en/medication-toxin-tinnitus',
+              'https://tinnitusbioregulation.com/en/my-approach',
+          ]
+          for url in release_urls:
+              pattern = r'<loc>' + re.escape(url) + r'</loc>\s*<lastmod>2026-09-02</lastmod>'
+              if not re.search(pattern, sitemap):
+                  raise SystemExit(f'sitemap.xml: release date missing for {url}')
+
+          allowed = {
+              'en/index.html',
+              'en/my-story-part-1.html',
+              'site.js',
+              'sitemap.xml',
+              '.github/workflows/finalize-english-audit-release.yml',
+              '.github/scripts/finalize_english_audit_release.py',
+          }
+          required = {'en/index.html', 'en/my-story-part-1.html', 'site.js', 'sitemap.xml'}
+          lines = subprocess.check_output(['git', 'status', '--porcelain'], text=True).splitlines()
+          changed = set()
+          for line in lines:
+              path = line[3:]
+              if ' -> ' in path:
+                  path = path.split(' -> ', 1)[1]
+              changed.add(path)
+          unexpected = changed - allowed
+          missing = required - changed
+          if unexpected:
+              raise SystemExit(f'Unexpected changed paths: {sorted(unexpected)}')
+          if missing:
+              raise SystemExit(f'Expected changed paths missing: {sorted(missing)}')
+          print('Seven-page release validation passed.')
+          print('Current-stage changed paths:', sorted(changed))
+          PY
+
+      - name: Commit the validated final staging state
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Finalize audited English correction release"
+          git push origin HEAD:english-audit-fixes-2026-09-02
