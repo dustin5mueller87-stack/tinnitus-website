@@ -498,7 +498,8 @@
       viewer: 'Visor de imágenes',
       close: 'Cerrar',
       previous: 'Imagen anterior',
-      next: 'Imagen siguiente'
+      next: 'Imagen siguiente',
+      translationRegion: 'Traducción al español del documento'
     } : pageLang.indexOf('tr') === 0 ? {
       viewer: 'Görsel görüntüleyici',
       close: 'Kapat',
