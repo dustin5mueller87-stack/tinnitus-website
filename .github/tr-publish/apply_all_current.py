@@ -24,4 +24,12 @@ source = source[:start] + """('TR-LAERM-014A',
   'Bu sürekli gerilim de iç tüy hücresinin daha alt kısmındaki',
   1),
  """ + source[end:]
+start = source.index("('TR-LAERM-015'")
+end = source.index("('TR-LAERM-016'", start)
+source = source[:start] + """('TR-LAERM-015',
+  'Gehirnabschnitt: innere Haarzellen als Quelle',
+  'Yani beyin, hasarlı tüy hücrelerinden gelen',
+  'Yani beyin, hasarlı iç tüy hücrelerinden gelen',
+  1),
+ """ + source[end:]
 exec(compile(source, "apply_all_current.py", "exec"))
