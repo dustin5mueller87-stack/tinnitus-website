@@ -32,3 +32,6 @@
 
 /hi/*
   X-Robots-Tag: noindex, follow
+
+/fr/sources-scientifiques
+  X-Robots-Tag: noindex, follow

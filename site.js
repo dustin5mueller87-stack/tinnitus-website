@@ -3014,7 +3014,7 @@
                   : pageLang.indexOf('nl') === 0
                     ? "Tinnitus hoeft niet je lot te zijn. Heb je vragen over mijn weg uit de tinnitushel of over mijn voedingsstoffenprotocol?"
                     : pageLang.indexOf('fr') === 0
-                      ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole nutritionnel ?"
+                      ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole de nutriments ?"
                       : pageLang.indexOf('pt') === 0
                         ? "Os acufenos não são uma condenação. Tens perguntas sobre o meu caminho para sair do inferno dos acufenos ou sobre o protocolo de nutrientes?"
                         : pageLang.indexOf('tr') === 0
