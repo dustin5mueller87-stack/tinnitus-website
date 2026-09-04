@@ -1524,18 +1524,19 @@
           var launcher = shadowRoot.querySelector('.vfrc-launcher');
           if (!launcher) return false;
           var currentLauncherTitle = launcher.getAttribute('title') || '';
-          var launcherActionLabel = (isItalianPage || isCzechPage || isJapanesePage || isKoreanPage || isHindiPage || isPortuguesePage)
+          var launcherActionLabel = (isItalianPage || isCzechPage || isJapanesePage || isKoreanPage || isHindiPage || isPortuguesePage || isRussianPage)
             ? (
                 currentLauncherTitle === 'Close chat agent' ||
                 currentLauncherTitle === 'Close chat' ||
                 currentLauncherTitle === 'Chiudi la chat' ||
                 currentLauncherTitle === 'Fechar o chat' ||
+                currentLauncherTitle === 'Закрыть чат' ||
                 currentLauncherTitle === 'Zavřít chat' ||
                 currentLauncherTitle === 'チャットを閉じる' ||
                 currentLauncherTitle === '채팅 닫기' ||
                 currentLauncherTitle === 'चैट बंद करें'
-                  ? (isItalianPage ? 'Chiudi la chat' : isPortuguesePage ? 'Fechar o chat' : isJapanesePage ? 'チャットを閉じる' : isKoreanPage ? '채팅 닫기' : isHindiPage ? 'चैट बंद करें' : 'Zavřít chat')
-                  : (isItalianPage ? 'Apri la chat' : isPortuguesePage ? 'Abrir o chat' : isJapanesePage ? 'チャットを開く' : isKoreanPage ? '채팅 열기' : isHindiPage ? 'चैट खोलें' : 'Otevřít chat')
+                  ? (isItalianPage ? 'Chiudi la chat' : isPortuguesePage ? 'Fechar o chat' : isRussianPage ? 'Закрыть чат' : isJapanesePage ? 'チャットを閉じる' : isKoreanPage ? '채팅 닫기' : isHindiPage ? 'चैट बंद करें' : 'Zavřít chat')
+                  : (isItalianPage ? 'Apri la chat' : isPortuguesePage ? 'Abrir o chat' : isRussianPage ? 'Открыть чат' : isJapanesePage ? 'チャットを開く' : isKoreanPage ? '채팅 열기' : isHindiPage ? 'चैट खोलें' : 'Otevřít chat')
               )
             : localizedLabel;
           if (launcher.getAttribute('title') !== launcherActionLabel) {
@@ -1747,62 +1748,158 @@
           return true;
         }
 
+        function setRussianHeaderControlLabel(button) {
+          if (!button) return;
+          var currentLabel = [
+            button.getAttribute('title') || '',
+            button.getAttribute('aria-label') || '',
+            (button.textContent || '').trim()
+          ].join(' ');
+          var path = button.querySelector('path');
+          var pathData = path ? (path.getAttribute('d') || '') : '';
+          var label = '';
+
+          if (/restart conversation|restart chat|start new chat|начать чат заново|новый чат/i.test(currentLabel) ||
+              pathData.indexOf('M5.75 5C5.75 4.58579') === 0) {
+            label = 'Начать чат заново';
+          } else if (/hide messages|close chat agent|close chat|закрыть чат|скрыть сообщения/i.test(currentLabel) ||
+                     pathData.indexOf('M17.7478 7.31915') === 0) {
+            label = 'Закрыть чат';
+          }
+
+          if (label) {
+            setAttributeIfChanged(button, 'title', label);
+            setAttributeIfChanged(button, 'aria-label', label);
+          }
+        }
+
         function localizeRussianWidget(shadowRoot) {
           if (!isRussianPage) return true;
 
           var textMap = {
+            'Tinnitus-Assistent': 'Ассистент по тиннитусу',
+            'Fragen zu Dustins Geschichte, Ansatz & Quellen': 'Вопросы о личной истории Дастина, о его подходе и об источниках',
             'Start new chat': 'Новый чат',
-            'Restart conversation': 'Начать разговор заново',
+            'Restart conversation': 'Начать чат заново',
+            'Restart chat': 'Начать чат заново',
+            'End chat': 'Завершить чат',
             'Cancel': 'Отмена',
             'Drop files to upload': 'Перетащи файлы сюда для загрузки',
+            'Upload file': 'Загрузить файл',
+            'Remove attachment': 'Удалить вложение',
+            'Open chat': 'Открыть чат',
+            'open chat': 'Открыть чат',
+            'Open chat agent': 'Открыть чат',
+            'Close chat agent': 'Закрыть чат',
+            'Close chat': 'Закрыть чат',
+            'Chat has ended': 'Чат завершён',
+            'Send': 'Отправить',
+            'send': 'Отправить',
+            'Sent': 'Отправлено',
+            'Scroll down': 'Прокрутить вниз',
+            'scroll': 'Прокрутить вниз',
+            'Hide messages': 'Скрыть сообщения',
+            'system agent avatar': 'Аватар ассистента',
+            'See more': 'Показать больше',
+            'See less': 'Показать меньше',
+            'Maximize': 'Развернуть',
+            'Minimize': 'Свернуть',
+            'Download': 'Скачать',
+            'Image viewer': 'Просмотр изображений',
+            'Previous image': 'Предыдущее изображение',
+            'Next image': 'Следующее изображение',
+            'Scrollable table': 'Прокручиваемая таблица',
             'Privacy notice': 'Уведомление о конфиденциальности',
             'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': 'Прежде чем продолжить разговор, пожалуйста, ознакомься с нашей политикой конфиденциальности и прими её. В ней описано, как мы обрабатываем и защищаем твою личную информацию при использовании наших сервисов.',
             'Submit': 'Принять и продолжить',
             'Privacy policy': 'Политика конфиденциальности',
-            'Hide messages': 'Скрыть сообщения',
-            'Open chat': 'Открыть чат',
-            'open chat': 'Открыть чат',
-            'Send': 'Отправить',
-            'send': 'Отправить',
-            'Scroll down': 'Прокрутить вниз',
-            'scroll': 'Прокрутить вниз',
-            'system agent avatar': 'Аватар ассистента',
-            'Powered by Voiceflow': 'Работает на Voiceflow'
+            'Powered by Voiceflow': 'Работает на Voiceflow',
+            'AI responses may contain mistakes.': 'Ответы ИИ могут содержать ошибки.',
+            'Close': 'Закрыть'
           };
 
           shadowRoot.querySelectorAll('*').forEach(function(element) {
             if (element.children.length > 0) return;
-            var sourceText = element.textContent.trim();
+            var sourceText = (element.textContent || '').trim();
             if (Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
               element.textContent = textMap[sourceText];
             }
           });
 
           var textarea = shadowRoot.querySelector('textarea');
-          if (textarea && textarea.getAttribute('placeholder') !== 'Что ты хочешь узнать о тиннитусе, истории Дастина или его подходе?') {
-            textarea.setAttribute('placeholder', 'Что ты хочешь узнать о тиннитусе, истории Дастина или его подходе?');
-          }
+          setAttributeIfChanged(textarea, 'placeholder', 'Что ты хочешь узнать о тиннитусе, истории Дастина или его подходе?');
 
-          shadowRoot.querySelectorAll('[aria-label], [title], [label]').forEach(function(element) {
-            ['aria-label', 'title', 'label'].forEach(function(attribute) {
+          shadowRoot.querySelectorAll('[aria-label], [title], [label], [alt]').forEach(function(element) {
+            ['aria-label', 'title', 'label', 'alt'].forEach(function(attribute) {
               var sourceText = element.getAttribute(attribute);
               if (sourceText && Object.prototype.hasOwnProperty.call(textMap, sourceText)) {
-                element.setAttribute(attribute, textMap[sourceText]);
+                setAttributeIfChanged(element, attribute, textMap[sourceText]);
               }
             });
           });
 
-          var launcher = shadowRoot.querySelector('.vfrc-launcher');
-          if (launcher) {
-            launcher.setAttribute('title', 'Открыть чат');
-            launcher.setAttribute('aria-label', 'Открыть чат');
-            var launcherLabel = launcher.querySelector('.vfrc-launcher__label');
-            if (launcherLabel && launcherLabel.textContent !== 'Ассистент по тиннитусу') {
-              launcherLabel.textContent = 'Ассистент по тиннитусу';
-            }
+          var headerButtons = shadowRoot.querySelectorAll('.vfrc-header--button');
+          for (var i = 0; i < headerButtons.length; i++) {
+            setRussianHeaderControlLabel(headerButtons[i]);
           }
 
-          return Boolean(launcher);
+          var sendButton = shadowRoot.querySelector('.vfrc-chat-input__send');
+          setAttributeIfChanged(sendButton, 'title', 'Отправить');
+          setAttributeIfChanged(sendButton, 'aria-label', 'Отправить');
+
+          var scrollIcon = shadowRoot.querySelector('[title="scroll"], [title="Scroll down"], [title="Прокрутить вниз"]');
+          if (scrollIcon) {
+            setAttributeIfChanged(scrollIcon, 'title', 'Прокрутить вниз');
+            setAttributeIfChanged(scrollIcon.closest('button'), 'aria-label', 'Прокрутить вниз');
+          }
+
+          var privacyPrimary = shadowRoot.querySelector('.vfrc-privacy__primary-button');
+          var privacySecondary = shadowRoot.querySelector('.vfrc-privacy__secondary-button');
+          setAttributeIfChanged(privacyPrimary, 'aria-label', 'Принять и продолжить');
+          setAttributeIfChanged(privacySecondary, 'aria-label', 'Политика конфиденциальности');
+
+          var proactiveClose = shadowRoot.querySelector('.vfrc-proactive__close-button');
+          setAttributeIfChanged(proactiveClose, 'title', 'Закрыть');
+          setAttributeIfChanged(proactiveClose, 'aria-label', 'Закрыть');
+
+          return localizeLauncher(shadowRoot);
+        }
+
+        function localizeRussianPortal() {
+          if (!isRussianPage) return false;
+          var dialogs = document.querySelectorAll(
+            '[role="dialog"][aria-label="Image viewer"], ' +
+            '[role="dialog"][aria-label="Просмотр изображений"]'
+          );
+          if (!dialogs.length) return false;
+
+          var portalMap = {
+            'Image viewer': 'Просмотр изображений',
+            'Download': 'Скачать',
+            'Close': 'Закрыть',
+            'Previous image': 'Предыдущее изображение',
+            'Next image': 'Следующее изображение'
+          };
+
+          dialogs.forEach(function(dialog) {
+            setAttributeIfChanged(dialog, 'aria-label', 'Просмотр изображений');
+            dialog.querySelectorAll('*').forEach(function(element) {
+              if (element.children.length > 0) return;
+              var sourceText = (element.textContent || '').trim();
+              if (Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                element.textContent = portalMap[sourceText];
+              }
+            });
+            dialog.querySelectorAll('[aria-label], [title], [alt]').forEach(function(element) {
+              ['aria-label', 'title', 'alt'].forEach(function(attribute) {
+                var sourceText = element.getAttribute(attribute);
+                if (sourceText && Object.prototype.hasOwnProperty.call(portalMap, sourceText)) {
+                  setAttributeIfChanged(element, attribute, portalMap[sourceText]);
+                }
+              });
+            });
+          });
+          return true;
         }
 
         function setItalianHeaderControlLabel(button) {
@@ -2757,6 +2854,7 @@
         var portugueseObserver = null;
         var portuguesePortalObserver = null;
         var russianObserver = null;
+        var russianPortalObserver = null;
         var czechObserver = null;
         var czechPortalObserver = null;
         var japaneseObserver = null;
@@ -2847,6 +2945,7 @@
               clearInterval(shadowInterval);
             } else if (isRussianPage) {
               localizeRussianWidget(shadowHost.shadowRoot);
+              localizeRussianPortal();
               if (!russianObserver) {
                 russianObserver = new MutationObserver(function() {
                   localizeRussianWidget(shadowHost.shadowRoot);
@@ -2856,7 +2955,18 @@
                   subtree: true,
                   characterData: true,
                   attributes: true,
-                  attributeFilter: ['aria-label', 'title', 'label', 'placeholder']
+                  attributeFilter: ['aria-label', 'title', 'label', 'placeholder', 'alt']
+                });
+              }
+              if (!russianPortalObserver) {
+                russianPortalObserver = new MutationObserver(function() {
+                  localizeRussianPortal();
+                });
+                russianPortalObserver.observe(document.body, {
+                  childList: true,
+                  subtree: true,
+                  attributes: true,
+                  attributeFilter: ['aria-label', 'title', 'alt']
                 });
               }
               clearInterval(shadowInterval);
