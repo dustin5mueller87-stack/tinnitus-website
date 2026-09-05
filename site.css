@@ -232,10 +232,6 @@ body {
   line-height: 1.3;
   transition: background 0.15s ease, color 0.15s ease;
 }
-/* Noch nicht freigegebene Sprachfassungen bleiben aus der Auswahl verborgen. */
-.lang-menu a[hreflang="nl"] {
-  display: none;
-}
 .lang-menu a:hover { background: rgba(184, 137, 58, 0.10); }
 .lang-menu a:focus-visible {
   outline: 2px solid var(--accent, var(--gold));
