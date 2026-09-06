@@ -1,0 +1,31 @@
+name: Align Arabic Bio 1 right ear chronology
+on:
+  push:
+    branches: [arabic-translation-fixes-2026-09-07]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Align one chronology clause
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('ar/meine-geschichte-teil-1.html')
+          s=p.read_text(encoding='utf-8')
+          old='وزادت الصوت الموجود في الأذن اليمنى'
+          new='وأسهمت في دخول الأذن اليمنى إلى المشكلة'
+          if s.count(old)!=1: raise SystemExit('expected clause not found once')
+          p.write_text(s.replace(old,new),encoding='utf-8')
+          PY
+          git diff --check
+          git rm .github/workflows/patch-ar-bio1-right-ear.yml
+          git add ar/meine-geschichte-teil-1.html
+          git config user.name arabic-translation-fix-bot
+          git config user.email arabic-translation-fix-bot@users.noreply.github.com
+          git commit -m "Align Arabic Bio 1 right-ear chronology"
+          git push origin HEAD:arabic-translation-fixes-2026-09-07
