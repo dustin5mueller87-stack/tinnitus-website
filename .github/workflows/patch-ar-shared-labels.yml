@@ -1,0 +1,41 @@
+name: Patch verified Arabic shared labels
+on:
+  push:
+    branches: [arabic-translation-fixes-2026-09-07]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch shared Arabic labels
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          names=['index.html','meine-geschichte-teil-1.html','meine-geschichte-teil-2.html','tinnitus-geheilt-erfahrungsbericht.html','mein-loesungsansatz.html','wissenschaftliche-quellen.html','erfahrungsberichte.html','produkte.html','impressum.html','datenschutz.html','kontakt.html','laermbedingter-tinnitus.html','medikamente-gifte-tinnitus.html','stressbedingter-tinnitus.html']
+          for name in names:
+              p=Path('ar')/name
+              s=p.read_text(encoding='utf-8')
+              for a,b in [
+                ('<span lang="de" dir="ltr">Die Höllenfahrt</span>','الرحلة الجحيمية'),
+                ('<bdi lang="de" dir="ltr">Die Höllenfahrt</bdi>','الرحلة الجحيمية'),
+                ('<span lang="de" dir="ltr">Der Härtetest</span>','الاختبار القاسي'),
+                ('<bdi lang="de" dir="ltr">Der Härtetest</bdi>','الاختبار القاسي'),
+                ('&#x2066;Die Höllenfahrt&#x2069;','الرحلة الجحيمية'),
+                ('&#x2066;Der Härtetest&#x2069;','الاختبار القاسي'),
+                ('Die Höllenfahrt','الرحلة الجحيمية'),
+                ('Der Härtetest','الاختبار القاسي'),
+                ('تجارب وتقارير','تقارير التجارب')]:
+                  s=s.replace(a,b)
+              p.write_text(s,encoding='utf-8')
+          PY
+          git diff --check
+          git rm .github/workflows/patch-ar-shared-labels.yml
+          git add ar
+          git config user.name arabic-translation-fix-bot
+          git config user.email arabic-translation-fix-bot@users.noreply.github.com
+          git commit -m "Fix shared Arabic navigation labels"
+          git push origin HEAD:arabic-translation-fixes-2026-09-07
