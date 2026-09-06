@@ -1,0 +1,36 @@
+name: Patch verified Arabic source page fidelity issues
+on:
+  push:
+    branches: [arabic-translation-fixes-2026-09-07]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch source page
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('ar/wissenschaftliche-quellen.html'); s=p.read_text(encoding='utf-8')
+          pairs=[
+            ('ومن يتلقى علاجًا على نحو مثالي، يجمع بينها على الأرجح.','ومن يُعالِج على النحو الأمثل، يجمع بينها على الأرجح.'),
+            ('ولا أي من الممارسات الطبية المذكورة هنا','ولا أي من العيادات الطبية المذكورة هنا'),
+            ('يُظهر المصابون بطنين الأذن <strong>استجابة كورتيزولية متأخرة ومُسطَّحة</strong> للتوتر النفسي الاجتماعي الحاد. وبذلك تصف الدراسة استجابة متغيرة للتوتر لدى المصابين الذين شملهم البحث؛ ولا تُظهر أن إنهاك محور <bdi dir="ltr">HPA</bdi> يسبّب طنين الأذن.','يُظهر المصابون بطنين الأذن <strong>استجابة كورتيزولية متأخرة ومُسطَّحة</strong> للتوتر النفسي الاجتماعي الحاد.'),
+            ('يصف <bdi dir="ltr">Schaette</bdi> و<bdi dir="ltr">McAlpine</bdi> <strong>نموذج الكسب المركزي (<bdi dir="ltr">Central Gain</bdi>)</strong>: عندما ينخفض المدخل السمعي، يرفع نظام السمع المركزي مستوى حساسيته. وفي نموذجي، لا يفعل الكسب المركزي سوى تضخيم إشارة خاطئة نشطة موجودة بالفعل؛ ولا ينشأ صوت طنين الأذن من فقدان المدخل وحده.','أساس <strong>نموذج الكسب المركزي (<bdi dir="ltr">Central Gain</bdi>)</strong>: عندما ينخفض المدخل السمعي، يرفع نظام السمع المركزي مستوى حساسيته، ويولّد طنين الأذن بوصفه ضجيجًا مضخّمًا.')]
+          n=0
+          for a,b in pairs:
+              c=s.count(a); print(c); s=s.replace(a,b); n+=c
+          if n < 2: raise SystemExit(f'too few matches: {n}')
+          p.write_text(s,encoding='utf-8')
+          PY
+          git diff --check
+          git rm .github/workflows/patch-ar-sources.yml
+          git add ar/wissenschaftliche-quellen.html
+          git config user.name arabic-translation-fix-bot
+          git config user.email arabic-translation-fix-bot@users.noreply.github.com
+          git commit -m "Fix verified Arabic source-page fidelity issues"
+          git push origin HEAD:arabic-translation-fixes-2026-09-07
