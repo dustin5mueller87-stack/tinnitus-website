@@ -1,0 +1,194 @@
+name: Apply verified English translation fixes v2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-english-fixes-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync latest main
+        run: |
+          git fetch origin main
+          git checkout main
+          git reset --hard origin/main
+      - name: Apply only verified English fixes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          reviewed = [
+              'en/index.html','en/tinnitus-recovery-my-story.html','en/my-story-part-1.html',
+              'en/my-story-part-2.html','en/my-approach.html','en/scientific-sources.html',
+              'en/testimonials.html','en/products.html','en/imprint.html','en/privacy.html',
+              'en/contact.html','en/noise-induced-tinnitus.html','en/medication-toxin-tinnitus.html',
+              'en/stress-related-tinnitus.html',
+          ]
+          changed=set()
+
+          def fix(path, old, new, expected=1, label=''):
+              p=Path(path); s=p.read_text(encoding='utf-8'); n=s.count(old)
+              if n == 0:
+                  if new and new in s:
+                      print('ALREADY', path, label); return
+                  raise SystemExit(f'MISSING {path}: {label or old[:140]!r}')
+              if expected is not None and n != expected:
+                  raise SystemExit(f'COUNT {path}: expected {expected}, found {n}: {label or old[:140]!r}')
+              p.write_text(s.replace(old,new,n if expected is None else expected),encoding='utf-8')
+              changed.add(path); print('FIXED',path,label,n)
+
+          def fix_all(path, old, new, label=''):
+              p=Path(path); s=p.read_text(encoding='utf-8'); n=s.count(old)
+              if n == 0:
+                  if new in s:
+                      print('ALREADY',path,label); return
+                  raise SystemExit(f'MISSING {path}: {label or old[:140]!r}')
+              p.write_text(s.replace(old,new),encoding='utf-8'); changed.add(path)
+              print('FIXED',path,label,n)
+
+          # Reviewed navigation labels only. The technical term remains wherever German itself uses it.
+          for path in reviewed:
+              fix_all(path,'Medication- and Toxin-Induced Tinnitus (Ototoxicity)</a>',
+                      'Medication- and Toxin-Induced Tinnitus</a>','extra term in reviewed link labels')
+
+          # Homepage
+          fix('en/index.html','My specific approach—step by step, with supporting evidence.',
+              'My specific approach to a solution—step by step, with supporting evidence.',1,'solution reference in contents')
+          fix('en/index.html','>My Specific Approach<','>My Specific Approach to a Solution<',1,'solution reference in section heading')
+          fix('en/index.html','I reported those values so the ENT doctor would perform the hearing test and Germany’s statutory health insurance would cover it.',
+              'I reported those values only so the ENT doctor would perform the hearing test and Germany’s statutory health insurance would cover it.',1,'exclusive purpose in audiogram comment')
+          fix('en/index.html','Immunological diagnosis—interpretation of results',
+              'Immunological diagnostics—interpretation of results',1,'diagnostics terminology')
+
+          # Short biography
+          fix('en/tinnitus-recovery-my-story.html',' Today, I see energy/ATP as the primary lever, with cell membranes and stereocilia at the center of my model; myelin or auditory-nerve involvement remains possible, but uncertain.','',1,'remove added current-model sentence after lecithin')
+          fix('en/tinnitus-recovery-my-story.html',' Today, my model centers on energy/ATP, cell membranes, and stereocilia; myelin involvement remains possible, but uncertain.','',1,'remove added current-model sentence at first healing')
+          fix('en/tinnitus-recovery-my-story.html',' Today, I see energy/ATP as the primary lever, with myelin involvement possible but uncertain.','',1,'remove added current-model sentence in amino-acid paragraph')
+          fix('en/tinnitus-recovery-my-story.html','permanently charged to what felt like 200% capacity','permanently charged to 200% capacity',1,'remove added felt marker')
+          fix('en/tinnitus-recovery-my-story.html','my stomach, which was still badly weakened at the time','my stomach, which was still weakened at the time',1,'restore stomach intensity')
+          fix('en/tinnitus-recovery-my-story.html','Evidence Against Masking','Proof Against Masking',1,'restore proof wording')
+          fix('en/tinnitus-recovery-my-story.html','exactly what doctors recommend for masking','the very sound doctors recommend for masking',1,'doctor recommendation refers to the sound')
+          fix('en/tinnitus-recovery-my-story.html','During another painful crisis (biliary colic), I stumbled across lecithin granules by chance, and they helped with the colic.',
+              'Another painful crisis (biliary colic) led me, by chance, to lecithin granules, which helped with the colic.',1,'restore causal link to lecithin discovery')
+
+          # Long biography part 1
+          fix('en/my-story-part-1.html','I developed inflammation in my ear canal','I developed inflammation in my ear canal due to an infection',1,'restore infection cause')
+          fix('en/my-story-part-1.html',' I had deliberately checked each ear separately.','',1,'remove extra separate-ear-test sentence')
+          fix('en/my-story-part-1.html','the perfect setup for a very low B12 level','the perfect setup for a B12 deficiency',1,'restore deficiency-risk wording')
+          fix_all('en/my-story-part-1.html','just short of a confirmed deficiency','just above the deficiency threshold','clarify B12 threshold')
+          fix('en/my-story-part-1.html','that you can heal the “incurable” yourself','that even the “incurable” can be healed',1,'restore emphasis on even the incurable')
+
+          # Long biography part 2; €6,800 and other open author questions deliberately untouched.
+          fix('en/my-story-part-2.html','Evidence Against Masking','Proof Against Masking',1,'restore proof wording')
+          fix('en/my-story-part-2.html','friends’ birthday parties','birthday parties with friends',1,'friends are companions')
+          fix('en/my-story-part-2.html','Through my FitLine protocol, I had built up what I thought of as a massive “200% ATP shield”!',
+              'After all, through my FitLine protocol, I had built up a massive “200% ATP shield”!',1,'remove added distancing marker from shield metaphor')
+          fix('en/my-story-part-2.html','and, in my explanatory model at the time, regarded it as the absolute foundation for the myelin sheath.',
+              'and regarded it as the absolute foundation for the myelin sheath.',1,'remove extra local model marker')
+          fix('en/my-story-part-2.html','Quite the opposite: in purely physical terms, my body’s cells actually had far more energy than I was expending!',
+              'Quite the opposite: in purely physical terms, my body’s cells actually had a great deal of energy relative to how much they were using!',1,'restore relative energy comparison')
+          fix('en/my-story-part-2.html','In that moment, hope flared up again. I finally put my pride aside, got the complete set to use at home, and from then on took it consistently every day.',
+              'In that moment, hope flared up again. Shortly afterward, I finally put my pride aside, got the complete set to use at home, and from then on took it consistently every day.',1,'restore shortly afterward')
+
+          # My approach; known open paragraph-scope questions deliberately untouched.
+          fix('en/my-approach.html','Part 2: My Proposed Approach to Stress-Induced Tinnitus','Part 2: My Proposed Solution for Stress-Induced Tinnitus',1,'restore proposed-solution heading')
+          fix('en/my-approach.html','Part 3: My Proposed Approach to Toxin- and Medication-Induced Tinnitus','Part 3: My Proposed Solution for Toxin- and Medication-Induced Tinnitus',1,'restore proposed-solution heading')
+          fix('en/my-approach.html','and allowing the actual conflict resolution—also called trauma resolution—to take place predominantly at night, during sleep and in dreams.',
+              'and allowing the actual healing to take place at night through the processing that happens in dreams.',1,'restore healing wording in short summary')
+          fix('en/my-approach.html','My tinnitus is still completely gone today and has not returned; the audiograms from my first episode document the improvement during that course.',
+              'My tinnitus is still completely gone today and has not returned.',1,'remove locally added audiogram clause')
+          fix('en/my-approach.html','I have seen cases and heard experience reports from Prgomet’s practice in which other patients improved markedly through this work—with a wide range of psychosomatic symptoms, including a handful of patients with stress-induced tinnitus.',
+              'I witnessed other patients improve markedly through this work in the practice, with a wide range of psychosomatic symptoms, including a handful with stress-induced tinnitus.',1,'restore firsthand witnessing')
+          fix('en/my-approach.html','my own experience with this method during my CFS and psychosomatic phase, the cases and experience reports from Prgomet’s practice that I have seen and heard, and Prgomet’s decades of practical experience.',
+              'my own experience with this method in a different context, witnessing other cases, and Prgomet’s decades of practical experience.',1,'restore concise basis in note')
+          fix('en/my-approach.html','my own very positive experience during my CFS and psychosomatic phase, the cases and experience reports from Prgomet’s practice that I have seen and heard, and Prgomet’s decades of practical experience',
+              'my own very positive experience, witnessing other cases, and Prgomet’s decades of practical experience',1,'restore concise basis in final combination')
+          fix('en/my-approach.html','helped me enormously to fully resolve these deep-seated conflicts and bring my autonomic nervous system back into balance',
+              'helped me resolve these deep-seated tensions at the time',1,'restore local strength and result')
+          fix('en/my-approach.html','a powerful surge of stress briefly runs through the system, making muscle tension drop and the arm give way',
+              'for a moment, so much stress-related electrical current flows that muscle tension briefly drops and the arm gives way',1,'restore electrical-current meaning')
+          fix('en/my-approach.html','the ATP lab finding documents a value of 0.37 during his time with CFS.',
+              'He has also overcome severe chronic fatigue syndrome (CFS).',1,'restore overcome-CFS statement in profile')
+          fix('en/my-approach.html','During a separate phase with CFS and psychosomatic symptoms, he experienced for himself',
+              'In addition, he experienced firsthand',1,'restore profile relationship')
+          fix('en/my-approach.html','consciously activating the emotion and then allowing the resolution to take place predominantly during sleep and in dreams, instead of continuing to avoid it',
+              'consciously activating and resolving the emotion instead of continuing to avoid it',1,'restore concise closing summary')
+
+          # Products
+          fix('en/products.html','For years, I have regularly taken 3 mg of melatonin in the evening in addition to the mineral complex.',
+              'For years, I regularly took 3 mg of melatonin in the evening in addition to the mineral complex.',1,'historical melatonin dose stays historical')
+          fix('en/products.html','how targeted conflict work helped him fully resolve these conflicts and bring his autonomic nervous system back into balance',
+              'how targeted conflict work helped him bring his autonomic nervous system back into balance',1,'remove added complete result in product profile')
+
+          # Privacy; no new legal work.
+          fix('en/privacy.html','meta and communication data','metadata and communication data',1,'metadata term')
+          fix('en/privacy.html','calculate a commission','settle a commission',1,'commission settlement')
+
+          # Contact metadata
+          fix_all('en/contact.html','Contact Dustin Müller: Feel free to write to me with questions about my story or my approaches.',
+                  'Contact Dustin Müller: Feel free to write to me with questions about my story or my approaches to a solution.','restore solution reference in descriptions')
+
+          # Noise page; larger model-rewrite questions deliberately untouched.
+          fix('en/noise-induced-tinnitus.html','the ATP lab finding documents a value of 0.37 during his time with CFS.',
+              'He has also overcome severe chronic fatigue syndrome (CFS).',1,'restore overcome-CFS statement')
+          fix('en/noise-induced-tinnitus.html','During a separate phase with CFS and psychosomatic symptoms, he experienced for himself',
+              'In addition, he experienced firsthand',1,'restore profile relationship')
+          fix('en/noise-induced-tinnitus.html','On my approach page, I explain in detail','On my page about my approach to a solution, I explain in detail',1,'restore solution reference')
+
+          # Medication/toxin page; image-target question deliberately untouched.
+          fix('en/medication-toxin-tinnitus.html','the ATP lab finding documents a value of 0.37 during his time with CFS.',
+              'He has also overcome severe chronic fatigue syndrome (CFS).',1,'restore overcome-CFS statement')
+          fix('en/medication-toxin-tinnitus.html','During a separate phase with CFS and psychosomatic symptoms, he experienced for himself',
+              'In addition, he experienced firsthand',1,'restore profile relationship')
+          fix('en/medication-toxin-tinnitus.html','The myelin sheath may already be slightly thinned, the calcium pumps are already running closer to their limit, or the cells are working right at the edge.',
+              'The myelin sheath may already be slightly thinned, the calcium pumps are already running closer to their limit, and the cells are working right at the edge.',1,'simultaneous pump and cell strain')
+          fix('en/medication-toxin-tinnitus.html','which also forms the basis for the approaches we’ll discuss later on this website.',
+              'which also forms the basis for the approaches to a solution we’ll discuss later on this website.',1,'restore solution reference')
+          fix('en/medication-toxin-tinnitus.html','A medication at a toxic dose—or a heavy metal or environmental toxin—reaches the inner ear through the bloodstream.',
+              'A medication at a toxic high dose—or a heavy metal or environmental toxin—reaches the inner ear through the bloodstream.',1,'restore toxic high-dose wording')
+
+          # Stress page; disputed MEG/Penfield/HPA/field passages deliberately untouched.
+          fix('en/stress-related-tinnitus.html','the ATP lab finding documents a value of 0.37 during his time with CFS.',
+              'He has also overcome severe chronic fatigue syndrome (CFS).',1,'restore overcome-CFS statement')
+          fix('en/stress-related-tinnitus.html','During a separate phase with CFS and psychosomatic symptoms, he experienced for himself',
+              'In addition, he experienced firsthand',1,'restore profile relationship')
+          fix('en/stress-related-tinnitus.html','working through those conflicts helped him bring his autonomic nervous system back into balance',
+              'working through those conflicts helped him fully resolve these conflicts and bring his autonomic nervous system back into balance',1,'restore complete conflict resolution in profile')
+          fix('en/stress-related-tinnitus.html','It was his work that helped me enormously to fully resolve the conflicts of my CFS and psychosomatic phase and bring my autonomic nervous system back into balance.',
+              'It was his work that finally helped me gradually resolve these deep-seated inner tensions.',1,'restore gradual early-story wording')
+          fix('en/stress-related-tinnitus.html','The fact that a symptom persists even without acute stress does not, by itself, demonstrate any particular cause; within this model, persistent abnormal central activity may be one possible explanation.',
+              'Duration is a crucial clue: when a symptom persists even without acute stress, chronic abnormal electrical activity in the nervous system is usually present.',1,'restore duration clue')
+
+          # Testimonials. The unresolved final intro reference is deliberately left as-is.
+          fix('en/testimonials.html','Taken together, the collected tinnitus reports describe positive changes associated with a nutrient-based approach; however, not every single card is a tinnitus case report, because the collection also includes background posts and reports on other complaints.',
+              'They show that people around the world, independently of one another and without knowing each other, report similar experiences with tinnitus and a nutrient-based approach.',1,'restore independent worldwide experience argument')
+          fix('en/testimonials.html','Describes how multiple health complaints developed over a longer period.',
+              'Describes a longer course involving several health complaints occurring at the same time.',1,'restore simultaneous complaints')
+
+          # Scientific sources. Disputed larger study rewrites are deliberately untouched.
+          fix('en/scientific-sources.html','Why the Dose Matters','Why the Dose Matters Most',1,'restore dose priority')
+          fix('en/scientific-sources.html','important under Guardrail 8','important',1,'remove internal working-note reference')
+
+          print('CHANGED FILES:', ', '.join(sorted(changed)))
+          PY
+      - name: Commit on top of latest main without overwriting concurrent work
+        shell: bash
+        run: |
+          rm -f .github/workflows/apply-english-fixes.yml .github/workflows/apply-english-fixes-v2.yml
+          git config user.name "translation-fix-bot"
+          git config user.email "translation-fix-bot@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          git commit -m "Fix verified English translation issues"
+          git pull --rebase origin main
+          git push origin HEAD:main
