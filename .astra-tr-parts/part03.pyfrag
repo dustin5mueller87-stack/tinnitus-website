@@ -1,0 +1,68 @@
+rep('tr/cozum-yaklasimim.html',
+    'İkinci tinnitusumda (2016/17)',
+    'İkinci tinnitusumda',
+    expected=2,
+    label='TR-LOESUNG-003')
+rep('tr/cozum-yaklasimim.html',
+    'Bu düzenli tekrar süreci temiz tutar ve çatışmanın bütünüyle işlenmesini sağlar.',
+    'Bu düzenli tekrar sürecin düzgün ilerlemesini sağlar ve çatışmayı, ağırlıklı olarak uykuda ve rüyalarda gerçekleşen sonraki çözülme sürecine hazırlar.',
+    label='TR-LOESUNG-004')
+rep('tr/cozum-yaklasimim.html',
+    '<h3>5. Adım: Rüya işleme — asıl iyileşmenin gerçekleştiği yer</h3>',
+    '<h3>5. Adım: Çatışmanın çözülmesi, diğer adıyla travmanın çözülmesi — asıl iyileşmenin gerçekleştiği yer</h3>',
+    label='TR-LOESUNG-005a')
+rep('tr/cozum-yaklasimim.html',
+    '<p>Bağlamadan sonra kişinin aktif olarak başka bir şey yapmasına gerek yoktur. Asıl çalışma gece, uyku sırasında gerçekleşir. Michael Prgomet buna “rüya işleme” diyor.</p>',
+    '<p>Bağlamadan sonra kişinin aktif olarak başka bir şey yapmasına gerek yoktur. Asıl çalışma ağırlıklı olarak geceleri, uykuda ve rüyalarda gerçekleşir. Michael Prgomet sürecin tamamına <strong>çatışmanın çözülmesi</strong>, diğer adıyla <strong>travmanın çözülmesi</strong> diyor.</p>',
+    label='TR-LOESUNG-005b')
+rep('tr/cozum-yaklasimim.html',
+    'Böylece metaller kana ya da idrara geçer ve laboratuvar yöntemleriyle saptanabilir.',
+    'Böylece metaller kana ve/veya idrara geçer ve laboratuvar yöntemleriyle saptanabilir.',
+    label='TR-LOESUNG-006')
+rep('tr/cozum-yaklasimim.html',
+    'kuruluşunun Therapeutensuche hizmetidir.',
+    'kuruluşunun terapist arama hizmetidir.',
+    label='TR-LOESUNG-007')
+rep('tr/cozum-yaklasimim.html',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/mijn-aanpak">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/cozum-yaklasimim">',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/mijn-aanpak">\n  <link rel="alternate" hreflang="es" href="https://tinnitusbioregulation.com/es/mi-enfoque">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/cozum-yaklasimim">',
+    label='TR-LOESUNG-T01')
+rep('tr/cozum-yaklasimim.html',
+    '<link rel="manifest" href="/site.webmanifest">',
+    '<link rel="manifest" href="/tr/site.webmanifest">',
+    label='TR-LOESUNG-T02')
+# Remove only the two local aria-label overrides identified in the audit.
+rep('tr/cozum-yaklasimim.html',
+    '<a class="product-link-card" href="/tr/urunler" aria-label="Ürünlerim">',
+    '<a class="product-link-card" href="/tr/urunler">',
+    label='TR-LOESUNG-T03a')
+rep('tr/cozum-yaklasimim.html',
+    '<a class="page-nav-next" href="/tr/bilimsel-kaynaklar" aria-label="Kaynaklar">',
+    '<a class="page-nav-next" href="/tr/bilimsel-kaynaklar">',
+    label='TR-LOESUNG-T03b')
+
+# -----------------------------
+# WISSENSCHAFTLICHE QUELLEN
+# -----------------------------
+rep('tr/bilimsel-kaynaklar.html',
+    "2016/17'de Dr. Wilden'la bizzat doğrudan iletişimdeydim.",
+    "Birkaç yıl sonra Dr. Wilden'la bizzat doğrudan iletişimdeydim.",
+    label='TR-QUELLEN-001a')
+rep('tr/bilimsel-kaynaklar.html',
+    "bir kez <strong>2011'de</strong>, bir kez <strong>2016/17'de</strong>",
+    "bir kez <strong>2011'de</strong>, bir kez de <strong>birkaç yıl sonra</strong>",
+    label='TR-QUELLEN-001b')
+rep('tr/bilimsel-kaynaklar.html',
+    'aslında başka bir yoruma pek yer bırakmayan bir tablo',
+    'aslında başka bir yoruma artık hiç yer bırakmayan bir tablo',
+    label='TR-QUELLEN-002')
+# Translate the reader-facing Medscape quote, leaving citation/title metadata untouched.
+rep('tr/bilimsel-kaynaklar.html',
+    'Patients often sustain a blush when taking niacin in effective doses',
+    'Hastalar niasini etkili dozlarda aldıklarında sıklıkla ciltte kızarma yaşar',
+    label='TR-QUELLEN-003a')
+rep('tr/bilimsel-kaynaklar.html',
+    'Niacin has been used for years with varying success in the treatment of tinnitus',
+    'Niasin, tinnitus tedavisinde yıllardır değişen başarı oranlarıyla kullanılıyor',
+    label='TR-QUELLEN-003b')
+rep('tr/bilimsel-kaynaklar.html',
