@@ -1,0 +1,68 @@
+    'Approximately half of tinnitus patients report successful treatment with niacin',
+    'Tinnitus hastalarının yaklaşık yarısı, niasinle tedavinin başarılı olduğunu bildiriyor',
+    label='TR-QUELLEN-003c')
+rep('tr/bilimsel-kaynaklar.html',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/wetenschappelijke-bronnen">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/bilimsel-kaynaklar">',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/wetenschappelijke-bronnen">\n  <link rel="alternate" hreflang="es" href="https://tinnitusbioregulation.com/es/fuentes-cientificas">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/bilimsel-kaynaklar">',
+    label='TR-QUELLEN-T01')
+rep('tr/bilimsel-kaynaklar.html',
+    '<link rel="manifest" href="/site.webmanifest">',
+    '<link rel="manifest" href="/tr/site.webmanifest">',
+    label='TR-QUELLEN-T02')
+rep('tr/bilimsel-kaynaklar.html',
+    '<a class="page-nav-next" href="/tr/deneyim-yazilari" aria-label="Deneyim yazıları">',
+    '<a class="page-nav-next" href="/tr/deneyim-yazilari">',
+    label='TR-QUELLEN-T04')
+
+# -----------------------------
+# ERFAHRUNGSBERICHTE
+# -----------------------------
+rep('tr/deneyim-yazilari.html',
+    'Gürültüye bağlı kronik tinnitusunu iki kez tamamen yendi — her iki sefer de odyometrik olarak belgelendi —',
+    'Gürültüye bağlı kronik tinnitusunun birbirinden ayrı iki dönemini tamamen atlattı — ilk dönemdeki iyileşme birden fazla odyogramla belgelendi —',
+    label='TR-ERF-001')
+rep('tr/deneyim-yazilari.html',
+    'https://www.facebook.com/restartmitjuli/photos/.../1272449279559073/',
+    'https://www.facebook.com/photo/?fbid=1272449279559073',
+    label='TR-ERF-T01')
+# Restore machine-readable filter state.
+rep('tr/deneyim-yazilari.html',
+    '<button type="button" class="ev-fbtn is-active" data-filter="all">Tümü',
+    '<button type="button" class="ev-fbtn is-active" data-filter="all" aria-pressed="true">Tümü',
+    label='TR-ERF-T02a')
+for filt in ['instagram','facebook','youtube','tiktok','forum']:
+    rep('tr/deneyim-yazilari.html',
+        f'<button type="button" class="ev-fbtn" data-filter="{filt}">',
+        f'<button type="button" class="ev-fbtn" data-filter="{filt}" aria-pressed="false">',
+        label=f'TR-ERF-T02-{filt}')
+rep('tr/deneyim-yazilari.html',
+    "btns.forEach(function (x) { x.classList.remove('is-active'); });\n      b.classList.add('is-active');\n      apply(b.getAttribute('data-filter'));",
+    "btns.forEach(function (x) {\n        x.classList.remove('is-active');\n        x.setAttribute('aria-pressed', 'false');\n      });\n      b.classList.add('is-active');\n      b.setAttribute('aria-pressed', 'true');\n      apply(b.getAttribute('data-filter'));",
+    label='TR-ERF-T02b')
+rep('tr/deneyim-yazilari.html',
+    '<link rel="manifest" href="/site.webmanifest">',
+    '<link rel="manifest" href="/tr/site.webmanifest">',
+    label='TR-ERF-T03')
+rep('tr/deneyim-yazilari.html',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/ervaringen">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/deneyim-yazilari">',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/ervaringen">\n  <link rel="alternate" hreflang="es" href="https://tinnitusbioregulation.com/es/testimonios">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/deneyim-yazilari">',
+    label='TR-ERF-T04')
+
+# -----------------------------
+# PRODUKTE / IMPRESSUM / DATENSCHUTZ / KONTAKT
+# -----------------------------
+rep('tr/urunler.html',
+    'Gürültüye bağlı kronik tinnitusunu iki kez tamamen yendi — her iki sefer de odyometrik olarak belgelendi —',
+    'Gürültüye bağlı kronik tinnitusunun birbirinden ayrı iki dönemini tamamen atlattı — ilk dönemdeki iyileşme birden fazla odyogramla belgelendi —',
+    label='TR-PROD-001')
+rep('tr/urunler.html',
+    'Yıllardır akşamları mineral kompleksine ek olarak düzenli biçimde 3 mg melatonin alıyorum.',
+    'Yıllar boyunca akşamları mineral kompleksine ek olarak düzenli biçimde 3 mg melatonin aldım.',
+    label='TR-PROD-002')
+rep('tr/urunler.html', '<link rel="manifest" href="/site.webmanifest">', '<link rel="manifest" href="/tr/site.webmanifest">', label='TR-PROD-T02')
+rep('tr/urunler.html',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/producten">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/urunler">',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/producten">\n  <link rel="alternate" hreflang="es" href="https://tinnitusbioregulation.com/es/productos">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/urunler">',
+    label='TR-PROD-T01')
+
+rep('tr/kunye.html', '<link rel="manifest" href="/site.webmanifest">', '<link rel="manifest" href="/tr/site.webmanifest">', label='TR-IMP-T02')
