@@ -232,7 +232,10 @@
       viewer: 'Görsel görüntüleyici',
       close: 'Kapat',
       previous: 'Önceki görsel',
-      next: 'Sonraki görsel'
+      next: 'Sonraki görsel',
+      translationRegion: 'Belgenin Türkçe çevirisi',
+      translationShow: 'Çeviriyi göster',
+      translationOriginal: 'Orijinali göster'
     } : pageLang.indexOf('pl') === 0 ? {
       viewer: 'Podgląd obrazów',
       close: 'Zamknij',
