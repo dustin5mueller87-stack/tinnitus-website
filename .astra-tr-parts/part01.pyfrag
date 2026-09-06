@@ -1,0 +1,68 @@
+from pathlib import Path
+
+ROOT = Path('.')
+changes = []
+
+def rep(path, old, new, expected=1, label=''):
+    p = ROOT / path
+    text = p.read_text(encoding='utf-8')
+    n = text.count(old)
+    if n != expected:
+        print(f'SKIP {path}: {label or old[:80]!r}: expected {expected}, found {n}')
+        return
+    p.write_text(text.replace(old, new), encoding='utf-8')
+    changes.append((path, label or old[:80], n))
+
+def remove(path, old, expected=1, label=''):
+    rep(path, old, '', expected, label)
+
+# -----------------------------
+# STARTSEITE
+# -----------------------------
+rep('tr/index.html',
+    'Sağdaki tinnitus alanında <strong>1060 Hz</strong>, soldakinde <strong>8000 Hz</strong> yazıyor.',
+    'Sağ kulak için ayrılan tinnitus alanında <strong>1060 Hz</strong>, sol kulak için ayrılan alanda <strong>8000 Hz</strong> yazıyor.',
+    label='TR-START-002')
+rep('tr/index.html',
+    'ATP bütün canlı hücrelerde bulunur, ağırlıklı olarak iç mitokondri zarındaki oksidatif fosforilasyon sırasında üretilir ve enerji dengesinde merkezi bir rol oynar.',
+    'ATP bütün canlı hücrelerde bulunur, ağırlıklı olarak mitokondrilerde gerçekleşen oksidatif fosforilasyon sırasında üretilir ve enerji dengesinde merkezi bir rol oynar.',
+    label='TR-START-003')
+rep('tr/index.html',
+    'Ubikinonlar elektron taşıyan koenzimler grubuna girer ve solunum zincirindeki flavoproteinlerle sitokromlar arasında hareketli elektron taşıyıcıları olarak görev yapar.',
+    'Ubikinonlar elektron taşıyan enzimler grubuna girer ve solunum zincirindeki flavoproteinlerle sitokromlar arasında hareketli elektron taşıyıcıları olarak görev yapar.',
+    label='TR-START-004')
+rep('site.js',
+    """    } : pageLang.indexOf('tr') === 0 ? {\n      viewer: 'Görsel görüntüleyici',\n      close: 'Kapat',\n      previous: 'Önceki görsel',\n      next: 'Sonraki görsel'\n""",
+    """    } : pageLang.indexOf('tr') === 0 ? {\n      viewer: 'Görsel görüntüleyici',\n      close: 'Kapat',\n      previous: 'Önceki görsel',\n      next: 'Sonraki görsel',\n      translationRegion: 'Belgenin Türkçe çevirisi',\n      translationShow: 'Çeviriyi göster',\n      translationOriginal: 'Orijinali göster'\n""",
+    label='TR-START-005')
+
+# -----------------------------
+# LANGBIO TEIL 1
+# -----------------------------
+rep('tr/hikayem-bolum-1.html',
+    'İnsan 23 yaşındayken enerjisinin hiç bitmeyeceğini, bedeninin her şeye dayanacağını sanıyor.',
+    'İnsan 23 yaşındayken enerjisi bitmek bilmiyor; bedeninin de her şeye dayanacağını sanıyor.',
+    label='TR-BIO1-001')
+rep('tr/hikayem-bolum-1.html',
+    'B12 de o zamanki modelimde miyelin kılıfının yenilenmesi için EN önemli vitamindi.',
+    "B12'nin de miyelin kılıfının yenilenmesi için EN önemli vitamin olduğu belirtiliyordu.",
+    label='TR-BIO1-004')
+rep('tr/hikayem-bolum-1.html',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/mijn-verhaal-deel-1">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/hikayem-bolum-1">',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/mijn-verhaal-deel-1">\n  <link rel="alternate" hreflang="es" href="https://tinnitusbioregulation.com/es/mi-historia-parte-1">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/hikayem-bolum-1">',
+    label='TR-BIO1-006')
+rep('tr/hikayem-bolum-1.html',
+    "if (region) region.setAttribute('aria-label', 'Belgenin Türkçe çevirisi');",
+    "if (region) setAttributeIfChanged(region, 'aria-label', 'Belgenin Türkçe çevirisi');",
+    label='TR-BIO1-007a')
+rep('tr/hikayem-bolum-1.html',
+    "dialog.setAttribute('aria-label', 'Görsel görüntüleyici');",
+    "setAttributeIfChanged(dialog, 'aria-label', 'Görsel görüntüleyici');",
+    label='TR-BIO1-007b')
+
+# -----------------------------
+# LANGBIO TEIL 2
+# -----------------------------
+rep('tr/hikayem-bolum-2.html',
+    'O anda umut yeniden alevlendi. Gururumu kesin olarak bir kenara bıraktım,',
+    'O anda umut yeniden alevlendi. Kısa süre sonra gururumu kesin olarak bir kenara bıraktım,'
