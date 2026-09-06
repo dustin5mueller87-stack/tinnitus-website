@@ -1,0 +1,68 @@
+    label='TR-BIO2-003')
+
+# -----------------------------
+# KURZBIO
+# -----------------------------
+rep('tr/tinnitus-iyilesme-hikayem.html',
+    'Bu tavsiyeye uyup müzik ve beyaz gürültüyle kulaklarımı daha fazla zorladıktan sonra tinnitus sağ kulağımda da fark edilir hâle geldi.',
+    'Bu tavsiyeye uyup müzik ve beyaz gürültüyle kulaklarımı daha fazla zorladıktan birkaç gün sonra tinnitus sağ kulağımda da fark edilir hâle geldi.',
+    label='TR-KURZ-002')
+rep('tr/tinnitus-iyilesme-hikayem.html',
+    'Panik yüzünden yarıda kesmek zorunda kaldığım simüle edilmiş yüksek irtifa antrenmanına (IHHT) da giriştim ve CFS konusunda uzman bir kliniğe yatırılmanın eşiğine geldim.',
+    'Simüle edilmiş yüksek irtifa antrenmanını (IHHT) da denemek istedim, ama panik yüzünden başlamadan vazgeçtim; CFS konusunda uzman bir kliniğe yatırılmanın da eşiğine geldim.',
+    label='TR-KURZ-003')
+rep('tr/tinnitus-iyilesme-hikayem.html',
+    'Benim yaşadığım gürültüye bağlı tinnitusun iyileşmesi tesadüf, şans ya da mistik bir kader değildi.',
+    'Gürültüye bağlı tinnitusun iyileşmesi tesadüf, şans ya da mistik bir kader değildir.',
+    label='TR-KURZ-004a')
+rep('tr/tinnitus-iyilesme-hikayem.html',
+    'Benim bedenimde bu, hücreme kendini onarmak için tam olarak ihtiyaç duyduğu şeyi verdiğimde ortaya çıkan mantıksal ve kaçınılmaz sonuçtu; üstelik normal hayatın tam ortasında.',
+    'Benim için bu, hücreme kendini onarmak için tam olarak ihtiyaç duyduğu şeyi verdiğimde ortaya çıkan mantıksal ve kaçınılmaz sonuçtu; üstelik normal hayatın tam ortasında.',
+    label='TR-KURZ-004b')
+rep('tr/tinnitus-iyilesme-hikayem.html',
+    'O zaman bunu şöyle yorumladım: Lesitin (fosfolipitler) yalnızca sinirleri saran kılıf (miyelin tabakası) için önemli değildi; aynı zamanda her hücre zarının temel yapı taşıydı.',
+    'Bunun arkasındaki biyoloji beni büyülemişti: Lesitin (fosfolipitler) yalnızca sinirleri saran kılıf (miyelin tabakası) için önemli olmakla kalmaz; aynı zamanda her bir hücre zarının en temel yapı taşıdır.',
+    label='TR-KURZ-005')
+rep('tr/tinnitus-iyilesme-hikayem.html',
+    'agresif antibiyotiklerle asit baskılayıcıların tamamen mahvettiği bağırsak dengem',
+    'agresif antibiyotiklerle asit baskılayıcıların tamamen mahvettiği bağırsağım',
+    label='TR-KURZ-006')
+rep('tr/tinnitus-iyilesme-hikayem.html',
+    'Kulaklıkları taktığım anda dış sesler kesildi ve sol kulağımdaki ince bip sesini duydum.',
+    'Kulaklıkları taktım; o ani sessizlikte sol kulağımdaki ince bip sesini duydum.',
+    label='TR-KURZ-008')
+rep('tr/tinnitus-iyilesme-hikayem.html',
+    'Acımasız çıkarım',
+    'Soğukkanlı çıkarım',
+    expected=1,
+    label='TR-KURZ-009')
+rep('tr/tinnitus-iyilesme-hikayem.html',
+    'çok ağrılı bir kriz',
+    'ağrılı bir kriz',
+    expected=1,
+    label='TR-KURZ-012a')
+rep('tr/tinnitus-iyilesme-hikayem.html',
+    'gece çökerken ',
+    '',
+    expected=1,
+    label='TR-KURZ-012b')
+
+# -----------------------------
+# LÖSUNGSANSATZ
+# -----------------------------
+rep('tr/cozum-yaklasimim.html',
+    'Gürültüye bağlı kronik tinnitusunu iki kez tamamen yendi — her iki sefer de odyometrik olarak belgelendi — ve kronik yorgunluk sendromuyla (CFS) seyreden ağır bir hastalığı da aynı şekilde geride bıraktı.',
+    'Gürültüye bağlı kronik tinnitusunun birbirinden ayrı iki dönemini tamamen atlattı — ilk dönemdeki düzelme birden fazla odyogramla belgelendi — ve kronik yorgunluk sendromuyla (CFS) seyreden ağır bir hastalığı da aynı şekilde geride bıraktı.',
+    label='TR-LOESUNG-001a')
+remove('tr/cozum-yaklasimim.html',
+    ' Odyometri değerlerim de bu süre içinde belirgin biçimde iyileşti.',
+    expected=1,
+    label='TR-LOESUNG-001b')
+rep('tr/cozum-yaklasimim.html',
+    'Tinnitusum dokuz yılı aşkın süredir tamamen kaybolmuş durumda ve odyometri ölçümlerim bu düzelmeyi doğruluyor.',
+    'Tinnitusum tamamen kayboldu ve bugüne kadar geri dönmedi.',
+    label='TR-LOESUNG-001c')
+remove('tr/cozum-yaklasimim.html',
+    ' (yaklaşık bir yıl sonra bende ağır bir kronik yorgunluk sendromunun patlak vermesi boşuna değildi)',
+    expected=1,
+    label='TR-LOESUNG-002')
