@@ -1,5 +1,6 @@
 name: Astra Turkish translation publication
 
+# Retry after guarded patch fragment boundary repair.
 on:
   push:
     branches:
