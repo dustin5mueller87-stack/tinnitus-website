@@ -1,0 +1,35 @@
+rep('tr/kunye.html',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/colofon">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/kunye">',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/colofon">\n  <link rel="alternate" hreflang="es" href="https://tinnitusbioregulation.com/es/aviso-legal">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/kunye">\n  <link rel="alternate" hreflang="pl" href="https://tinnitusbioregulation.com/pl/informacje-prawne">',
+    label='TR-IMP-T01')
+
+rep('tr/gizlilik.html', '<link rel="manifest" href="/site.webmanifest">', '<link rel="manifest" href="/tr/site.webmanifest">', label='TR-DAT-T02')
+rep('tr/gizlilik.html',
+    '  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/gizlilik">\n  <link rel="alternate" hreflang="ru"',
+    '  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/gizlilik">\n  <link rel="alternate" hreflang="pl" href="https://tinnitusbioregulation.com/pl/polityka-prywatnosci">\n  <link rel="alternate" hreflang="ru"',
+    label='TR-DAT-T01')
+
+rep('tr/iletisim.html', '<link rel="manifest" href="/site.webmanifest">', '<link rel="manifest" href="/tr/site.webmanifest">', label='TR-KON-T02')
+rep('tr/iletisim.html',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/contact">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/iletisim">',
+    '  <link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/contact">\n  <link rel="alternate" hreflang="es" href="https://tinnitusbioregulation.com/es/contacto">\n  <link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/iletisim">',
+    label='TR-KON-T01')
+
+# LÄRMBEDINGTER TINNITUS
+rep('tr/gurultuye-bagli-tinnitus.html', 'Bu “talimatların” özü,', 'Doktorların verdiği bu “talimatların” özü,', label='TR-LAERM-001a')
+rep('tr/gurultuye-bagli-tinnitus.html', 'durumum kötüleşti ve sağ kulağımdaki tinnitus da fark edilir hâle geldi.', 'durumum kötüleşti ve birkaç gün sonra ilk kez sağ kulağımda da tinnitus fark ettim.', label='TR-LAERM-001b')
+rep('tr/gurultuye-bagli-tinnitus.html', 'sağda sürekli gerilmiş tip-linkleri ve gereğinden fazla açık iyon kanalı bulunan eğilmiş demet', 'sağda tek tek eğilmiş stereosilyalar; aralarındaki tip-linkler sürekli gerilmiş, iyon kanalı gereğinden fazla açık', label='TR-LAERM-002a')
+rep('tr/gurultuye-bagli-tinnitus.html', 'Solda normal durum, sağda gürültü hasarı sonrası: Tüy demeti eğiliyor, tip-linkler sürekli gerilmiş kalıyor ve kanal gereğinden fazla açık duruyor.', 'Solda normal durum, sağda gürültü hasarı sonrası: Stereosilyalar tek tek eğiliyor, tip-linkler sürekli gerilmiş kalıyor ve kanal gereğinden fazla açık duruyor.', label='TR-LAERM-002b')
+rep('tr/gurultuye-bagli-tinnitus.html', 'Beyaz gürültü uygulamaları neden yapılabilecek en kötü şeydir?', 'Gürültü sesi uygulamaları neden yapılabilecek en kötü şeydir?', expected=1, label='TR-LAERM-003a')
+rep('tr/gurultuye-bagli-tinnitus.html', 'Yıkıcı maskeleme tuzağı: Beyaz gürültü uygulamaları neden yapılabilecek en kötü şeydir?', 'Yıkıcı maskeleme tuzağı: Gürültü sesi uygulamaları neden yapılabilecek en kötü şeydir?', expected=1, label='TR-LAERM-003b')
+rep('tr/gurultuye-bagli-tinnitus.html', 'beyaz gürültüyle maskeleme durumu ağırlaştırır', 'gürültü sesiyle maskeleme durumu ağırlaştırır', expected=1, label='TR-LAERM-003c')
+rep('tr/gurultuye-bagli-tinnitus.html', 'Gürültüye bağlı tinnitus, gürültü olayının hemen ardından fark edilebilir; ancak saatler, hatta günler sonra da bilinçli olarak algılanabilir. Ben sol kulağımdaki sesi ilk kez 3. günde fark ettim; bunun nedenini bugün hâlâ kesin olarak bilmiyorum.', 'Çoğu kişide tinnitus, gürültü olayından kısa süre sonra, birkaç dakika ile birkaç saat içinde başlar. Ancak tinnitusun saatler, hatta günler sonra ortaya çıktığı durumlar da vardır.', label='TR-LAERM-004')
+rep('tr/gurultuye-bagli-tinnitus.html', "if (region) region.setAttribute('aria-label', 'Belgenin Türkçe çevirisi');", "if (region) setAttributeIfChanged(region, 'aria-label', 'Belgenin Türkçe çevirisi');", label='TR-LAERM-T01a')
+rep('tr/gurultuye-bagli-tinnitus.html', "dialog.setAttribute('aria-label', 'Görsel görüntüleyici');", "setAttributeIfChanged(dialog, 'aria-label', 'Görsel görüntüleyici');", label='TR-LAERM-T01b')
+
+# MEDIKAMENTE / GIFTE
+rep('tr/ilac-ve-toksin-kaynakli-tinnitus.html', 'Benim durumumda tinnitusun asıl tetikleyicisi klasik gürültüydü (ilaç kaynaklı akut bir olay değildi)', 'Benim durumumda tinnitus o zamanlar yalnızca gürültüden kaynaklanıyordu (ilaç kaynaklı akut bir olayla tetiklenmemişti)', label='TR-GIFT-001')
+rep('tr/ilac-ve-toksin-kaynakli-tinnitus.html', "Şu anda bu sitede yayımlanan odyogramlar ilk tinnitus sürecini ve iyileşme dönemindeki gelişmeleri belgeliyor; ATP bulgusu ise CFS dönemindeki 0,37'lik ATP değerini belgeliyor. CFS ve psikosomatik belirtiler yaşadığı ayrı bir dönemde,", 'Şu anda bu sitede yayımlanan odyogramlar ilk tinnitus sürecini ve iyileşme dönemindeki gelişmeleri belgeliyor. Ayrıca kronik yorgunluk sendromuyla (CFS) seyreden ağır bir hastalığı da geride bıraktı. CFS ve psikosomatik belirtiler yaşadığı ayrı bir dönemde,', label='TR-GIFT-002')
+rep('tr/ilac-ve-toksin-kaynakli-tinnitus.html', 'Bir cıva atomu, bir enzimin ya da ATP ile çalışan bir kalsiyum pompasının kükürt içeren tiyol bağlanma noktasına tutunur; enzimin ya da pompanın yapısını eğip bükerek işlevini yitirmesine yol açar;', 'Bir cıva atomu, ATP ile çalışan bir kalsiyum pompası olan enzimin kükürt içeren tiyol bağlanma noktasına tutunur; bu pompanın yapısını eğip bükerek işlevini yitirmesine yol açar;', label='TR-GIFT-003')
+rep('tr/ilac-ve-toksin-kaynakli-tinnitus.html', 'kalsiyum pompaları kapasite sınırına yakın çalışıyordur ya da hücreler sınırda var gücüyle çalışıyordur.', 'kalsiyum pompaları zaten kapasitelerinin sınırına doğru zorlanıyordur; hücreler de bir bütün olarak sınırda var gücüyle çalışıyordur.', label='TR-GIFT-004')
+rep('tr/ilac-ve-toksin-kaynakli-tinnitus.html', '<link rel="manifest" href="/site.webmanifest">', '<link rel="manifest" href="/tr/site.webmanifest">', label='TR-GIFT-T01')
