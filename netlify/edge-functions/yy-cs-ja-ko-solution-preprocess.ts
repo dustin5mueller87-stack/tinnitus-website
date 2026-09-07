@@ -17,6 +17,7 @@ function replaceAll(text: string, from: string, to: string) {
 }
 
 function preprocess(pathname: string, html: string) {
+  if (pathname.startsWith("/cs/") && html.includes('data-translation-batch="2026-09-07"')) return html;
   const p = pathname.replace(/\.html$/, '');
 
   if (p === '/cs/mein-loesungsansatz') {

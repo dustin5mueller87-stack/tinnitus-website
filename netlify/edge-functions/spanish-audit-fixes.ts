@@ -8,7 +8,7 @@
  *   optional style, visual and live-browser questions untouched.
  */
 
-const VERSION = "2026-09-07-v1";
+const VERSION = "2026-09-07-v2";
 
 function replaceAll(text, from, to) {
   if (!from || from === to) return text;
@@ -80,16 +80,6 @@ function fixHome(html) {
 function fixBio1(html) {
   html = replaceAll(
     html,
-    'En ese momento ya percibía también un pitido débil en el derecho.',
-    'En ese momento todavía no percibía ningún acúfeno en el oído derecho.'
-  );
-  html = replaceAll(
-    html,
-    'La mañana de mi segunda consulta, los acúfenos se habían intensificado de forma masiva de repente; también el débil pitido que ya existía en el oído derecho era ahora claramente más fuerte. (Hoy sé que la exposición adicional a sonidos por consejo médico —con música y, por la noche, con ruido blanco— había vuelto a poner de rodillas a mis células y había intensificado de forma masiva el tono ya presente en el oído derecho).',
-    'La mañana de mi segunda consulta, los acúfenos se habían intensificado de forma masiva de repente y, pocos días después del primer tono izquierdo, empecé a percibir también un pitido en el oído derecho. (Hoy sé que la exposición adicional a sonidos por consejo médico —con música y, por la noche, con ruido blanco— había vuelto a poner de rodillas a mis células y había hecho que el segundo oído también se viera afectado).'
-  );
-  html = replaceAll(
-    html,
     'El sistema había capitulado y me había puesto la etiqueta de «loco».',
     'El sistema había capitulado y me había echado la culpa.'
   );
@@ -117,22 +107,10 @@ function fixBio1(html) {
 }
 
 function fixBio2(html) {
-  html = replaceAll(html, 'El colapso al 75 %', 'El colapso alrededor del 50 %');
-  html = replaceAll(
-    html,
-    'hasta un brutal 75 % de la intensidad de mi primerísimo episodio de acúfenos',
-    'hasta un brutal nivel de aproximadamente el 50 % de la intensidad de mi primerísimo episodio de acúfenos'
-  );
-  html = replaceAll(
-    html,
-    'El colapso definitivo: el 75 % y el caos sonoro',
-    'El colapso definitivo: aproximadamente el 50 % y el caos sonoro'
-  );
-  html = replaceAll(
-    html,
-    'alcanzaban sin duda tres cuartas partes —el 75 %— de la intensidad que habían tenido durante mi primerísimo episodio de acúfenos',
-    'alcanzaban aproximadamente la mitad —el 50 %— de la intensidad que habían tenido durante mi primerísimo episodio de acúfenos'
-  );
+
+
+
+
   html = replaceAll(
     html,
     'estaba postrado en cama al 98 %',
@@ -159,21 +137,7 @@ function fixBio2(html) {
 }
 
 function fixShortBio(html) {
-  html = replaceAll(
-    html,
-    'y un pitido tenue en el derecho',
-    'y todavía ningún acúfeno perceptible en el derecho'
-  );
-  html = replaceAll(
-    html,
-    'el tono tenue que ya tenía en el oído derecho empeoró claramente',
-    'pocos días después empecé a percibir también un pitido en el oído derecho'
-  );
-  html = replaceAll(
-    html,
-    'con un brutal 75 % del volumen de mi primerísimo episodio de acúfenos',
-    'con un nivel brutal, de aproximadamente el 50 % del volumen de mi primerísimo episodio de acúfenos'
-  );
+
   html = replaceAll(
     html,
     'Quité FitLine de la pantalla de un manotazo a los 4 segundos',
@@ -345,16 +309,6 @@ function fixNoise(html) {
     html,
     'Discoteca, concierto, trauma acústico:',
     'Discoteca, concierto, trauma acústico por impulso:'
-  );
-  html = replaceAll(
-    html,
-    'y, para colmo, poco después se intensificó claramente el pitido débil que ya había aparecido en el oído derecho el tercer día, como consecuencia directa de unas indicaciones de los médicos que, en mi caso personal, resultaron ser del todo equivocadas.',
-    'y, para colmo, poco después se sumó también el oído derecho, como consecuencia directa de unas indicaciones de los médicos que, en mi caso personal, resultaron ser del todo equivocadas.'
-  );
-  html = replaceAll(
-    html,
-    'porque precisamente eso empeoró mi estado e intensificó claramente el tono débil que ya había en el oído derecho.',
-    'porque precisamente eso empeoró mi estado e hizo que el segundo oído también se viera afectado.'
   );
   html = replaceAll(
     html,

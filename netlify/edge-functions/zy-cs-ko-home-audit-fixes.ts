@@ -11,6 +11,7 @@ function replaceAll(text: string, from: string, to: string) {
 }
 
 function fixCzechHome(html: string) {
+  if (html.includes('data-translation-batch="2026-09-07"')) return html;
   html = replaceAll(
     html,
     'a také prodělal těžké onemocnění s chronickým únavovým syndromem (CFS)',

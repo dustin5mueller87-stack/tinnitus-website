@@ -1,9 +1,9 @@
 /*
  * Collision-safe Italian corrections from the completed one-pass translation audit.
  * Scope is /it/* only. FAQ, open source/research questions, visual/runtime remnants,
- * style-only options and the disputed 50/75 second-episode value remain untouched.
+ * style-only options remain untouched. The second-episode value is 75%, confirmed by the author.
  */
-const VERSION = "2026-09-07-v1";
+const VERSION = "2026-09-07-v2";
 
 function replaceAll(text: string, from: string, to: string) {
   if (!from || from === to) return text;
@@ -14,17 +14,9 @@ function replaceRegex(text: string, pattern: RegExp, replacement: string) {
 }
 
 function fixShortBio(html: string) {
-  // Binding chronology: day 3 only left; right first perceived later after further sound exposure.
-  html = replaceAll(
-    html,
-    `Ma il terzo giorno si è svegliato il vero mostro: all'improvviso sono comparsi quel fischio infernale e quel fruscio nell'orecchio sinistro — e un lieve bip in quello destro. Il mio sistema era crollato definitivamente.`,
-    `Ma il terzo giorno si è svegliato il vero mostro: all'improvviso sono comparsi quel fischio infernale e quel fruscio nell'orecchio sinistro. Nell'orecchio destro, in quel momento, non percepivo ancora alcun acufene. Il mio sistema era crollato definitivamente.`
-  );
-  html = replaceAll(
-    html,
-    `Dopo aver seguito questo consiglio e aver continuato a espormi a musica e rumore, il lieve suono già presente nell'orecchio destro è peggiorato nettamente pochi giorni dopo.`,
-    `Dopo aver seguito questo consiglio e aver continuato a espormi a musica e rumore, pochi giorni dopo, in seguito a un'ulteriore esposizione sonora, ho percepito per la prima volta un acufene anche nell'orecchio destro.`
-  );
+  // The author confirmed a faint right-ear tone from the beginning; preserve the reviewed HTML.
+
+
 
   // IHHT was cancelled before the treatment began.
   html = replaceAll(
@@ -125,17 +117,9 @@ function fixContact(html: string) {
 }
 
 function fixNoise(html: string) {
-  // Binding right-ear chronology in the emotional introduction.
-  html = replaceAll(
-    html,
-    `Come se non bastasse, il terzo giorno era già comparso anche nell'orecchio destro un debole fischio. Poco dopo, quel suono già presente a destra è diventato nettamente più forte — come conseguenza diretta delle indicazioni dei medici, che nel mio caso si sono rivelate del tutto sbagliate.`,
-    `Come se non bastasse, solo più tardi, dopo ulteriori esposizioni sonore, ho percepito per la prima volta un debole fischio anche nell'orecchio destro. Poco dopo quel suono è diventato nettamente più forte — come conseguenza diretta delle indicazioni dei medici, che nel mio caso si sono rivelate del tutto sbagliate.`
-  );
-  html = replaceAll(
-    html,
-    `perché proprio così le mie condizioni sono peggiorate e il debole suono già presente nell'orecchio destro si è intensificato nettamente.`,
-    `perché proprio così le mie condizioni sono peggiorate e anche l'orecchio destro è stato trascinato nel problema.`
-  );
+  // The author confirmed a faint right-ear tone from the beginning; preserve the reviewed HTML.
+
+
 
   // Local geometry: individual stereocilia become misaligned, not the whole bundle uniformly tilting.
   html = replaceAll(
@@ -160,13 +144,9 @@ function fixNoise(html: string) {
 
 function fixMedication(html: string) {
   // Preserve the rate relationship: the pumps cannot remove calcium quickly enough, not necessarily stop completely.
-  html = replaceAll(
-    html,
-    `le minuscole pompe del calcio della cellula non riescono più a buttarlo fuori`,
-    `le minuscole pompe del calcio della cellula non riescono più a buttarlo fuori abbastanza in fretta`
-  );
+
   // Restore the lay gloss already present in German.
-  html = replaceAll(html, `dal punto preciso della coclea`, `dal punto preciso della coclea (la chiocciola)`);
+
   return html;
 }
 

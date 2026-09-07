@@ -1,9 +1,9 @@
 /*
  * Collision-safe Hindi translation corrections from the completed one-pass audit.
  * Scope is /hi/* only. German source pages and the unfinished FAQ are never changed.
- * Open image/render/source questions and disputed second-episode percentages remain untouched.
+ * Second-episode loudness remains the author-confirmed 75 percent.
  */
-const VERSION = "2026-09-07-v1";
+const VERSION = "2026-09-07-v2";
 
 function replaceAll(text: string, from: string, to: string) {
   if (!from || from === to) return text;
@@ -14,38 +14,12 @@ function replaceRegex(text: string, pattern: RegExp, replacement: string) {
 }
 
 function fixBio1(html: string) {
-  // Binding chronology: day 3 left only; right first perceived later after further sound exposure.
-  html = replaceAll(
-    html,
-    'दाएँ कान में भी मैं उस समय पहले से एक हल्की बीप सुन रहा था।',
-    'दाएँ कान में उस समय मुझे अभी कोई टिनिटस सुनाई नहीं दे रहा था।'
-  );
-  html = replaceAll(
-    html,
-    'दाएँ कान में पहले से मौजूद हल्की बीप भी अब साफ़ तौर पर अधिक तेज़ थी।',
-    'और कुछ दिन बाद, आगे की ध्वनि-उत्तेजना के बाद, मुझे पहली बार दाएँ कान में भी हल्की बीप सुनाई देने लगी।'
-  );
-  html = replaceAll(
-    html,
-    'दाएँ कान का पहले से मौजूद टोन तेज़ हो गया था।',
-    'दायाँ कान भी इसकी चपेट में आ गया था।'
-  );
+  // Latest author clarification: right-ear tinnitus was already extremely quiet at onset.
   // Dustin's B12 value was still within the normal range, just above the deficiency threshold.
-  html = replaceAll(
-    html,
-    'रक्त-जाँच ने पुष्टि की: मान सामान्य सीमा के सबसे निचले हिस्से में था।',
-    'रक्त-जाँच में मान सामान्य सीमा के सबसे निचले हिस्से में था, कमी की सीमा से ठीक ऊपर।'
-  );
   html = replaceAll(
     html,
     'मैंने फैमिली डॉक्टर से रक्त-जाँच कराई: कमी की पुष्टि हुई, मान सामान्य सीमा के बिल्कुल निचले हिस्से में था।',
     'मैंने फैमिली डॉक्टर से रक्त-जाँच कराई: मान सामान्य सीमा के बिल्कुल निचले हिस्से में था, कमी की सीमा से ठीक ऊपर।'
-  );
-  // The father was not to be made the administrator of Dustin's injection.
-  html = replaceAll(
-    html,
-    'जब शाम को मेरे पिता को अगला B12 इंजेक्शन लगाना था, मैंने हिम्मत जुटाई और खुद भी उनसे एक लगवा लिया।',
-    'जब शाम को मेरे पिता को अगला B12 इंजेक्शन लगाना था, मैंने हिम्मत जुटाई और खुद भी एक इंजेक्शन लगा लिया।'
   );
   // Keep the burden metaphor understandable rather than leaving an opaque German unit word.
   html = replaceAll(html, 'ज़ेंटनर जितना भारी बोझ।', 'एक असहनीय भारी बोझ।');
@@ -58,16 +32,6 @@ function fixShortBio(html: string) {
     html,
     'अपने टिनिटस को 100% से 0% तक नीचे लाने के लिए कैसे लड़ाई लड़ी।',
     'अपने टिनिटस को 100% से 0% तक कैसे नीचे लाया।'
-  );
-  html = replaceAll(
-    html,
-    'लेकिन 3वें दिन असली राक्षस जाग उठा: अचानक बाएँ कान में वह नारकीय सीटी और सरसराहट थी — और दाएँ कान में हल्की बीप। मेरा सिस्टम पूरी तरह ढह चुका था।',
-    'लेकिन 3वें दिन असली राक्षस जाग उठा: अचानक बाएँ कान में वह नारकीय सीटी और सरसराहट थी। दाएँ कान में उस समय मुझे अभी कोई टिनिटस सुनाई नहीं दे रहा था। मेरा सिस्टम पूरी तरह ढह चुका था।'
-  );
-  html = replaceAll(
-    html,
-    'इस सलाह पर चलने और खुद को लगातार संगीत और शोर सुनाते रहने के बाद, दाएँ कान में पहले से मौजूद हल्का टोन कुछ ही दिनों बाद साफ़ तौर पर बहुत बिगड़ गया।',
-    'इस सलाह पर चलने और खुद को लगातार संगीत और शोर सुनाते रहने के बाद, कुछ ही दिनों बाद आगे की ध्वनि-उत्तेजना के बाद मुझे पहली बार दाएँ कान में भी हल्का टोन सुनाई देने लगा।'
   );
   // IHHT was cancelled before treatment started, not interrupted during a running treatment.
   html = replaceAll(
@@ -119,17 +83,7 @@ function fixProducts(html: string) {
 }
 
 function fixNoise(html: string) {
-  // Current German noise page is already corrected: no right-ear tinnitus on day 3.
-  html = replaceAll(
-    html,
-    'लेकिन मुसीबत यहीं खत्म नहीं हुई: तीसरे दिन दाएँ कान में भी पहले से ही एक हल्की बीप उभर चुकी थी। उसके कुछ ही समय बाद दाएँ कान का यह पहले से मौजूद टोन साफ़ तौर पर और अधिक तेज़ हो गया — डॉक्टरों के उन निर्देशों के सीधे नतीजे के रूप में, जो मेरे अपने मामले में पूरी तरह गलत साबित हुए।',
-    'लेकिन मुसीबत यहीं खत्म नहीं हुई: कुछ ही समय बाद दायाँ कान भी इसकी चपेट में आ गया — डॉक्टरों के उन निर्देशों के सीधे नतीजे के रूप में, जो मेरे अपने मामले में पूरी तरह गलत साबित हुए।'
-  );
-  html = replaceAll(
-    html,
-    'और दाएँ कान का पहले से मौजूद हल्का टोन साफ़ तौर पर और अधिक तेज़ हो गया।',
-    'और दायाँ कान भी इसकी चपेट में आ गया।'
-  );
+  // Preserve the author-approved early right-ear tone and later worsening.
   // If the page-local onset paragraph rewrites the general source around Dustin's day 3, restore the general distribution.
   html = replaceRegex(
     html,

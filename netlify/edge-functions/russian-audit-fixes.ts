@@ -181,6 +181,8 @@ function fixStress(html: string) {
 }
 
 function applyPathFixes(pathname: string, html: string) {
+  // This batch already contains the reviewed translations and author corrections.
+  if (html.includes('data-translation-batch="2026-09-07"')) return html;
   const p = pathname.replace(/\.html$/, '').replace(/\/$/, '');
   switch (p) {
     case '/ru/moya-istoriya-chast-1': return fixBio1(html);

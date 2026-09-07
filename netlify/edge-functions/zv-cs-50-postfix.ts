@@ -4,6 +4,7 @@ function replaceAll(text: string, from: string, to: string) {
 }
 
 function patchBio2(html: string) {
+  if (html.includes('data-translation-batch="2026-09-07"')) return html;
   html = replaceAll(html, 'Kolaps na 75&nbsp;%', 'Kolaps na zhruba 50&nbsp;%');
   html = replaceAll(
     html,
@@ -24,6 +25,7 @@ function patchBio2(html: string) {
 }
 
 function patchShortBio(html: string) {
+  if (html.includes('data-translation-batch="2026-09-07"')) return html;
   html = replaceAll(
     html,
     'Tinnitus se vrátil s brutálními 75&nbsp;% původní hlasitosti',
@@ -33,6 +35,7 @@ function patchShortBio(html: string) {
 }
 
 function patchApproach(html: string) {
+  if (html.includes('data-translation-batch="2026-09-07"')) return html;
   html = replaceAll(
     html,
     'přibližně 75&nbsp;% intenzity mého úplně prvního případu tinnitu',

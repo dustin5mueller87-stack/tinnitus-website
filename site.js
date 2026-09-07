@@ -368,6 +368,9 @@
     } : pageLang.indexOf('ko') === 0 ? {
       show: '문서 번역 보기',
       original: '독일어 원문 보기'
+    } : pageLang.indexOf('tr') === 0 ? {
+      show: 'Türkçe çeviriyi göster',
+      original: 'Almanca aslını göster'
     } : pageLang.indexOf('hi') === 0 ? {
       show: 'हिंदी अनुवाद दिखाएँ',
       original: 'जर्मन मूल दस्तावेज़ दिखाएँ'
@@ -2853,7 +2856,7 @@
                 : pageLang.indexOf('it') === 0
                   ? "L'acufene non è una condanna. Hai domande sulla mia via d'uscita dall'inferno dell'acufene o sul protocollo di nutrienti?"
                   : pageLang.indexOf('nl') === 0
-                    ? "Tinnitus hoeft niet je lot te zijn. Heb je vragen over mijn weg uit de tinnitushel of over mijn voedingsstoffenprotocol?"
+                    ? "Tinnitus is geen vonnis. Heb je vragen over mijn weg uit de tinnitushel of over het voedingsstoffenprotocol?"
                     : pageLang.indexOf('fr') === 0
                       ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole de nutriments ?"
                       : pageLang.indexOf('pt') === 0

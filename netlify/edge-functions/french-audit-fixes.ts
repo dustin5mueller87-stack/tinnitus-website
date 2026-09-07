@@ -3,7 +3,7 @@
  * Scope is /fr/* only. German source pages and the unfinished FAQ are never changed.
  * Open image/source/render questions and disputed second-episode percentages remain untouched.
  */
-const VERSION = "2026-09-07-v1";
+const VERSION = "2026-09-07-v2";
 
 function replaceAll(text: string, from: string, to: string) {
   if (!from || from === to) return text;
@@ -59,7 +59,7 @@ function fixNoise(html: string) {
     'Voici ce qu’est réellement, sur le plan physiologique et selon ma conviction, l’acouphène chronique causé par le bruit : une cellule vivante, bloquée dans un mode d’urgence énergétique, dont la réparation reste en grande partie figée en phase 1 parce que l’énergie nécessaire à la phase 2 manque. L’oreille n’est pas « cassée » et le cerveau n’invente pas un signal fantôme. Le son est le résultat d’une véritable lutte périphérique pour la survie, que le cerveau ne fait qu’amplifier.'
   );
   html = replaceAll(html, 'sur la page consacrée à ma démarche,', 'sur la page consacrée à ma démarche pour en sortir,');
-  html = replaceAll(html, 'Comment j’y suis arrivé — ma démarche', 'Comment j’y suis arrivé — ma démarche pour en sortir');
+  html = replaceAll(html, '>Comment j’y suis arrivé — ma démarche</div>', '>Comment j’y suis arrivé — ma démarche pour en sortir</div>');
   // German says clarify/examine possible organic causes, not exclude them as a foregone endpoint.
   html = replaceAll(html, 'afin d’écarter des causes organiques.', 'afin de faire examiner d’éventuelles causes organiques.');
   html = replaceAll(html, 'en particulier s’ils sont apparus soudainement', 'en particulier s’ils sont apparus de façon aiguë');
