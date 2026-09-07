@@ -4,6 +4,7 @@
  * Open author/source questions and unverified image/render items remain untouched.
  */
 const VERSION = '2026-09-07-v1';
+const STATIC_JA_BATCH = 'data-translation-batch="2026-09-07-ja"';
 function ra(text: string, from: string, to: string) { if (!from || from === to) return text; return text.split(from).join(to); }
 function rr(text: string, pattern: RegExp, replacement: string) { return text.replace(pattern, replacement); }
 
@@ -170,6 +171,7 @@ function stress(html: string) {
 }
 
 function applyPathFixes(pathname: string, html: string) {
+  if (html.includes(STATIC_JA_BATCH)) return html;
   const p = pathname.replace(/\.html$/, '');
   switch (p) {
     case '/ja/meine-geschichte-teil-1': return bio1(html);

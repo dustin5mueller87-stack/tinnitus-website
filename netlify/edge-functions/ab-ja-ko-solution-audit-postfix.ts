@@ -12,6 +12,7 @@ function replaceAll(text: string, from: string, to: string) {
 }
 
 function fixJapanese(html: string) {
+  if (html.includes('data-translation-batch="2026-09-07-ja"')) return html;
   // Conflict resolution / trauma resolution are two names for the same process.
   html = replaceAll(
     html,
