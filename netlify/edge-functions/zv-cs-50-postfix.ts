@@ -47,6 +47,8 @@ function patchApproach(html: string) {
 export default async (request: Request, context: any) => {
   const url = new URL(request.url);
   const response = await context.next();
+  // These responses must not be reconstructed with a body.
+  if (request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
   const type = response.headers.get('content-type') || '';
   if (!type.toLowerCase().includes('text/html')) return response;
 

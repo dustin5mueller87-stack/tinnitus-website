@@ -238,7 +238,7 @@ html[dir="rtl"] details.studien[open] > summary::before {
     <div class="toc-eyebrow">في هذه الصفحة</div>
 
     <div class="toc-group">
-      <div class="toc-group-label"><span class="toc-group-part">الجزء</span>كيف تعمل الأمور على المستوى الخلوي</div>
+      <div class="toc-group-label"><span class="toc-group-part">الجزء <bdi dir="ltr">1</bdi></span>كيف تعمل الأمور على المستوى الخلوي</div>
       <ol class="toc-jump-list">
         <li><a href="#sektion-1"><span class="toc-num">01</span><span>بروتينات الربط المتصالب في الأهداب الساكنة</span></a></li>
         <li><a href="#sektion-2"><span class="toc-num">02</span><span>تنشيط إنزيمات الكالبين بفعل الضوضاء</span></a></li>
@@ -256,11 +256,11 @@ html[dir="rtl"] details.studien[open] > summary::before {
 
     <a class="toc-lead" href="#roter-faden">
       <span class="toc-lead-mark" aria-hidden="true">★</span>
-      <span class="toc-lead-text"><strong>الخيط الناظم</strong> — زيادة</span>
+      <span class="toc-lead-text"><strong>الخيط الناظم</strong> — زيادة <bdi dir="ltr">ATP</bdi> والمسارات العلاجية الثلاثة</span>
     </a>
 
     <div class="toc-group">
-      <div class="toc-group-label"><span class="toc-group-part">الجزء</span>مَن شفى مرضى بهذه الوسائل</div>
+      <div class="toc-group-label"><span class="toc-group-part">الجزء <bdi dir="ltr">2</bdi></span>مَن شفى مرضى بهذه الوسائل</div>
       <ol class="toc-jump-list">
         <li><a href="#sektion-11"><span class="toc-num">11</span><span>العلاج بالليزر منخفض المستوى: لماذا تحسم الجرعة النتيجة</span></a></li>
         <li><a href="#sektion-12"><span class="toc-num">12</span><span><bdi dir="ltr">Dr. Lutz Wilden</bdi> — ركيزة الممارسة</span></a></li>
@@ -1100,7 +1100,7 @@ html[dir="rtl"] details.studien[open] > summary::before {
       var details = document.createElement('details');
       details.className = 'studien';
       var summary = document.createElement('summary');
-      summary.textContent = (count === 1 ? 'عرض دراسة واحدة ومصدرها' : count === 2 ? 'عرض دراستين ومصادرهما' : 'عرض \u2066' + count + '\u2069 دراسات ومصادرها');
+      summary.textContent = (count === 1 ? 'عرض دراسة واحدة ومصدرها' : count === 2 ? 'عرض دراستين ومصادرهما' : 'عرض \u2066' + count + (count <= 10 ? '\u2069 دراسات ومصادرها' : '\u2069 دراسةً ومصادرها'));
       details.appendChild(summary);
       main.insertBefore(details, toWrap[0]);
       toWrap.forEach(function (n) { details.appendChild(n); });

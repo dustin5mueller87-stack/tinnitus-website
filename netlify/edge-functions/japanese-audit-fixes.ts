@@ -192,11 +192,14 @@ export default async (request: Request, context: any) => {
   const url = new URL(request.url);
   if (url.pathname === '/ja/faq' || url.pathname === '/ja/faq.html') return context.next();
   const response = await context.next();
+  // These responses must not be reconstructed with a body.
+  if (request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
   const type = response.headers.get('content-type') || '';
   if (!type.includes('text/html')) return response;
   const html = await response.text();
   const fixed = applyPathFixes(url.pathname, html);
   const headers = new Headers(response.headers);
+  headers.delete('content-length');
   headers.set('x-tbr-ja-audit-fixes', VERSION);
   return new Response(fixed, { status: response.status, statusText: response.statusText, headers });
 };

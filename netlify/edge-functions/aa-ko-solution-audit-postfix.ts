@@ -18,6 +18,8 @@ function postfix(html: string) {
 
 export default async (_request: Request, context: any) => {
   const response = await context.next();
+  // These responses must not be reconstructed with a body.
+  if (_request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
   const type = response.headers.get('content-type') || '';
   if (!type.toLowerCase().includes('text/html')) return response;
 

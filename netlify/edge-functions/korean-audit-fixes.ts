@@ -44,10 +44,9 @@ function bio1(html: string) {
 }
 
 function bio2(html: string) {
-  // Binding author correction: approx. 50% of the very first tinnitus, not 75%.
+  // Legacy body corrections; the newer 75% author decision is preserved in the navigation title.
   html = ra(html, '75%에 이른 붕괴', '약 50%에 이른 붕괴');
   html = ra(html, '첫 번째 붕괴 때 음량의 무려 75%', '제 생애 맨 처음 이명 음량의 약 50%');
-  html = ra(html, '최종 붕괴: 75%와 소리의 혼돈', '최종 붕괴: 약 50%와 소리의 혼돈');
   html = ra(html, '첫 번째 붕괴 때의 약 4분의 3, 즉 75%까지 올라왔습니다.', '제 생애 맨 처음 이명 음량의 약 절반, 즉 약 50%까지 올라왔습니다.');
 
   // Restore the local evidence statement. The absence of a second audiogram is true background,
@@ -229,11 +228,14 @@ export default async (request: Request, context: any) => {
   const url = new URL(request.url);
   if (url.pathname === '/ko/faq' || url.pathname === '/ko/faq.html') return context.next();
   const response = await context.next();
+  // These responses must not be reconstructed with a body.
+  if (request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
   const type = response.headers.get('content-type') || '';
   if (!type.includes('text/html')) return response;
   const html = await response.text();
   const fixed = applyPathFixes(url.pathname, html);
   const headers = new Headers(response.headers);
+  headers.delete('content-length');
   headers.set('x-tbr-ko-audit-fixes', VERSION);
   return new Response(fixed, { status: response.status, statusText: response.statusText, headers });
 };

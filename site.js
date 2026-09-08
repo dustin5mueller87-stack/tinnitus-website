@@ -12,6 +12,7 @@
       if (!button || !submenu) return;
 
       function submenuIsVisible() {
+        if (window.innerWidth > 1100 && dropdown.classList.contains('is-submenu-dismissed')) return false;
         var style = window.getComputedStyle(submenu);
         return dropdown.matches(':hover, :focus-within') ||
           (style.visibility !== 'hidden' &&
@@ -27,11 +28,35 @@
         window.requestAnimationFrame(syncExpanded);
       }
 
-      dropdown.addEventListener('mouseenter', scheduleSync);
+      dropdown.addEventListener('mouseenter', function () {
+        dropdown.classList.remove('is-submenu-dismissed');
+        scheduleSync();
+      });
       dropdown.addEventListener('mouseleave', scheduleSync);
-      dropdown.addEventListener('focusin', scheduleSync);
-      dropdown.addEventListener('focusout', scheduleSync);
-      window.addEventListener('resize', scheduleSync);
+      dropdown.addEventListener('focusin', function (event) {
+        if (!dropdown.contains(event.relatedTarget)) dropdown.classList.remove('is-submenu-dismissed');
+        scheduleSync();
+      });
+      dropdown.addEventListener('focusout', function (event) {
+        if (!dropdown.contains(event.relatedTarget)) dropdown.classList.remove('is-submenu-dismissed');
+        scheduleSync();
+      });
+      button.addEventListener('click', function () {
+        dropdown.classList.remove('is-submenu-dismissed');
+        scheduleSync();
+      });
+      dropdown.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape' || window.innerWidth <= 1100 || !submenuIsVisible()) return;
+        event.preventDefault();
+        event.stopPropagation();
+        button.focus();
+        dropdown.classList.add('is-submenu-dismissed');
+        button.setAttribute('aria-expanded', 'false');
+      });
+      window.addEventListener('resize', function () {
+        if (window.innerWidth <= 1100) dropdown.classList.remove('is-submenu-dismissed');
+        scheduleSync();
+      });
       scheduleSync();
     });
   }
@@ -236,6 +261,14 @@
       translationRegion: 'Belgenin Türkçe çevirisi',
       translationShow: 'Çeviriyi göster',
       translationOriginal: 'Orijinali göster'
+    } : pageLang.indexOf('id') === 0 ? {
+      viewer: 'Penampil gambar',
+      close: 'Tutup',
+      previous: 'Gambar sebelumnya',
+      next: 'Gambar berikutnya',
+      translationRegion: 'Terjemahan dokumen dalam bahasa Indonesia',
+      translationShow: 'Tampilkan terjemahan bahasa Indonesia',
+      translationOriginal: 'Tampilkan dokumen asli berbahasa Jerman'
     } : pageLang.indexOf('pl') === 0 ? {
       viewer: 'Podgląd obrazów',
       close: 'Zamknij',
@@ -371,6 +404,9 @@
     } : pageLang.indexOf('tr') === 0 ? {
       show: 'Türkçe çeviriyi göster',
       original: 'Almanca aslını göster'
+    } : pageLang.indexOf('id') === 0 ? {
+      show: 'Tampilkan terjemahan bahasa Indonesia',
+      original: 'Tampilkan dokumen asli berbahasa Jerman'
     } : pageLang.indexOf('hi') === 0 ? {
       show: 'हिंदी अनुवाद दिखाएँ',
       original: 'जर्मन मूल दस्तावेज़ दिखाएँ'
@@ -392,16 +428,16 @@
     var nextBtn = overlay.querySelector('.lightbox-next');
     var triggers = document.querySelectorAll('a[data-lightbox]');
 
-    // Erstelle eine Liste von Triggern mit eindeutigen hrefs
+    // Keep each displayed gallery's own order, captions and document translations.
+    // The comparison and document cards may deliberately describe the same image differently.
     var uniqueTriggers = [];
-    var seenHrefs = {};
-    triggers.forEach(function (a) {
-      var href = a.getAttribute('href');
-      if (!seenHrefs[href]) {
-        seenHrefs[href] = true;
-        uniqueTriggers.push(a);
-      }
-    });
+    function selectGallery(trigger) {
+      var group = trigger.closest('.doc-grid, .compare-grid');
+      uniqueTriggers = Array.prototype.filter.call(triggers, function (candidate) {
+        return candidate.closest('.doc-grid, .compare-grid') === group;
+      });
+      currentIdx = uniqueTriggers.indexOf(trigger);
+    }
 
     var currentIdx = -1;
     var currentTrigger = null;
@@ -613,14 +649,7 @@
         e.preventDefault();
         var href = a.getAttribute('href');
 
-        // Finde den Index in der uniqueTriggers-Liste
-        currentIdx = -1;
-        for (var i = 0; i < uniqueTriggers.length; i++) {
-          if (uniqueTriggers[i].getAttribute('href') === href) {
-            currentIdx = i;
-            break;
-          }
-        }
+        selectGallery(a);
 
         open(href, a.getAttribute('data-lightbox'), a);
       });
@@ -895,6 +924,7 @@
       v.onload=function(){
         var pageLang = document.documentElement.lang.toLowerCase();
         var isEnglishPage = pageLang.indexOf('en') === 0;
+        var isSpanishPage = pageLang.indexOf('es') === 0;
         var isItalianPage = pageLang.indexOf('it') === 0;
         var isFrenchPage = pageLang.indexOf('fr') === 0;
         var isDutchPage = pageLang.indexOf('nl') === 0;
@@ -912,6 +942,134 @@
         var hindiAiDisclaimer = 'AI के जवाबों में गलतियाँ हो सकती हैं।';
         var arabicAiDisclaimer = 'قد تحتوي إجابات الذكاء الاصطناعي على أخطاء.';
         var portugueseAiDisclaimer = 'As respostas da IA podem conter erros.';
+        // Common controls for pages without their own complete widget localization.
+        var additionalChatLabels = {
+  "de": {
+    "title": "Tinnitus-Assistent",
+    "description": "Fragen zu Dustins Geschichte, Ansatz & Quellen",
+    "placeholder": "Was möchtest du über Tinnitus, Dustins Geschichte oder seinen Ansatz wissen?",
+    "open": "Chat öffnen",
+    "close": "Chat schließen",
+    "restart": "Gespräch neu starten",
+    "new": "Neuen Chat starten",
+    "cancel": "Abbrechen",
+    "send": "Senden",
+    "sent": "Gesendet",
+    "hide": "Nachrichten ausblenden",
+    "ended": "Chat beendet",
+    "scroll": "Nach unten scrollen",
+    "avatar": "Avatar des Assistenten",
+    "more": "Mehr anzeigen",
+    "less": "Weniger anzeigen",
+    "download": "Herunterladen",
+    "viewer": "Bildbetrachter",
+    "previous": "Vorheriges Bild",
+    "next": "Nächstes Bild",
+    "table": "Scrollbare Tabelle",
+    "drop": "Dateien zum Hochladen hier ablegen",
+    "privacy": "Datenschutzhinweis",
+    "policy": "Datenschutzerklärung",
+    "submit": "Absenden",
+    "ai": "KI-Antworten können Fehler enthalten.",
+    "closeDialog": "Schließen",
+    "privacyDescription": "Bevor wir dein Gespräch fortsetzen können, bitten wir dich, unsere Datenschutzerklärung zu lesen und zu akzeptieren. Sie erläutert, wie wir deine personenbezogenen Daten im Rahmen unserer Dienste verarbeiten und schützen.",
+    "privacyAccept": "Akzeptieren und fortfahren"
+  },
+  "pl": {
+    "title": "Asystent ds. szumów usznych",
+    "description": "Pytania o historię Dustina, jego podejście i źródła",
+    "placeholder": "Co chcesz wiedzieć o szumach usznych, historii Dustina lub jego podejściu?",
+    "open": "Otwórz czat",
+    "close": "Zamknij czat",
+    "restart": "Uruchom rozmowę ponownie",
+    "new": "Rozpocznij nowy czat",
+    "cancel": "Anuluj",
+    "send": "Wyślij",
+    "sent": "Wysłano",
+    "hide": "Ukryj wiadomości",
+    "ended": "Czat zakończony",
+    "scroll": "Przewiń w dół",
+    "avatar": "Awatar asystenta",
+    "more": "Zobacz więcej",
+    "less": "Zobacz mniej",
+    "download": "Pobierz",
+    "viewer": "Podgląd obrazów",
+    "previous": "Poprzedni obraz",
+    "next": "Następny obraz",
+    "table": "Tabela z możliwością przewijania",
+    "drop": "Upuść pliki, aby je przesłać",
+    "privacy": "Informacja o prywatności",
+    "policy": "Polityka prywatności",
+    "submit": "Zatwierdź",
+    "ai": "Odpowiedzi AI mogą zawierać błędy.",
+    "closeDialog": "Zamknij",
+    "privacyDescription": "Zanim będziemy mogli kontynuować rozmowę, prosimy o zapoznanie się z naszą polityką prywatności i jej zaakceptowanie. Wyjaśnia ona, jak przetwarzamy i chronimy Twoje dane osobowe w ramach naszych usług.",
+    "privacyAccept": "Zaakceptuj i kontynuuj"
+  },
+  "id": {
+    "title": "Asisten tinnitus",
+    "description": "Pertanyaan tentang kisah, pendekatan, dan sumber Dustin",
+    "placeholder": "Apa yang ingin kamu ketahui tentang tinnitus, kisah Dustin, atau pendekatannya?",
+    "open": "Buka percakapan",
+    "close": "Tutup percakapan",
+    "restart": "Mulai ulang percakapan",
+    "new": "Mulai percakapan baru",
+    "cancel": "Batal",
+    "send": "Kirim",
+    "sent": "Terkirim",
+    "hide": "Sembunyikan pesan",
+    "ended": "Percakapan telah berakhir",
+    "scroll": "Gulir ke bawah",
+    "avatar": "Avatar asisten",
+    "more": "Lihat lebih banyak",
+    "less": "Lihat lebih sedikit",
+    "download": "Unduh",
+    "viewer": "Penampil gambar",
+    "previous": "Gambar sebelumnya",
+    "next": "Gambar berikutnya",
+    "table": "Tabel yang dapat digulir",
+    "drop": "Letakkan berkas di sini untuk mengunggah",
+    "privacy": "Pemberitahuan privasi",
+    "policy": "Kebijakan privasi",
+    "submit": "Kirim",
+    "ai": "Jawaban AI dapat mengandung kesalahan.",
+    "closeDialog": "Tutup",
+    "privacyDescription": "Sebelum kita dapat melanjutkan percakapan, kami meminta kamu untuk meninjau dan menyetujui kebijakan privasi kami, yang menjelaskan cara kami menangani dan melindungi informasi pribadimu dalam layanan kami.",
+    "privacyAccept": "Setuju dan lanjutkan"
+  },
+  "tr": {
+    "title": "Tinnitus asistanı",
+    "description": "Dustin’in hikâyesi, yaklaşımı ve kaynakları hakkında sorular",
+    "placeholder": "Tinnitus, Dustin’in hikâyesi ya da yaklaşımı hakkında ne öğrenmek istersin?",
+    "open": "Sohbeti aç",
+    "close": "Sohbeti kapat",
+    "restart": "Sohbeti yeniden başlat",
+    "new": "Yeni sohbet başlat",
+    "cancel": "İptal",
+    "send": "Gönder",
+    "sent": "Gönderildi",
+    "hide": "Mesajları gizle",
+    "ended": "Sohbet sona erdi",
+    "scroll": "Aşağı kaydır",
+    "avatar": "Sistem asistanı avatarı",
+    "more": "Daha fazlasını gör",
+    "less": "Daha azını göster",
+    "download": "İndir",
+    "viewer": "Görsel görüntüleyici",
+    "previous": "Önceki görsel",
+    "next": "Sonraki görsel",
+    "table": "Kaydırılabilir tablo",
+    "drop": "Yüklemek için dosyaları buraya bırak",
+    "privacy": "Gizlilik bildirimi",
+    "policy": "Gizlilik politikası",
+    "submit": "Kabul et",
+    "ai": "Yapay zekâ yanıtları hata içerebilir.",
+    "closeDialog": "Kapat",
+    "privacyDescription": "Konuşmaya devam etmeden önce, kişisel bilgilerini hizmetlerimiz kapsamında nasıl işlediğimizi ve koruduğumuzu açıklayan gizlilik politikamızı inceleyip kabul etmeni rica ediyoruz.",
+    "privacyAccept": "Kabul et"
+  }
+};
+        var additionalChatUi = additionalChatLabels[pageLang.split('-')[0]] || null;
         var voiceflowReady = window.voiceflow.chat.load({
           verify:{projectID:'6a0977f2a62d285256e0577a'},
           url:'https://general-runtime.voiceflow.com',
@@ -1097,6 +1255,13 @@
               text: czechAiDisclaimer,
               hide: false
             }
+          } : additionalChatUi ? {
+            title: additionalChatUi.title,
+            description: additionalChatUi.description,
+            header: { title: additionalChatUi.title },
+            banner: { title: additionalChatUi.title, description: additionalChatUi.description },
+            launcher: { label: additionalChatUi.title, title: additionalChatUi.open },
+            inputPlaceholder: additionalChatUi.placeholder
           } : {})
         });
 
@@ -1171,6 +1336,13 @@
             '.vfrc-privacy__primary-button, .vfrc-privacy__secondary-button-label',
             textReplacements);
 
+          shadowRoot.querySelectorAll('.vfrc-prompt button[label]').forEach(function(button) {
+            var currentLabel = button.getAttribute('label');
+            if (Object.prototype.hasOwnProperty.call(textReplacements, currentLabel)) {
+              setAttributeIfChanged(button, 'label', textReplacements[currentLabel]);
+            }
+          });
+
           var launcher = shadowRoot.querySelector('.vfrc-launcher');
           if (launcher) {
             setAttributeIfChanged(launcher, 'title', 'Ouvrir le chat');
@@ -1190,6 +1362,11 @@
           var sendButton = shadowRoot.querySelector('.vfrc-chat-input__send');
           setAttributeIfChanged(sendButton, 'title', 'Envoyer');
           setAttributeIfChanged(sendButton, 'aria-label', 'Envoyer');
+          if (sendButton) {
+            sendButton.querySelectorAll('[title]').forEach(function(icon) {
+              if (/^send$/i.test(icon.getAttribute('title') || '')) setAttributeIfChanged(icon, 'title', 'Envoyer');
+            });
+          }
 
           var scrollIcon = shadowRoot.querySelector('[title="scroll"], [title="Faire défiler vers le bas"]');
           if (scrollIcon) {
@@ -1226,7 +1403,7 @@
               subtree: true,
               characterData: true,
               attributes: true,
-              attributeFilter: ['title', 'aria-label', 'placeholder']
+              attributeFilter: ['title', 'aria-label', 'label', 'placeholder']
             });
             shadowRoot.__tinnitusFrenchUiObserver = observer;
           }
@@ -2584,6 +2761,158 @@
           return true;
         }
 
+        // Spanish page scripts translate visible text; supplement only omitted control attributes.
+        function observeSpanishControlAttributes(shadowRoot) {
+          function localizeAttributes() {
+            var map = {
+              'Start new chat': 'Iniciar un chat nuevo',
+              'Cancel': 'Cancelar',
+              'Open chat agent': 'Abrir el chat',
+              'Close chat agent': 'Cerrar el chat',
+              'Close chat': 'Cerrar el chat'
+            };
+            shadowRoot.querySelectorAll('.vfrc-prompt button, .vfrc-launcher').forEach(function(control) {
+              ['label', 'title', 'aria-label'].forEach(function(attribute) {
+                var value = control.getAttribute(attribute);
+                if (Object.prototype.hasOwnProperty.call(map, value)) setAttributeIfChanged(control, attribute, map[value]);
+              });
+            });
+          }
+          localizeAttributes();
+          if (shadowRoot.__tinnitusSpanishControlObserver) return;
+          var scheduled = false;
+          var observer = new MutationObserver(function() {
+            if (scheduled) return;
+            scheduled = true;
+            window.requestAnimationFrame(function() {
+              scheduled = false;
+              localizeAttributes();
+            });
+          });
+          observer.observe(shadowRoot, {
+            childList: true, subtree: true, attributes: true,
+            attributeFilter: ['title', 'aria-label', 'label']
+          });
+          shadowRoot.__tinnitusSpanishControlObserver = observer;
+        }
+
+        function localizeAdditionalChatUi(shadowRoot) {
+          if (!additionalChatUi) return;
+          var labels = additionalChatUi;
+          var map = {
+            'Tinnitus-Assistent': labels.title,
+            'Tinnitus Assistant': labels.title,
+            'Fragen zu Dustins Geschichte, Ansatz & Quellen': labels.description,
+            'Start new chat': labels.new,
+            'Restart conversation': labels.restart,
+            'Restart chat': labels.restart,
+            'Cancel': labels.cancel,
+            'Open chat': labels.open,
+            'open chat': labels.open,
+            'Open chat agent': labels.open,
+            'Close chat': labels.close,
+            'Close chat agent': labels.close,
+            'Hide messages': labels.hide,
+            'Chat has ended': labels.ended,
+            'Send': labels.send,
+            'send': labels.send,
+            'Sent': labels.sent,
+            'Scroll down': labels.scroll,
+            'scroll': labels.scroll,
+            'system agent avatar': labels.avatar,
+            'See more': labels.more,
+            'See less': labels.less,
+            'Download': labels.download,
+            'Image viewer': labels.viewer,
+            'Previous image': labels.previous,
+            'Next image': labels.next,
+            'Scrollable table': labels.table,
+            'Drop files to upload': labels.drop,
+            'Privacy notice': labels.privacy,
+            'Before we can proceed with your conversation, we kindly ask you to review and accept our privacy policy, outlining how we handle and protect your personal information throughout our services.': labels.privacyDescription,
+            'Privacy policy': labels.policy,
+            'Submit': labels.submit,
+            'AI responses may contain mistakes.': labels.ai,
+            'Close': labels.closeDialog
+          };
+          // Limit replacement to interface controls: never translate conversation messages.
+          var controls = '.vfrc-launcher, .vfrc-launcher *, .vfrc-header, .vfrc-header *, ' +
+            '.vfrc-assistant-info, .vfrc-assistant-info *, .vfrc-chat-input, .vfrc-chat-input *, ' +
+            '.vfrc-chat-input__send, .vfrc-chat-input__send *, ' +
+            '.vfrc-footer, .vfrc-footer *, .vfrc-prompt, .vfrc-prompt *, ' +
+            '.vfrc-more-menu, .vfrc-more-menu *, .vfrc-file-drop-overlay *, ' +
+            '.vfrc-privacy, .vfrc-privacy *, .vfrc-proactive__close-button, textarea, button';
+          shadowRoot.querySelectorAll(controls).forEach(function (element) {
+            if (element.closest('.vfrc-message, .vfrc-user-response')) return;
+            if (!element.children.length) {
+              var text = (element.textContent || '').trim();
+              if (Object.prototype.hasOwnProperty.call(map, text) && element.textContent !== map[text]) {
+                element.textContent = map[text];
+              }
+            }
+            ['aria-label', 'title', 'label', 'alt'].forEach(function (attribute) {
+              var text = element.getAttribute(attribute);
+              if (Object.prototype.hasOwnProperty.call(map, text)) setAttributeIfChanged(element, attribute, map[text]);
+            });
+          });
+          var input = shadowRoot.querySelector('textarea, .vfrc-chat-input');
+          setAttributeIfChanged(input, 'placeholder', labels.placeholder);
+          var sendButton = shadowRoot.querySelector('.vfrc-chat-input__send');
+          setAttributeIfChanged(sendButton, 'title', labels.send);
+          setAttributeIfChanged(sendButton, 'aria-label', labels.send);
+          var privacyPrimary = shadowRoot.querySelector('.vfrc-privacy__primary-button');
+          if (privacyPrimary) {
+            var privacyText = (privacyPrimary.textContent || '').trim();
+            if (!privacyPrimary.children.length &&
+                (privacyText === 'Submit' || privacyText === labels.submit) &&
+                privacyPrimary.textContent !== labels.privacyAccept) {
+              privacyPrimary.textContent = labels.privacyAccept;
+            }
+            setAttributeIfChanged(privacyPrimary, 'aria-label', labels.privacyAccept);
+          }
+          setAttributeIfChanged(shadowRoot.querySelector('.vfrc-privacy__secondary-button'), 'aria-label', labels.policy);
+          var proactiveClose = shadowRoot.querySelector('.vfrc-proactive__close-button');
+          setAttributeIfChanged(proactiveClose, 'title', labels.closeDialog);
+          setAttributeIfChanged(proactiveClose, 'aria-label', labels.closeDialog);
+          var launcher = shadowRoot.querySelector('.vfrc-launcher');
+          if (launcher) {
+            var currentLabel = launcher.getAttribute('title') || launcher.getAttribute('aria-label') || '';
+            var isClosing = launcher.getAttribute('aria-expanded') === 'true' ||
+              currentLabel === labels.close || /close chat/i.test(currentLabel);
+            setAttributeIfChanged(launcher, 'title', isClosing ? labels.close : labels.open);
+            setAttributeIfChanged(launcher, 'aria-label', isClosing ? labels.close : labels.open);
+          }
+          shadowRoot.querySelectorAll('.vfrc-header--button').forEach(function (button) {
+            var path = button.querySelector('path');
+            var pathData = path ? path.getAttribute('d') || '' : '';
+            var label = pathData.indexOf('M5.75 5C5.75 4.58579') === 0 ? labels.restart
+              : pathData.indexOf('M17.7478 7.31915') === 0 ? labels.close : '';
+            if (label) {
+              setAttributeIfChanged(button, 'title', label);
+              setAttributeIfChanged(button, 'aria-label', label);
+            }
+          });
+        }
+
+        function observeAdditionalChatUi(shadowRoot) {
+          localizeAdditionalChatUi(shadowRoot);
+          if (shadowRoot.__tinnitusAdditionalUiObserver) return;
+          var scheduled = false;
+          var observer = new MutationObserver(function () {
+            if (scheduled) return;
+            scheduled = true;
+            window.requestAnimationFrame(function () {
+              scheduled = false;
+              localizeAdditionalChatUi(shadowRoot);
+            });
+          });
+          observer.observe(shadowRoot, {
+            childList: true, subtree: true, characterData: true, attributes: true,
+            attributeFilter: ['title', 'aria-label', 'label', 'alt', 'placeholder', 'aria-expanded']
+          });
+          shadowRoot.__tinnitusAdditionalUiObserver = observer;
+        }
+
         var dutchObserver = null;
         var portugueseObserver = null;
         var portuguesePortalObserver = null;
@@ -2605,7 +2934,13 @@
           var shadowHost = document.getElementById('voiceflow-chat');
           if (shadowHost && shadowHost.shadowRoot) {
             injectShadowStyles();
-            if (isFrenchPage) {
+            if (additionalChatUi) {
+              observeAdditionalChatUi(shadowHost.shadowRoot);
+              clearInterval(shadowInterval);
+            } else if (isSpanishPage) {
+              observeSpanishControlAttributes(shadowHost.shadowRoot);
+              clearInterval(shadowInterval);
+            } else if (isFrenchPage) {
               localizeLauncher(shadowHost.shadowRoot);
               clearInterval(shadowInterval);
             } else if (isItalianPage) {
@@ -2861,6 +3196,8 @@
                       ? "Les acouphènes ne sont pas une condamnation. Vous avez des questions sur la façon dont je suis sorti de l’enfer des acouphènes ou sur le protocole de nutriments ?"
                       : pageLang.indexOf('pt') === 0
                         ? "Os acufenos não são uma condenação. Tens perguntas sobre o meu caminho para sair do inferno dos acufenos ou sobre o protocolo de nutrientes?"
+                        : pageLang.indexOf('id') === 0
+                          ? "Tinnitus bukan vonis. Ada pertanyaan tentang jalan saya keluar dari neraka tinnitus atau tentang protokol zat gizi?"
                         : pageLang.indexOf('tr') === 0
                           ? "Tinnitus ömür boyu sürecek bir kader değildir. Tinnitus cehenneminden nasıl çıktığım ya da besin öğeleri protokolü hakkında soruların mı var?"
                           : pageLang.indexOf('pl') === 0
@@ -2997,6 +3334,9 @@
     '/ko': true,
     '/ko/': true,
     '/ko/index.html': true,
+    '/id': true,
+    '/id/': true,
+    '/id/index.html': true,
     '/hi': true,
     '/hi/': true,
     '/hi/index.html': true,

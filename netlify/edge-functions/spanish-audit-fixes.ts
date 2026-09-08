@@ -479,6 +479,8 @@ export default async (request, context) => {
     return context.next();
   }
   const response = await context.next();
+  // These responses must not be reconstructed with a body.
+  if (request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
   const contentType = response.headers.get('content-type') || '';
   if (!contentType.toLowerCase().includes('text/html')) return response;
   const original = await response.text();
