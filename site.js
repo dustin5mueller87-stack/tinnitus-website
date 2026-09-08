@@ -2876,11 +2876,15 @@
           setAttributeIfChanged(proactiveClose, 'aria-label', labels.closeDialog);
           var launcher = shadowRoot.querySelector('.vfrc-launcher');
           if (launcher) {
-            var currentLabel = launcher.getAttribute('title') || launcher.getAttribute('aria-label') || '';
-            var isClosing = launcher.getAttribute('aria-expanded') === 'true' ||
-              currentLabel === labels.close || /close chat/i.test(currentLabel);
+            // Voiceflow toggles the panel through CSS; it does not set aria-expanded.
+            // Read the panel's interactive state instead of our previously translated label.
+            var chatContainer = shadowRoot.querySelector('.vfrc-chat__container');
+            var chatStyle = chatContainer ? window.getComputedStyle(chatContainer) : null;
+            var isClosing = !!chatStyle && chatStyle.pointerEvents !== 'none' &&
+              chatStyle.display !== 'none' && chatStyle.visibility !== 'hidden';
             setAttributeIfChanged(launcher, 'title', isClosing ? labels.close : labels.open);
             setAttributeIfChanged(launcher, 'aria-label', isClosing ? labels.close : labels.open);
+            setAttributeIfChanged(launcher, 'aria-expanded', isClosing ? 'true' : 'false');
           }
           shadowRoot.querySelectorAll('.vfrc-header--button').forEach(function (button) {
             var path = button.querySelector('path');
@@ -2908,7 +2912,7 @@
           });
           observer.observe(shadowRoot, {
             childList: true, subtree: true, characterData: true, attributes: true,
-            attributeFilter: ['title', 'aria-label', 'label', 'alt', 'placeholder', 'aria-expanded']
+            attributeFilter: ['title', 'aria-label', 'label', 'alt', 'placeholder', 'aria-expanded', 'class', 'style']
           });
           shadowRoot.__tinnitusAdditionalUiObserver = observer;
         }
