@@ -2838,6 +2838,7 @@
           // Limit replacement to interface controls: never translate conversation messages.
           var controls = '.vfrc-launcher, .vfrc-launcher *, .vfrc-header, .vfrc-header *, ' +
             '.vfrc-assistant-info, .vfrc-assistant-info *, .vfrc-chat-input, .vfrc-chat-input *, ' +
+            '.vfrc-chat--status, .vfrc-chat--status *, ' +
             '.vfrc-chat-input__send, .vfrc-chat-input__send *, ' +
             '.vfrc-footer, .vfrc-footer *, .vfrc-prompt, .vfrc-prompt *, ' +
             '.vfrc-more-menu, .vfrc-more-menu *, .vfrc-file-drop-overlay *, ' +
