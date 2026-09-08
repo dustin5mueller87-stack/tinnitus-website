@@ -13,3 +13,40 @@
   Cache-Control: public, max-age=31536000, immutable
 
 # Indexierung je Seite: deutsches Vorbild; Abgleich mit scripts/sync-indexing.py.
+
+# Manifest-Dateien mit ihrem standardisierten Inhaltstyp ausliefern
+/ar/site.webmanifest
+  Content-Type: application/manifest+json
+
+/cs/site.webmanifest
+  Content-Type: application/manifest+json
+
+/en/site.webmanifest
+  Content-Type: application/manifest+json
+
+/hi/site.webmanifest
+  Content-Type: application/manifest+json
+
+/it/site.webmanifest
+  Content-Type: application/manifest+json
+
+/ja/site.webmanifest
+  Content-Type: application/manifest+json
+
+/ko/site.webmanifest
+  Content-Type: application/manifest+json
+
+/nl/site.webmanifest
+  Content-Type: application/manifest+json
+
+/pt/site.webmanifest
+  Content-Type: application/manifest+json
+
+/ru/site.webmanifest
+  Content-Type: application/manifest+json
+
+/site.webmanifest
+  Content-Type: application/manifest+json
+
+/tr/site.webmanifest
+  Content-Type: application/manifest+json
