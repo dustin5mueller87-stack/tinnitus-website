@@ -12,11 +12,6 @@ function ra(text: string, from: string, to: string) {
 function rr(text: string, pattern: RegExp, replacement: string) { return text.replace(pattern, replacement); }
 
 function home(html: string) {
-  // Keep the German treatment-strength relation, not a generic neutral approach.
-  html = ra(html,
-    '이명이라고 다 같은 이명은 아닙니다. 제 경험과 조사에 따르면 근본적으로 서로 다른 세 가지 유발 요인이 있으며, 각각 다른 접근이 필요합니다.',
-    '이명이라고 다 같은 이명은 아닙니다. 제 경험과 조사에 따르면 근본적으로 서로 다른 세 가지 유발 요인이 있으며, 각각 다르게 다뤄져야 합니다.'
-  );
   html = ra(html, '특히 갑자기 생겼다면, 기질적 원인이 있는지 확인받기 위해 이비인후과 진료를 받으세요.', '특히 급성으로 생겼다면, 기질적 원인이 있는지 확인받기 위해 이비인후과 진료를 받아 주세요.');
   return html;
 }
@@ -44,11 +39,7 @@ function bio1(html: string) {
 }
 
 function bio2(html: string) {
-  // Legacy body corrections; the newer 75% author decision is preserved in the navigation title.
-  html = ra(html, '75%에 이른 붕괴', '약 50%에 이른 붕괴');
-  html = ra(html, '첫 번째 붕괴 때 음량의 무려 75%', '제 생애 맨 처음 이명 음량의 약 50%');
-  html = ra(html, '첫 번째 붕괴 때의 약 4분의 3, 즉 75%까지 올라왔습니다.', '제 생애 맨 처음 이명 음량의 약 절반, 즉 약 50%까지 올라왔습니다.');
-
+  // Author reconfirmed approximately 75% on 2026-09-09; preserve that value in all body text.
   // Restore the local evidence statement. The absence of a second audiogram is true background,
   // but it was not authorized as a replacement for this paragraph.
   html = ra(html,
@@ -64,7 +55,6 @@ function bio2(html: string) {
 }
 
 function shortBio(html: string) {
-  html = ra(html, '이명은 원래 음량의 무시무시한 75% 수준으로 돌아왔고', '이명은 제 생애 맨 처음 이명 음량의 약 50% 수준으로 돌아왔고');
   // IHHT was abandoned before treatment, not begun and then interrupted.
   html = ra(html,
     '모의 고지대 훈련(IHHT)도 시도했지만 공황 때문에 중단해야 했고, CFS 전문 병원에 입원하기 직전까지 갔습니다.',
@@ -86,8 +76,6 @@ function shortBio(html: string) {
 function approach(html: string) {
   // Explicit author deletion: remove only the local CFS causal bracket/sentence if present.
   html = rr(html, /\s*<p>[^<]*(?:그래서|때문에|괜히)[^<]*CFS[^<]*<\/p>/g, '');
-  html = ra(html, '약 75%에 도달해 실험을 끝냈을 때였습니다.', '제 생애 맨 처음 이명 강도의 약 50%에 도달해 실험을 끝냈을 때였습니다.');
-  html = ra(html, '75%에 도달해 실험을 끝냈을 때였습니다.', '약 50%에 도달해 실험을 끝냈을 때였습니다.');
   // Remove an added local audiogram-proof clause without weakening the rest of the sentence.
   html = ra(html, '첫 번째 이명이 호전된 과정은 여러 청력도에 기록돼 있으며, ', '');
   // In this process "conflict resolution" and "trauma resolution" are two names for the same process.

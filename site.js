@@ -318,8 +318,8 @@
       close: '닫기',
       previous: '이전 이미지',
       next: '다음 이미지',
-      translationRegion: '문서 번역',
-      translationShow: '문서 번역 보기',
+      translationRegion: '문서의 한국어 번역',
+      translationShow: '문서의 한국어 번역 보기',
       translationOriginal: '독일어 원문 보기'
     } : pageLang.indexOf('hi') === 0 ? {
       viewer: 'चित्र दर्शक',
@@ -399,7 +399,7 @@
       show: '日本語訳を表示',
       original: 'ドイツ語の原文を表示'
     } : pageLang.indexOf('ko') === 0 ? {
-      show: '문서 번역 보기',
+      show: '문서의 한국어 번역 보기',
       original: '독일어 원문 보기'
     } : pageLang.indexOf('tr') === 0 ? {
       show: 'Türkçe çeviriyi göster',
@@ -432,6 +432,20 @@
     // The comparison and document cards may deliberately describe the same image differently.
     var uniqueTriggers = [];
     function selectGallery(trigger) {
+      // The Korean homepage audit defines one ordered series of five medical documents.
+      if (pageLang === 'ko' && /^\/ko(?:\/(?:index\.html)?)?$/.test(window.location.pathname)) {
+        var documentTriggers = Array.prototype.filter.call(triggers, function (candidate) {
+          return candidate.closest('.doc-grid');
+        });
+        var documentIndex = documentTriggers.findIndex(function (candidate) {
+          return candidate.getAttribute('href') === trigger.getAttribute('href');
+        });
+        if (documentIndex !== -1) {
+          uniqueTriggers = documentTriggers;
+          currentIdx = documentIndex;
+          return;
+        }
+      }
       var group = trigger.closest('.doc-grid, .compare-grid');
       uniqueTriggers = Array.prototype.filter.call(triggers, function (candidate) {
         return candidate.closest('.doc-grid, .compare-grid') === group;
@@ -1185,17 +1199,17 @@
             }
           } : isKoreanPage ? {
             title: '이명 도우미',
-            description: 'Dustin의 이야기와 해결 접근법, 출처에 관한 질문',
+            description: 'Dustin의 이야기와 접근법, 출처에 관한 질문',
             header: { title: '이명 도우미' },
             banner: {
               title: '이명 도우미',
-              description: 'Dustin의 이야기와 해결 접근법, 출처에 관한 질문'
+              description: 'Dustin의 이야기와 접근법, 출처에 관한 질문'
             },
             launcher: {
               label: '이명 도우미',
               title: '채팅 열기'
             },
-            inputPlaceholder: '이명이나 Dustin의 이야기, 해결 접근법에 관해 무엇이 궁금하신가요?',
+            inputPlaceholder: '이명이나 Dustin의 이야기 또는 그의 접근법에 관해 무엇이 궁금하신가요?',
             aiDisclaimer: {
               text: koreanAiDisclaimer,
               hide: false
@@ -2291,7 +2305,7 @@
 
           var textMap = {
             'Tinnitus-Assistent': '이명 도우미',
-            'Fragen zu Dustins Geschichte, Ansatz & Quellen': 'Dustin의 이야기와 해결 접근법, 출처에 관한 질문',
+            'Fragen zu Dustins Geschichte, Ansatz & Quellen': 'Dustin의 이야기와 접근법, 출처에 관한 질문',
             'Start new chat': '새 채팅 시작',
             'Cancel': '취소',
             'Restart conversation': '대화 다시 시작',
@@ -2335,7 +2349,7 @@
           });
 
           var textarea = shadowRoot.querySelector('textarea');
-          var placeholder = '이명이나 Dustin의 이야기, 해결 접근법에 관해 무엇이 궁금하신가요?';
+          var placeholder = '이명이나 Dustin의 이야기 또는 그의 접근법에 관해 무엇이 궁금하신가요?';
           if (textarea && textarea.getAttribute('placeholder') !== placeholder) {
             textarea.setAttribute('placeholder', placeholder);
           }
@@ -3214,7 +3228,7 @@
                                 : pageLang.indexOf('ja') === 0
                                   ? "耳鳴りは、変えられない運命ではありません。私が耳鳴りの地獄から抜け出した道のりや、栄養素プロトコルについて質問はありますか？"
                                   : pageLang.indexOf('ko') === 0
-                                    ? "이명은 정해진 운명이 아닙니다. 제가 이명 지옥에서 빠져나온 과정이나 영양소 프로토콜에 관해 궁금한 점이 있나요?"
+                                    ? "이명은 판결이 아닙니다. 제가 이명 지옥에서 빠져나온 과정이나 영양소 프로토콜에 관해 궁금한 점이 있나요?"
                                     : pageLang.indexOf('hi') === 0
                                       ? "टिनिटस कोई अटल नियति नहीं है। टिनिटस के नर्क से बाहर निकलने के मेरे रास्ते या पोषक-तत्त्व प्रोटोकॉल के बारे में आपके सवाल हैं?"
                                       : pageLang.indexOf('ar') === 0

@@ -1,19 +1,14 @@
 /*
- * Korean solution-page post-processing for one exact sentence join.
+ * Retained Korean solution-page response wrapper.
  *
- * This function intentionally sorts before korean-audit-fixes.ts. It therefore
- * receives the already transformed Korean response after context.next() returns
- * and removes a duplicated comparison phrase created by the local 75 -> 50
- * correction. Scope is one Korean page only. No German or FAQ route can match.
+ * The former sentence deduplication served an obsolete percentage replacement.
+ * The author reconfirmed approximately 75% on 2026-09-09, so this wrapper now
+ * preserves the body. Scope is one Korean page only. No German or FAQ route can match.
  */
 const VERSION = '2026-09-07-v1';
 
 function postfix(html: string) {
-  return html.split(
-    '제가 생애 처음 겪은 이명의 강도의 제 생애 맨 처음 이명 강도의 약 50%에 도달해 실험을 끝냈을 때였습니다.'
-  ).join(
-    '제가 생애 처음 겪은 이명의 강도의 약 50%에 도달해 실험을 끝냈을 때였습니다.'
-  );
+  return html;
 }
 
 export default async (_request: Request, context: any) => {
