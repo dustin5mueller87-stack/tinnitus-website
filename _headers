@@ -27,6 +27,9 @@
 /hi/site.webmanifest
   Content-Type: application/manifest+json
 
+/id/site.webmanifest
+  Content-Type: application/manifest+json
+
 /it/site.webmanifest
   Content-Type: application/manifest+json
 

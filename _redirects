@@ -244,6 +244,12 @@
 /pt/* /pt/404.html 404
 /hi/* /hi/404.html 404
 /fr/* /fr/404.html 404
+/id/sumber-ilmiah.html /id/sumber-ilmiah 301!
+/id/kisah-pengalaman.html /id/kisah-pengalaman 301!
+/id/kontak.html /id/kontak 301!
+/id/informasi-hukum.html /id/informasi-hukum 301!
+/id/kebijakan-privasi.html /id/kebijakan-privasi 301!
+/id/faq.html /id/faq 301!
 /id/* /id/404.html 404
 /ko/* /ko/404.html 404
 /nl/* /nl/404.html 404
