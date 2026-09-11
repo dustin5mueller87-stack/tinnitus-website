@@ -423,7 +423,8 @@
     var title = tile.querySelector('.ev-tile-title');
     var platform = tile.querySelector('.ev-chip');
     if (link && link.tagName === 'A' && title) {
-      link.setAttribute('aria-label', 'View post: ' + title.textContent.trim() + (platform ? ' on ' + platform.textContent.trim() : '') + ', item ' + (index + 1) + ' of ' + tiles.length);
+      var linkLabel = link.textContent.trim().replace(/\s*→$/, '');
+      link.setAttribute('aria-label', linkLabel + ': ' + title.textContent.trim() + (platform ? ' on ' + platform.textContent.trim() : '') + ', item ' + (index + 1) + ' of ' + tiles.length);
     }
   });
   function apply(filter) {
