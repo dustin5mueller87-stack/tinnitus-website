@@ -817,6 +817,10 @@
 
 /* Voiceflow Chat Widget Integration */
 (function() {
+  // Set to true to re-enable the website chatbot; keep its configuration intact.
+  var voiceflowEnabled = false;
+  if (!voiceflowEnabled) return;
+
   var voiceflowLoaded = false;
   var timeoutId = null;
 
