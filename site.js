@@ -817,8 +817,9 @@
 
 /* Voiceflow Chat Widget Integration */
 (function() {
-  // Chat is available only after explicit opt-in. Set to false to hide the consent UI.
-  var voiceflowEnabled = true;
+  // Keep false while the website chatbot is off: no scripts, no consent banner, no launcher.
+  // When set to true, Voiceflow still loads only after explicit opt-in.
+  var voiceflowEnabled = false;
   if (!voiceflowEnabled) return;
   var VF_CONSENT_KEY = 'tb-voiceflow-consent';
 
