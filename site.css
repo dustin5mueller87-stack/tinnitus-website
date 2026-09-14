@@ -218,6 +218,8 @@ body {
   background: var(--bg-card);
   box-shadow: 0 14px 40px rgba(60, 40, 10, 0.12);
 }
+.lang-switch:not([open]) > .lang-menu { display: none; }
+
 .lang-menu a {
   display: grid;
   grid-template-columns: 38px 1fr;
@@ -284,7 +286,7 @@ html[lang^="ru"] .page-nav a[data-language-fallback="de"]::after {
   justify-self: end;
   margin-top: 3px;
 }
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
   .lang-switch { margin-left: auto; margin-right: 6px; }
 }
 
@@ -312,7 +314,7 @@ html[lang^="ru"] .page-nav a[data-language-fallback="de"]::after {
   gap: clamp(4px, 0.6vw, 8px);
   align-items: center;
   justify-content: center;
-  margin-right: clamp(20px, 6vw, 80px);
+  margin-right: 0;
 }
 .nav-list > li { position: relative; }
 
@@ -355,7 +357,7 @@ html[lang^="es"] #contacto {
 /* Zwischen Tablet und komfortabler Desktopbreite bleibt die volle Navigation
    sichtbar, wird aber etwas kompakter. Der Sprachschalter braucht hier dank
    Dropdown keinen Sonderplatz mehr. */
-@media (min-width: 1101px) and (max-width: 1450px) {
+@media (width > 1200px) and (max-width: 1600px) {
   .nav-inner { gap: 12px; }
   .nav-list { gap: 0; margin-right: 0; flex-wrap: nowrap; }
   .nav-list > li > a,
@@ -408,7 +410,7 @@ html[lang^="es"] #contacto {
   pointer-events: auto;
   transform: translateX(-50%) translateY(0);
 }
-@media (min-width: 1101px) {
+@media (width > 1200px) {
   .nav-dropdown.is-submenu-dismissed > .submenu {
     opacity: 0;
     visibility: hidden;
@@ -1875,7 +1877,9 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
 }
 
 /* Mobile — erst auf Tablet-/Handybreite auf das Hamburger-Menue wechseln. */
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
+  body:has(.site-header.is-menu-open) { overflow: hidden; }
+  .site-header .nav-list { overscroll-behavior-y: contain; }
   .site-header { padding: 14px 18px; }
   .nav-inner { display: flex; justify-content: space-between; }
   .nav-spacer { display: none; }
@@ -1959,13 +1963,17 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 48px 0; }
     padding: 0 0 12px;
     background: var(--bg-soft);
   }
-  /* Desktop-Hover/Focus-Transform auf Mobile neutralisieren (sonst rutscht das Untermenü nach links) */
+  /* Untermenues folgen der Sichtbarkeit des mobilen Hauptmenues. */
+  .nav-list .submenu,
   .nav-dropdown:hover > .submenu,
   .nav-dropdown:focus-within > .submenu {
     transform: none;
+    visibility: inherit;
   }
   .submenu::before { display: none; }
   .submenu a { padding: 12px 28px 12px 44px; }
+}
+@media (max-width: 1100px) {
   main { padding: 32px 20px 64px; }
   h1 { font-size: 30px; }
 }
@@ -2787,4 +2795,63 @@ details.studien > .evidence-card:first-of-type { margin-top: 14px; }
     hyphens: none;
     -webkit-hyphens: none;
   }
+}
+
+/* Lange Woerter und Linkadressen bleiben auf schmalen Bildschirmen lesbar. */
+main p { overflow-wrap: break-word; }
+main a { overflow-wrap: anywhere; }
+
+/* Bewegungen reduzieren, wenn dies in den Systemeinstellungen gewuenscht ist. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  html[dir="rtl"] .submenu a,
+  .site-header,
+  .lang-switch-caret,
+  .nav-caret,
+  .submenu,
+  .submenu a,
+  .path-card,
+  .summary-toggle,
+  .cta-card-arrow,
+  .page-nav a,
+  .doc-card,
+  .back-to-top,
+  .ev-tile,
+  .nav-list,
+  .side-figure img,
+  .buy-btn,
+  details.studien > summary::before {
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+}
+
+/* Direkter Tastaturzugang zum Hauptinhalt. */
+.skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.skip-link:focus {
+  position: fixed;
+  inset-block-start: .75rem;
+  inset-inline-start: .75rem;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: .65rem 1rem;
+  overflow: visible;
+  clip-path: none;
+  background: #fff;
+  color: #3a2f24;
+  outline: 2px solid #3a2f24;
+  outline-offset: 2px;
+  z-index: 2000;
+  white-space: normal;
 }

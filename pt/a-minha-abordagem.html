@@ -102,6 +102,7 @@
 </script>
 </head>
 <body class="cluster-loesung">
+<a class="skip-link" href="#main-content">Saltar para o conteúdo principal</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/pt/" aria-label="Página inicial">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -179,7 +180,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">A minha abordagem à solução</div>
   <a href="../img/loesung-hero.webp" data-lightbox="A minha abordagem à solução: o que fiz concretamente em relação aos meus acufenos crónicos? — Dustin Müller" data-lightbox-alt="Homem aliviado, sentado à secretária em casa, com as mãos firmemente pressionadas contra os ouvidos para verificar (teste do silêncio) — no momento em que tem a certeza de que os seus acufenos desapareceram; sobre a secretária está um audiograma." aria-label="A minha abordagem à solução: o que fiz concretamente em relação aos meus acufenos crónicos? — Dustin Müller — abrir para ampliar" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
     <img src="../img/loesung-hero.webp" alt="Homem aliviado, sentado à secretária em casa, com as mãos firmemente pressionadas contra os ouvidos para verificar (teste do silêncio) — no momento em que tem a certeza de que os seus acufenos desapareceram; sobre a secretária está um audiograma." width="1240" height="827" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
@@ -643,7 +644,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

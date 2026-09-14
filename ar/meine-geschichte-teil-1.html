@@ -27,6 +27,7 @@
   <meta name="twitter:image" content="https://tinnitusbioregulation.com/img/og-tinnitus-verstehen-ar.webp">
 </head>
 <body class="cluster-bio">
+<a class="skip-link" href="#main-content">الانتقال إلى المحتوى الرئيسي</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/ar/" aria-label="الصفحة الرئيسية"><bdi dir="ltr">Tinnitus</bdi><span class="brand-dot" aria-hidden="true"></span></a>
@@ -104,7 +105,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">قصتي · السيرة المطولة، الجزء <bdi dir="ltr">1</bdi></div>
   <a href="../img/hero-bio1-ar.webp" data-lightbox="طريقي إلى جحيم طنين الأذن — ⁦Dustin Müller⁩" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
     <img src="../img/hero-bio1-ar.webp" alt="رجل يجلس منهكًا على حافة السرير في صباح اليوم التالي لأول نوبة من طنين الأذن، وإلى جانبه مخطط سمع وملاحظات — بداية قصتي مع طنين الأذن" width="1240" height="827" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
@@ -260,7 +261,7 @@
     <span class="margin-note-label">دليل غير مقصود</span>
     ضمادات شاش في كلتا الأذنين لأيام بسبب التهاب في قناة الأذن — وأصبح طنين الأذن أخف بوضوح. لم يكن أي طبيب أنف وأذن وحنجرة عادي ليعزل أذنيّ بهذه الطريقة أبدًا.
   </aside>
-  <p>مرت بضعة أيام. ثم جاء الدليل القاطع — بفضل الالتهاب مجددًا. لأن بقية خفيفة من الالتهاب كانت لا تزال موجودة، كان عليّ أن أضع مرارًا قارورة صغيرة مباشرة عند الأذن، يخرج منها كريم. وفجأة صدر دويّ شديد فعلًا في داخل الأذن (ربما كانت قد تكوّنت سدادة صغيرة عند الفتحة). في أجزاء من الثانية، عوى الطنين لدي — **لكنّه** عاد خلال وقت قصير جدًا إلى مستواه «الطبيعي».</p>
+  <p>مرت بضعة أيام. ثم جاء الدليل القاطع — بفضل الالتهاب مجددًا. لأن بقية خفيفة من الالتهاب كانت لا تزال موجودة، كان عليّ أن أضع مرارًا قارورة صغيرة مباشرة عند الأذن، يخرج منها كريم. وفجأة صدر دويّ شديد فعلًا في داخل الأذن (ربما كانت قد تكوّنت سدادة صغيرة عند الفتحة). في أجزاء من الثانية، عوى الطنين لدي — <strong>لكنّه</strong> عاد خلال وقت قصير جدًا إلى مستواه «الطبيعي».</p>
   <p>بعد ذلك الدويّ، كنت في نشوة هائلة، لأن الأمر اتضح لي: الطنين ليس شيئًا «ثابتًا»، بل متغيّر. يستجيب للضجيج — وإذا ذهب المرء خطوة أبعد وعاش في شبه صمت، فإنه يتراجع. على الأقل في حالتي، مع الطنين الناتج عن الضجيج، لم يعد من الممكن إنكار ذلك منذ الآن.</p>
   <p>منذ ذلك الحين، صرت أقضي أكبر قدر ممكن من الوقت في صمت. أصبحت الموسيقى والأفلام ولقاء الأصدقاء نوعًا من المكافأة — إذا كنت قد أَرَحت أذنيّ مدة كافية قبلها. وإن فعلت، فبلا سماعات رأس، وبصوت خافت جدًا، ولمدة قصيرة جدًا.</p>
   <p>مرت الأيام والأسابيع. مرت الأشهر.</p>
@@ -553,7 +554,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

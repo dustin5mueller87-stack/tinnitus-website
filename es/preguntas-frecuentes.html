@@ -20,6 +20,7 @@
 </head>
 
 <body>
+<a class="skip-link" href="#main-content">Ir al contenido principal</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/es/" aria-label="Página de inicio">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -67,7 +68,7 @@
         <a href="/cs/faq" hreflang="cs"><span class="lang-code" dir="ltr">CS</span><span class="lang-name" lang="cs" dir="ltr">Čeština</span></a>
         <a href="/ja/faq" hreflang="ja"><span class="lang-code" dir="ltr">JA</span><span class="lang-name" lang="ja" dir="ltr">日本語</span></a>
         <a href="/ko/faq" hreflang="ko"><span class="lang-code" dir="ltr">KO</span><span class="lang-name" lang="ko" dir="ltr">한국어</span></a>
-        <a href="/id/" hreflang="id" data-language-home="true"><span class="lang-code" dir="ltr">ID</span><span class="lang-name" lang="id" dir="ltr">Bahasa Indonesia</span></a>
+        <a href="/id/faq" hreflang="id"><span class="lang-code" dir="ltr">ID</span><span class="lang-name" lang="id" dir="ltr">Bahasa Indonesia</span></a>
         <a href="/hi/faq" hreflang="hi"><span class="lang-code" dir="ltr">HI</span><span class="lang-name" lang="hi" dir="ltr">हिंदी</span></a>
         <a href="/ar/faq" hreflang="ar"><span class="lang-code" dir="ltr">AR</span><span class="lang-name" lang="ar" dir="rtl">العربية</span></a>
         <a href="/pt/faq" hreflang="pt-PT"><span class="lang-code" dir="ltr">PT</span><span class="lang-name" lang="pt-PT" dir="ltr">Português (Portugal)</span></a>
@@ -97,7 +98,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
 
   <h1>Preguntas frecuentes (FAQ)</h1>
 
@@ -145,7 +146,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

@@ -148,6 +148,7 @@ html[dir="rtl"] details.studien[open] > summary::before {
 <link rel="alternate" hreflang="id" href="https://tinnitusbioregulation.com/id/sumber-ilmiah">
 </head>
 <body class="cluster-quellen">
+<a class="skip-link" href="#main-content">الانتقال إلى المحتوى الرئيسي</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/ar/" aria-label="الصفحة الرئيسية"><bdi dir="ltr">Tinnitus</bdi><span class="brand-dot" aria-hidden="true"></span></a>
@@ -195,7 +196,7 @@ html[dir="rtl"] details.studien[open] > summary::before {
         <a href="/cs/wissenschaftliche-quellen" hreflang="cs"><span class="lang-code" dir="ltr">CS</span><span class="lang-name" lang="cs" dir="ltr">Čeština</span></a>
         <a href="/ja/wissenschaftliche-quellen" hreflang="ja"><span class="lang-code" dir="ltr">JA</span><span class="lang-name" lang="ja" dir="ltr">日本語</span></a>
         <a href="/ko/wissenschaftliche-quellen" hreflang="ko"><span class="lang-code" dir="ltr">KO</span><span class="lang-name" lang="ko" dir="ltr">한국어</span></a>
-        <a href="/id/" hreflang="id" data-language-home="true"><span class="lang-code" dir="ltr">ID</span><span class="lang-name" lang="id" dir="ltr">Bahasa Indonesia</span></a>
+        <a href="/id/sumber-ilmiah" hreflang="id"><span class="lang-code" dir="ltr">ID</span><span class="lang-name" lang="id" dir="ltr">Bahasa Indonesia</span></a>
         <a href="/hi/wissenschaftliche-quellen" hreflang="hi"><span class="lang-code" dir="ltr">HI</span><span class="lang-name" lang="hi" dir="ltr">हिंदी</span></a>
         <a href="/ar/wissenschaftliche-quellen" hreflang="ar" class="active" aria-current="page"><span class="lang-code" dir="ltr">AR</span><span class="lang-name" lang="ar" dir="rtl">العربية</span></a>
         <a href="/pt/fontes-cientificas" hreflang="pt-PT"><span class="lang-code" dir="ltr">PT</span><span class="lang-name" lang="pt-PT" dir="ltr">Português (Portugal)</span></a>
@@ -225,7 +226,7 @@ html[dir="rtl"] details.studien[open] > summary::before {
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">المصادر</div>
   <a href="../img/quellen-hero.webp" data-lightbox="المصادر العلمية والأدلة السريرية — ⁦Dustin Müller⁩" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
     <img src="../img/quellen-hero.webp" alt="مكتب بحث دافئ وفوضوي قليلًا، عليه دراسات معلَّمة وملاحظات ومصباح وفنجان قهوة — صورة ترمز إلى سنوات العمل الشخصي على المصادر التي يقوم عليها هذا النموذج لطنين الأذن" width="1240" height="698" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
@@ -1072,7 +1073,7 @@ html[dir="rtl"] details.studien[open] > summary::before {
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

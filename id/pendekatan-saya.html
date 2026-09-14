@@ -102,6 +102,7 @@
 </script>
 </head>
 <body class="cluster-loesung">
+<a class="skip-link" href="#main-content">Langsung ke konten utama</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/id/" aria-label="Beranda">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -178,7 +179,7 @@
   }
 })();
 </script>
-<main>
+<main id="main-content" tabindex="-1">
 
   <div class="eyebrow">Pendekatan untuk mengatasi tinnitus</div>
   <a href="../img/loesung-hero.webp" data-lightbox="Pendekatan saya untuk mengatasi tinnitus: Apa tepatnya yang saya lakukan saat mengalami tinnitus kronis? — Dustin Müller" data-lightbox-alt="Seorang pria yang merasa lega di meja kerjanya di rumah, menekan kedua tangan kuat-kuat ke telinga untuk memeriksa (tes keheningan) – pada saat ia yakin bahwa tinnitusnya telah hilang; sebuah audiogram terletak di meja kerja" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
@@ -642,7 +643,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

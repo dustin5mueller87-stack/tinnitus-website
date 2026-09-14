@@ -100,6 +100,7 @@
 }</script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Перейти к основному содержимому</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/ru/" aria-label="Главная страница">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -177,7 +178,7 @@
 })();
 </script>
 
-<main data-translation-batch="2026-09-07">
+<main data-translation-batch="2026-09-07" id="main-content" tabindex="-1">
   <div class="eyebrow">Причины · шум</div>
   <a href="/img/ru/laerm-hero.webp" data-lightbox="Тиннитус, вызванный шумовым воздействием, — когда ухо работает на пределе — Дастин Мюллер" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;"><img src="/img/ru/laerm-hero.webp" alt="Символическое изображение повседневного шума, воздействующего на ухо, — пускового фактора тиннитуса, вызванного шумовым воздействием" width="1240" height="827" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
   </a>
@@ -467,7 +468,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

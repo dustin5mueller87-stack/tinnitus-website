@@ -102,6 +102,7 @@
 </script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Langsung ke konten utama</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/id/" aria-label="Beranda">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -178,7 +179,7 @@
   }
 })();
 </script>
-<main>
+<main id="main-content" tabindex="-1">
 
   <div class="eyebrow">Penyebab · Kebisingan</div>
   <a href="../img/laerm-hero.webp" data-lightbox="Tinnitus akibat kebisingan – ketika telinga mencapai batasnya — Dustin Müller" data-lightbox-alt="Gambaran simbolis kebisingan sehari-hari yang memengaruhi telinga – pemicu tinnitus akibat kebisingan" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
@@ -549,7 +550,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

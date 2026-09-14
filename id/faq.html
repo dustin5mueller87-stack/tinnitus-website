@@ -17,25 +17,10 @@
 <meta property="og:url" content="https://tinnitusbioregulation.com/id/faq">
 <meta property="og:site_name" content="Tinnitus Bioregulation">
 <meta property="og:locale" content="id_ID">
-<link rel="alternate" hreflang="de" href="https://tinnitusbioregulation.com/faq">
-<link rel="alternate" hreflang="en" href="https://tinnitusbioregulation.com/en/faq">
-<link rel="alternate" hreflang="it" href="https://tinnitusbioregulation.com/it/domande-frequenti">
-<link rel="alternate" hreflang="fr" href="https://tinnitusbioregulation.com/fr/faq">
-<link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/veelgestelde-vragen">
-<link rel="alternate" hreflang="es" href="https://tinnitusbioregulation.com/es/preguntas-frecuentes">
-<link rel="alternate" hreflang="pl" href="https://tinnitusbioregulation.com/pl/najczestsze-pytania">
-<link rel="alternate" hreflang="ru" href="https://tinnitusbioregulation.com/ru/chastye-voprosy/">
-<link rel="alternate" hreflang="cs" href="https://tinnitusbioregulation.com/cs/faq">
-<link rel="alternate" hreflang="ja" href="https://tinnitusbioregulation.com/ja/faq">
-<link rel="alternate" hreflang="ko" href="https://tinnitusbioregulation.com/ko/faq">
-<link rel="alternate" hreflang="hi" href="https://tinnitusbioregulation.com/hi/faq">
-<link rel="alternate" hreflang="ar" href="https://tinnitusbioregulation.com/ar/faq">
-<link rel="alternate" hreflang="pt-PT" href="https://tinnitusbioregulation.com/pt/faq">
-<link rel="alternate" hreflang="id" href="https://tinnitusbioregulation.com/id/faq">
-<link rel="alternate" hreflang="x-default" href="https://tinnitusbioregulation.com/faq">
 </head>
 
 <body>
+<a class="skip-link" href="#main-content">Langsung ke konten utama</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/id/" aria-label="Beranda">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -113,7 +98,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
 
   <h1>Pertanyaan yang sering diajukan (FAQ)</h1>
 
@@ -161,7 +146,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

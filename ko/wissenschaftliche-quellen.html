@@ -103,6 +103,7 @@
 <link rel="alternate" hreflang="id" href="https://tinnitusbioregulation.com/id/sumber-ilmiah">
 </head>
 <body class="cluster-quellen">
+<a class="skip-link" href="#main-content">본문으로 이동</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/ko/" aria-label="홈">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -150,7 +151,7 @@
         <a href="/cs/wissenschaftliche-quellen" hreflang="cs"><span class="lang-code" dir="ltr">CS</span><span class="lang-name" lang="cs" dir="ltr">Čeština</span></a>
         <a href="/ja/wissenschaftliche-quellen" hreflang="ja"><span class="lang-code" dir="ltr">JA</span><span class="lang-name" lang="ja" dir="ltr">日本語</span></a>
         <a href="/ko/wissenschaftliche-quellen" hreflang="ko" class="active" aria-current="page"><span class="lang-code" dir="ltr">KO</span><span class="lang-name" lang="ko" dir="ltr">한국어</span></a>
-        <a href="/id/" hreflang="id" data-language-home="true"><span class="lang-code" dir="ltr">ID</span><span class="lang-name" lang="id" dir="ltr">Bahasa Indonesia</span></a>
+        <a href="/id/sumber-ilmiah" hreflang="id"><span class="lang-code" dir="ltr">ID</span><span class="lang-name" lang="id" dir="ltr">Bahasa Indonesia</span></a>
         <a href="/hi/wissenschaftliche-quellen" hreflang="hi"><span class="lang-code" dir="ltr">HI</span><span class="lang-name" lang="hi" dir="ltr">हिंदी</span></a>
         <a href="/ar/wissenschaftliche-quellen" hreflang="ar"><span class="lang-code" dir="ltr">AR</span><span class="lang-name" lang="ar" dir="rtl">العربية</span></a>
         <a href="/pt/fontes-cientificas" hreflang="pt-PT"><span class="lang-code" dir="ltr">PT</span><span class="lang-name" lang="pt-PT" dir="ltr">Português (Portugal)</span></a>
@@ -180,7 +181,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">출처</div>
   <a href="../img/quellen-hero.webp" data-lightbox="과학적 출처와 임상 근거 — Dustin Müller" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
     <img src="../img/quellen-hero.webp" alt="표시해 둔 연구 논문과 메모, 스탠드, 커피잔이 놓인 따뜻하고 조금 어수선한 연구 책상. 이 이명 모델 뒤에 있는 수년간의 개인적인 출처 조사를 상징합니다" width="1240" height="698" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
@@ -834,7 +835,7 @@
   <p>경로 1인 LLLT에서 Dr. Wilden이 가장 잘 알려진 임상가인 것처럼, 경로 3인 영양소 전략을 수년간 진료 현장에 적용해 온 이비인후과 의사들도 있습니다. 공적 건강보험이 비용을 보전하지 않아 대부분 비급여 진료로 시행합니다.</p>
   <p><strong>Dr. med. Gerd Hadrich</strong>는 Salzgitter에서 진료하는 이비인후과 전문의로, 이명과 돌발성 난청, 어지럼을 대상으로 수년간 비타민 강화요법과 주입요법을 제공해 왔습니다. 비타민, 미량원소, 아미노산, 혈액 염류, 그리고 특히 흥미로운 <strong>‘시트르산 회로의 촉매’</strong>를 사용합니다.</p>
   <p>시트르산 회로인 크렙스 회로는 미토콘드리아에서 NADH와 FADH₂를 전자 공급원으로 만들어 전자전달계의 ATP 생산에 제공하는 바로 그 대사 단계입니다. 다시 말해 <strong>Hadrich는 내이 세포의 ATP 생산을 촉진하는 물질을 직접 주입합니다.</strong> 독일에서 개원한 이비인후과 전문의가 시행하는 가장 순수한 형태의 경로 3입니다.</p>
-  <p><a class="arrow-link" href="https://www.doctolib.de/facharzt-fur-hno/salzgitter/gerd-hadrich">→ 진료 프로필: Salzgitter의 이비인후과 전문의 Dr. Hadrich</a></p>
+  <p>→ 진료 프로필: Salzgitter의 이비인후과 전문의 Dr. Hadrich</p>
   <p>Hadrich만 있는 것은 아닙니다. 독일어권의 여러 이비인후과 의원이 오늘날 이명과 돌발성 난청을 대상으로 고용량 비타민 C 주입, 미량영양소 혼합요법, 항산화 치료를 비급여로 제공합니다. 표준 진료지침과 건강보험 보전 기준이 국제 연구 수준을 따라오지 못하기 때문입니다. 관심을 갖고 살펴보면 <strong>경로 3을 조용하지만 일관되게 실천하는</strong> 독일 이비인후과 진료망이 성장하고 있음을 볼 수 있습니다.</p>
 
   <h3>세 갈래 경로를 함께 보면 무엇을 뜻하는가</h3>
@@ -1033,7 +1034,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

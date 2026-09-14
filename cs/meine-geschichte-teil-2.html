@@ -28,6 +28,7 @@
   <meta name="twitter:image:alt" content="Pochopit tinnitus – souvislosti, možné spouštěče, poznatky a praktické přístupy">
 </head>
 <body class="cluster-bio">
+<a class="skip-link" href="#main-content">Přejít k hlavnímu obsahu</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/cs/" aria-label="Domovská stránka">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -106,7 +107,7 @@
 })();
 </script>
 
-<main data-translation-batch="2026-09-07">
+<main data-translation-batch="2026-09-07" id="main-content" tabindex="-1">
   <div class="eyebrow">Můj příběh · dlouhá biografie, 2. část</div>
   <a href="../img/hero-bio2.webp" data-lightbox="Dlouhá biografie, 2. část: zkouška odolnosti – Dustin Müller" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;"><img src="../img/hero-bio2.webp" alt="Portrét z nejtěžší fáze mého příběhu s tinnitem – 2. část: zkouška odolnosti" width="1240" height="827" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
   </a>
@@ -343,7 +344,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

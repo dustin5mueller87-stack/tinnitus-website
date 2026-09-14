@@ -96,6 +96,7 @@
 </script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Ir al contenido principal</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/es/" aria-label="Página de inicio">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -173,7 +174,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">Página de inicio</div>
   <h1>Acúfeno crónico: <br>lo tuve dos veces, desapareció las dos.</h1>
 
@@ -479,7 +480,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

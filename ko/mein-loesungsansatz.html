@@ -103,6 +103,7 @@
 </script>
 </head>
 <body class="cluster-loesung">
+<a class="skip-link" href="#main-content">본문으로 이동</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/ko/" aria-label="홈">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -180,7 +181,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">해결 접근법</div>
   <a href="../img/loesung-hero.webp" data-lightbox="제 해결 접근법: 만성 이명에 맞서 저는 구체적으로 무엇을 했을까요? — Dustin Müller" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
     <img src="../img/loesung-hero.webp" alt="집 책상 앞에서 안도한 남성이 두 손으로 귀를 단단히 막아 ‘고요함 확인 테스트’를 하고 있습니다. 이명이 사라졌다는 확신이 든 순간이며, 책상 위에는 청력도가 놓여 있습니다." width="1240" height="827" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
@@ -642,7 +643,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

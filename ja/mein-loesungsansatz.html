@@ -102,6 +102,7 @@
 </script>
 </head>
 <body class="cluster-loesung">
+<a class="skip-link" href="#main-content">本文へ移動</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/ja/" aria-label="ホーム">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -179,7 +180,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">解決アプローチ</div>
   <a href="../img/loesung-hero.webp" data-lightbox="私の解決アプローチ：慢性耳鳴りに対して、私は具体的に何をしたのか？――Dustin Müller" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
     <img src="../img/loesung-hero.webp" alt="自宅の机で安堵した男性が、耳鳴りが消えたと確信した瞬間、両手を耳にしっかり押し当てて確認している（静寂テスト）。机の上にはオージオグラムが置かれている" width="1240" height="827" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
@@ -641,7 +642,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

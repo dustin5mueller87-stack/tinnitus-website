@@ -105,6 +105,7 @@ html[lang^="id"] a[data-language-fallback="de"]::after {
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Langsung ke konten utama</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/id/" aria-label="Beranda">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -182,7 +183,7 @@ html[lang^="id"] a[data-language-fallback="de"]::after {
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">Beranda</div>
   <h1>Tinnitus kronis: <br>dua kali mengalaminya, dua kali hilang.</h1>
 
@@ -578,7 +579,7 @@ html[lang^="id"] a[data-language-fallback="de"]::after {
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

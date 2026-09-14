@@ -103,6 +103,7 @@
 </script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Ana içeriğe geç</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/tr/" aria-label="Ana sayfa">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -181,7 +182,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">Nedenler · İlaçlar ve toksinler</div>
   <a href="../img/gift-hero.webp" data-lightbox="İlaç ve toksin kaynaklı tinnitus (Ototoksisite) — Dustin Müller" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
     <img src="../img/gift-hero.webp" alt="İlaç ve toksin kaynaklı tinnitusun (ototoksisite) simgesi olarak tabletler ve parlayan cıva damlaları" width="1240" height="930" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
@@ -463,7 +464,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

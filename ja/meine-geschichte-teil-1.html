@@ -26,6 +26,7 @@
   <meta name="twitter:image" content="https://tinnitusbioregulation.com/img/og-tinnitus-verstehen-ja.webp">
 </head>
 <body class="cluster-bio">
+<a class="skip-link" href="#main-content">本文へ移動</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/ja/" aria-label="ホーム">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -103,7 +104,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">私の体験 · 長編自伝・第1部</div>
   <a href="../img/hero-bio1.webp" data-lightbox="耳鳴り地獄へ落ちていった私の道のり――Dustin Müller" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
     <img src="../img/hero-bio1.webp" alt="最初の耳鳴り発作の翌朝、ベッドの端に疲れ切って座る男性。そばにはオージオグラムとメモ――私の耳鳴りの物語の始まり" width="1240" height="827" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
@@ -373,7 +374,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

@@ -26,6 +26,7 @@
   <meta name="twitter:image" content="https://tinnitusbioregulation.com/img/it-og-capire-acufene.webp">
 </head>
 <body class="cluster-bio">
+<a class="skip-link" href="#main-content">Vai al contenuto principale</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/it/" aria-label="Pagina iniziale">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -103,7 +104,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">La mia storia · Biografia estesa, parte 2</div>
   <a href="../img/it-kurz-haertetest.webp" data-lightbox="Biografia estesa, parte 2: il test rischioso — Dustin Müller" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
     <img src="../img/it-kurz-haertetest.webp" alt="Ritratto risalente alla fase più dura della mia storia con l'acufene" width="1240" height="827" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
@@ -345,7 +346,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

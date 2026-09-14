@@ -24,25 +24,9 @@
   <meta name="twitter:title" content="Hubungi Dustin Müller">
   <meta name="twitter:description" content="Hubungi Dustin Müller: Jangan ragu menulis kepada saya jika punya pertanyaan tentang kisah saya atau berbagai pendekatan saya untuk mengatasi tinnitus.">
   <meta name="twitter:image" content="https://tinnitusbioregulation.com/img/id-og-memahami-tinnitus.webp?v=26c85d889cd9">
-<link rel="alternate" hreflang="de" href="https://tinnitusbioregulation.com/kontakt">
-<link rel="alternate" hreflang="en" href="https://tinnitusbioregulation.com/en/contact">
-<link rel="alternate" hreflang="it" href="https://tinnitusbioregulation.com/it/contatti">
-<link rel="alternate" hreflang="fr" href="https://tinnitusbioregulation.com/fr/contact">
-<link rel="alternate" hreflang="nl" href="https://tinnitusbioregulation.com/nl/contact">
-<link rel="alternate" hreflang="es" href="https://tinnitusbioregulation.com/es/contacto">
-<link rel="alternate" hreflang="tr" href="https://tinnitusbioregulation.com/tr/iletisim">
-<link rel="alternate" hreflang="pl" href="https://tinnitusbioregulation.com/pl/kontakt">
-<link rel="alternate" hreflang="ru" href="https://tinnitusbioregulation.com/ru/kontakty/">
-<link rel="alternate" hreflang="cs" href="https://tinnitusbioregulation.com/cs/kontakt">
-<link rel="alternate" hreflang="ja" href="https://tinnitusbioregulation.com/ja/kontakt">
-<link rel="alternate" hreflang="ko" href="https://tinnitusbioregulation.com/ko/kontakt">
-<link rel="alternate" hreflang="hi" href="https://tinnitusbioregulation.com/hi/kontakt">
-<link rel="alternate" hreflang="ar" href="https://tinnitusbioregulation.com/ar/kontakt">
-<link rel="alternate" hreflang="pt-PT" href="https://tinnitusbioregulation.com/pt/contacto">
-<link rel="alternate" hreflang="id" href="https://tinnitusbioregulation.com/id/kontak">
-<link rel="alternate" hreflang="x-default" href="https://tinnitusbioregulation.com/kontakt">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Langsung ke konten utama</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/id/" aria-label="Beranda">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -120,7 +104,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">Kontak</div>
   <h1>Tulis kepada saya</h1>
 
@@ -161,7 +145,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

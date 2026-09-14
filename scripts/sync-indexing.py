@@ -47,7 +47,7 @@ def main():
         if old != new:
             changes.append(str(path.relative_to(ROOT)))
             if not args.check:
-                path.write_text(new)
+                path.write_text(new, encoding='utf-8')
 
     for path, source, language, group, error in pages:
         if error:
@@ -87,7 +87,7 @@ def main():
         save(path, source, updated)
 
     headers_path = ROOT / '_headers'
-    headers = headers_path.read_text()
+    headers = headers_path.read_text(encoding='utf-8')
     updated_headers = re.sub(r'\n/(?:nl/\*|hi/\*|fr/sources-scientifiques)\n[ \t]+X-Robots-Tag: noindex, follow\n?', '\n', headers)
     legacy = updated_headers.find('# ------------------------------------------------------------------\n# SPRACHSPERRE')
     if legacy != -1:
@@ -103,7 +103,7 @@ def main():
         sitemap += '  <url><loc>' + html.escape(url) + '</loc></url>\n'
     sitemap += '</urlset>\n'
     path = ROOT / 'sitemap.xml'
-    save(path, path.read_text(), sitemap)
+    save(path, path.read_text(encoding='utf-8'), sitemap)
     print(f'{len(pages)} pages; {len(indexable)} indexable URLs; {len(changes)} files ' + ('need syncing' if args.check else 'updated'))
     if args.check and changes:
         print('\n'.join(changes))

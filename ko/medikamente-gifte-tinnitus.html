@@ -103,6 +103,7 @@
 </script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">본문으로 이동</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/ko/" aria-label="홈">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -180,7 +181,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">원인 · 약물과 독성 물질</div>
   <a href="../img/gift-hero.webp" data-lightbox="약물·독성 물질로 인한 이명(이독성) — Dustin Müller" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
     <img src="../img/gift-hero.webp" alt="여러 알약과 반짝이는 수은 방울이 놓인 모습으로, 약물·독성 물질로 인한 이명(이독성)을 상징합니다." width="1240" height="930" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
@@ -465,7 +466,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();

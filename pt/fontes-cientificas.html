@@ -102,6 +102,7 @@
 <link rel="alternate" hreflang="id" href="https://tinnitusbioregulation.com/id/sumber-ilmiah">
 </head>
 <body class="cluster-quellen">
+<a class="skip-link" href="#main-content">Saltar para o conteúdo principal</a>
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
     <a class="brand" href="/pt/" aria-label="Página inicial">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
@@ -149,7 +150,7 @@
         <a href="/cs/wissenschaftliche-quellen" hreflang="cs"><span class="lang-code" dir="ltr">CS</span><span class="lang-name" lang="cs" dir="ltr">Čeština</span></a>
         <a href="/ja/wissenschaftliche-quellen" hreflang="ja"><span class="lang-code" dir="ltr">JA</span><span class="lang-name" lang="ja" dir="ltr">日本語</span></a>
         <a href="/ko/wissenschaftliche-quellen" hreflang="ko"><span class="lang-code" dir="ltr">KO</span><span class="lang-name" lang="ko" dir="ltr">한국어</span></a>
-        <a href="/id/" hreflang="id" data-language-home="true"><span class="lang-code" dir="ltr">ID</span><span class="lang-name" lang="id" dir="ltr">Bahasa Indonesia</span></a>
+        <a href="/id/sumber-ilmiah" hreflang="id"><span class="lang-code" dir="ltr">ID</span><span class="lang-name" lang="id" dir="ltr">Bahasa Indonesia</span></a>
         <a href="/hi/wissenschaftliche-quellen" hreflang="hi"><span class="lang-code" dir="ltr">HI</span><span class="lang-name" lang="hi" dir="ltr">हिंदी</span></a>
         <a href="/ar/wissenschaftliche-quellen" hreflang="ar"><span class="lang-code" dir="ltr">AR</span><span class="lang-name" lang="ar" dir="rtl">العربية</span></a>
         <a href="/pt/fontes-cientificas" hreflang="pt-PT" class="active" aria-current="page"><span class="lang-code" dir="ltr">PT</span><span class="lang-name" lang="pt-PT" dir="ltr">Português (Portugal)</span></a>
@@ -179,7 +180,7 @@
 })();
 </script>
 
-<main>
+<main id="main-content" tabindex="-1">
   <div class="eyebrow">Fontes</div>
   <a href="../img/quellen-hero.webp" data-lightbox="Fontes científicas e evidência clínica — Dustin Müller" data-lightbox-alt="Secretária de pesquisa em tons quentes e ligeiramente desarrumada, com estudos assinalados, notas, candeeiro e chávena de café — símbolo dos anos de trabalho pessoal com as fontes por detrás deste modelo dos acufenos" aria-label="Fontes científicas e evidência clínica — Dustin Müller — abrir para ampliar" style="cursor: zoom-in; display: block; border-radius: 5px; overflow: hidden; margin: 24px auto;">
     <img src="../img/quellen-hero.webp" alt="Secretária de pesquisa em tons quentes e ligeiramente desarrumada, com estudos assinalados, notas, candeeiro e chávena de café — símbolo dos anos de trabalho pessoal com as fontes por detrás deste modelo dos acufenos" width="1240" height="698" fetchpriority="high" style="display: block; width: 100%; max-width: 100%; height: auto; border-radius: 5px; border: 1px solid var(--rule); margin: 0;">
@@ -833,7 +834,7 @@
   <p>Tal como o Dr. Wilden é o profissional clínico mais conhecido da via 1 (LLLT), há na via 3 (nutrientes) médicos ORL estabelecidos que aplicam esta estratégia há anos nos seus consultórios — na maioria dos casos como prestação particular, porque os seguros públicos de saúde não a reembolsam.</p>
   <p><strong>Dr. med. Gerd Hadrich</strong>, médico especialista em ORL em Salzgitter, ofereceu durante anos tratamentos de reforço vitamínico e terapias por perfusão especificamente para acufenos, perda auditiva súbita e tonturas. O seu conceito: vitaminas, oligoelementos, aminoácidos, sais sanguíneos e — particularmente interessante — <strong>«catalisadores do ciclo do ácido cítrico»</strong>.</p>
   <p>O ciclo do ácido cítrico (ciclo de Krebs) é precisamente a etapa metabólica nas mitocôndrias que disponibiliza NADH e FADH₂ como fornecedores de eletrões para a produção de ATP na cadeia respiratória. Isto significa: <strong>Hadrich injetou diretamente as substâncias que estimulam a produção de ATP nas células do ouvido interno.</strong> É a via 3 na sua forma mais pura, aplicada por um médico especialista em ORL com consultório próprio na Alemanha.</p>
-  <p><a class="arrow-link" href="https://www.doctolib.de/facharzt-fur-hno/salzgitter/gerd-hadrich">Entretanto, o seu consultório deixou de existir.</a></p>
+  <p>Entretanto, o seu consultório deixou de existir.</p>
   <p>Hadrich não é o único. Vários consultórios de ORL no espaço germanófono oferecem atualmente perfusões de vitamina C em doses elevadas, cocktails de micronutrientes e terapias com antioxidantes para os acufenos e a perda auditiva súbita — como prestação particular, porque as orientações clínicas padrão e o reembolso pelos seguros de saúde estão atrasados em relação ao estado da investigação internacional. Quem desenvolve um olhar atento vê uma rede crescente de consultórios de ORL alemães que <strong>aplica a via 3 de forma discreta e consistente</strong>.</p>
 
   <h3>O que significam em conjunto as três vias</h3>
@@ -1029,7 +1030,7 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
   onScroll();
 })();
