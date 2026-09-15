@@ -1,203 +1,344 @@
 /*
- * Collision-safe Japanese translation corrections from the completed one-pass audit.
- * Scope is /ja/* only. German source pages and the unfinished FAQ are never changed.
- * Open author/source questions and unverified image/render items remain untouched.
+ * Collision-safe Japanese fidelity corrections.
+ * Built from the completed Japanese page-by-page audit plus Dustin's
+ * superseding author decisions of 2026-09-15.
+ *
+ * Scope: HTML responses under /ja/* only.
+ * German pages, other languages, images and binary assets are untouched.
  */
-const VERSION = '2026-09-07-v1';
-const STATIC_JA_BATCH = 'data-translation-batch="2026-09-07-ja"';
-function ra(text: string, from: string, to: string) { if (!from || from === to) return text; return text.split(from).join(to); }
-function rr(text: string, pattern: RegExp, replacement: string) { return text.replace(pattern, replacement); }
+const VERSION = '2026-09-15-v2';
+
+function ra(text: string, from: string, to: string) {
+  if (!from || from === to) return text;
+  return text.split(from).join(to);
+}
+
+function rr(text: string, pattern: RegExp, replacement: string) {
+  return text.replace(pattern, replacement);
+}
+
+function common(html: string) {
+  html = ra(html, '第1部：地獄への道', '第1部：地獄のような道のり');
+  html = ra(html, '第2部：過酷な試練', '第2部：過酷なテスト');
+  return html;
+}
+
+function home(html: string) {
+  html = ra(html,
+    '慢性耳鳴り――私の耳鳴りが二度とも消えるまで',
+    '慢性耳鳴り――私が二度とも耳鳴りをなくした方法'
+  );
+  html = ra(html,
+    'こんにちは、Dustin Müllerです。かつて、それも何度も耳鳴りを経験した当事者として、このページを書きたいという強い思いがありました。自分で調べたことと自分自身の経験を通じて、同じ悩みを抱える人たちに、私がどう完全な治癒にたどり着いたのかを伝えるためです。でも、私の耳の中で何が起きたのかを説明する前に、そもそもすべてがどう始まったのかを話さなければなりません。',
+    'メールをください。どのメールも私自身が読んでいます。できるだけ早く返事をしますので、少しだけ待っていてください。'
+  );
+  html = ra(html,
+    '私のB12値も欠乏の境界をわずかに上回る程度でしたが',
+    '私のB12値は欠乏の境界をわずかに上回る程度でしたが'
+  );
+  return html;
+}
 
 function bio1(html: string) {
-  // Binding chronology: day 3 only left; right first consciously perceived days later after more sound.
+  html = ra(html, '「煮崩れて」', '「へたって」');
   html = ra(html,
-    'この時点で右にも、すでに小さなピー音を感じていました。衝撃のさなかでも、私は思っていました。きっとまた消える。',
-    'この時点では、右耳にはまだ耳鳴りをまったく感じていませんでした。衝撃のさなかでも、左の音はきっとまた消えると思っていました。'
-  );
-  html = ra(html,
-    '右耳にすでにあった小さなピー音も、今や明らかに大きくなっていました。',
-    'その後さらに音へさらされた数日のうちに、右耳でも初めて小さなピー音を感じるようになり、その音も今や明らかに大きくなっていました。'
-  );
-  html = ra(html,
-    '右耳にすでにあった音も強まっていたのです。',
-    '右耳まで新たに耳鳴りへ巻き込まれていたのです。'
+    '結果は、欠乏の境目をほんの少し上回る値でした。父ほどひどくはなかったものの、基準範囲のいちばん下。',
+    '結果は、欠乏が確認されました。父ほどひどくはなかったものの、尺度のいちばん下でした。'
   );
   return html;
 }
 
 function bio2(html: string) {
-  // Binding author correction: approx. 50% of the very first tinnitus, not 75%.
-  html = ra(html, '75％までの転落', '約50％までの転落');
-  html = ra(html, '元の音量の75％という残酷なレベル', '私が人生で最初に経験した耳鳴りの音量の約50％という残酷なレベル');
-  html = ra(html, '最終的な崩壊：75％と音のカオス', '最終的な崩壊：約50％と音のカオス');
-  html = ra(html, '最初の崩壊時の4分の3（75％）ほどの音量', '人生で最初に経験した耳鳴りの約半分（約50％）の音量');
-  // Restore local evidence statement; no-second-audiogram is true background but not a replacement here.
+  html = ra(html, '一番最初の耳鳴りの約50％という強烈な音量', '一番最初の耳鳴りの75％という強烈な音量');
+  html = ra(html, '最終的な崩壊：約50％と音のカオス', '最終的な崩壊：75％と音のカオス');
+  html = ra(html, '最初の耳鳴りの約半分（約50％）の音量', '最初の耳鳴りの約4分の3（75％）の音量');
   html = rr(html,
-    /<p>存在する物理的な証拠を[^<]*(?:2回目|第二)[^<]*(?:オージオグラム|聴力図)[^<]*<\/p>/g,
-    '<p>私は、この地獄と回復を裏づける物理的な証拠を一つ残らず持っています。特定の周波数帯に大きな低下が記録された医療用オージオグラム、検査報告書、診断書、クリニックや治療家からの請求書まで、すべてです。</p>'
+    /<p>しかし、だからこそ、ここで手の内をすべて明かします。[^<]*現存する物理的な証拠を、包み隠さず示します。[^<]*(?:2度目|第二)[^<]*(?:オージオグラム|聴力図)[^<]*さらに、検査報告書、診断結果、クリニックとセラピストの請求書があります。<\/p>/,
+    '<p>しかし、だからこそ、ここで手の内をすべて明かします。これは作り上げた回復物語ではありません。マーケティングの仕掛けでもなければ、まして根拠のないスピリチュアル話でもありません。冷厳な、物理的・細胞レベルの真実です。この地獄と、この治癒を裏づける物理的な証拠を、私は一つ残らず持っています。周波数帯での大幅な聴力の落ち込みが記録された医師によるオージオグラム、検査報告書、診断結果、そしてクリニックやセラピストからの請求書です。</p>'
   );
-  // Old model: he knew AND used lecithin.
+  html = ra(html, '私の耳鳴りの物語で最も過酷だった時期のポートレート――第2部：過酷なテスト', '私の耳鳴りの物語で最も過酷だった時期のポートレート');
+  html = ra(html, '私の耳鳴りの物語で最も過酷だった時期のポートレート――第2部：過酷な試練', '私の耳鳴りの物語で最も過酷だった時期のポートレート');
   html = ra(html,
-    '最初の耳鳴りのころから知っており、当時の説明モデルではミエリン層の絶対的な土台だと考えていたレシチン',
-    '最初の耳鳴りのころから知り、実際に使っており、当時はミエリン層の絶対的な土台だと考えていたレシチン'
+    '私の神経系に、絶え間ない、かすかな慢性ストレスを与え続けていたのです。',
+    '私の神経系に、自覚しないまま続く慢性的なストレスを絶えず与えていたのです。'
   );
   return html;
 }
 
 function shortBio(html: string) {
-  html = ra(html, '耳鳴りは元の音量の猛烈な75％で戻り', '耳鳴りは、私が人生で最初に経験した耳鳴りの音量の約50％まで戻り');
-  // IHHT and specialist-clinic plans were abandoned before treatment.
   html = ra(html,
-    '模擬高地トレーニング（IHHT）も試しましたが、パニックで中断せざるを得ず、CFS専門クリニックに入院する寸前でした。',
-    '模擬高地トレーニング（IHHT）も計画しましたが、パニックのため実際の治療を始める前に断念し、CFS専門クリニックへの入院計画も治療前に取りやめました。'
+    '<aside class="margin-note">23歳、健康そのもの。',
+    '<aside class="margin-note"><span class="margin-note-label">私自身の体験から</span>23歳、健康そのもの。'
   );
   html = ra(html,
-    '私の回復過程は約3～4か月にわたりました。',
-    '実験を終え、栄養ルーティンを実際に再開した時点から完全に静かになるまで、回復には約3～4か月かかりました。'
+    '<aside class="margin-note">音楽とホワイトノイズで音を覆い隠すようにという医師の助言が、',
+    '<aside class="margin-note"><span class="margin-note-label">苦い教訓</span>音楽とホワイトノイズで音を覆い隠すようにという医師の助言が、'
+  );
+  html = ra(html, '私の耳鳴りの物語で最も過酷だった時期のポートレート――過酷な試練', '私の耳鳴りの物語で最も過酷だった時期のポートレート');
+  html = ra(html, '私の耳鳴りの物語で最も過酷だった時期のポートレート――過酷なテスト', '私の耳鳴りの物語で最も過酷だった時期のポートレート');
+  html = ra(html,
+    '耳鳴りは最初に経験した耳鳴りの約50％の音量で戻り、',
+    '耳鳴りは、最初に経験した耳鳴りの75％という強烈な音量で戻り、'
+  );
+  html = ra(html, '誰も助けてくれませんでした。', '誰も私を助けることはできませんでした。');
+  html = ra(html,
+    '私の血液検査の値は、欠乏の境界をほんのわずかに上回る、尺度の最下端でした。',
+    '私の血液検査では欠乏が確認され、尺度の最下端でした。'
+  );
+  return html;
+}
+
+function noise(html: string) {
+  html = ra(html,
+    'そのうえ、3日目には右耳にもすでに弱いピー音が現れていました。その少し後、すでにあったこの右耳の音は明らかに強まりました――私個人にとっては完全に誤りだったと判明した医師たちの指示による、直接の結果でした。',
+    'そのうえ、少し後には右耳にも耳鳴りが加わりました――私個人にとっては完全に誤りだったと判明した医師たちの指示による、直接の結果でした。'
+  );
+  html = ra(html,
+    'まさにそれによって私の状態が悪化し、すでにあった右耳の弱い音が明らかに強くなったからです。',
+    'まさにそれによって私の状態が悪化し、右耳まで耳鳴りに巻き込まれたからです。'
+  );
+  html = ra(html,
+    '騒音性耳鳴りは、騒音にさらされた直後に気づくこともあれば、数時間後または数日後になって初めて意識されることもあります。私の場合、音に気づいたのは3日目でした。なぜなのかは、今でもはっきりとは分かりません。考えられる説明については、FAQで仮説として明確に説明します。',
+    '大半の当事者では、耳鳴りは騒音にさらされた後、比較的すぐに始まります。数分から数時間以内です。ただし、耳鳴りが数時間後、あるいは数日後になって初めて現れる場合もあります。なぜ経過にこれほど違いがあるのか、そして耳の中の特定の構造がそこでどのような役割を果たすのかは、FAQのセクションで詳しく説明します。'
+  );
+  html = rr(html,
+    /<p>私の主要モデルにおいて、慢性の騒音性耳鳴りとは生理学的に何なのか。[^<]*<\/p>/,
+    '<p>私の確信では、慢性の騒音性耳鳴りの生理学的な実態はこうです。生きている細胞が、エネルギー面での緊急運転から抜け出せずにいる。フェーズ2に必要なエネルギーがないため、修復の大部分がフェーズ1で凍りついたままになっているのです。耳は「壊れた」わけではなく、脳が幻の信号を作り出しているわけでもありません。この音は、末梢で実際に繰り広げられている生き残りを懸けた闘いの結果であり、脳はそれを増幅しているにすぎません。</p>'
   );
   return html;
 }
 
 function approach(html: string) {
-  // Explicit author deletion of the local CFS causal bracket/sentence only.
-  html = rr(html, /\s*<p>[^<]*(?:だからこそ|理由もなく|そのため)[^<]*CFS[^<]*<\/p>/g, '');
-  html = ra(html, '約75％', '約50％');
-  html = ra(html, '75％', '50％');
-  // Same process, two names, not alternatives.
-  html = ra(html, '葛藤解消またはトラウマ解消', '葛藤解消、すなわちトラウマ解消');
-  html = ra(html, '葛藤の解消かトラウマの解消', '葛藤の解消、すなわちトラウマの解消');
-  // Blood and/or urine after mobilization/removal.
-  html = ra(html, '血液または尿', '血液、尿、またはその両方');
-  html = ra(html, '重金属を除去している間に、押しのけられた微量元素を補います', '重金属を除去した後に、押しのけられた微量元素を補います');
+  html = ra(html,
+    '（理由もなく起きたことではありません。約1年半から2年弱後、私は重い慢性疲労症候群を発症しました）',
+    ''
+  );
+  html = rr(html,
+    /<p>何年か後、2度目の耳鳴りに直面したとき、私は初めて、実際に使って確かめたシステムを手にしていました。[^<]*個人的な「バイパス」として、再び使いました。<\/p>/,
+    '<p>何年か後、2度目の耳鳴りに直面したとき、私は初めて、本物の、実際に試して確かめたシステムを手にしていました。私にははっきりしていました。耳鳴りとCFSは発症までの経緯こそ異なりましたが、その後のボトルネックは同じでした――深刻なATPエネルギー不足であり、耳鳴りの場合には、それが損傷した不動毛の修復を妨げていたのです。意図的な自己実験の間、私はサプリメントの摂取を中止していました。実験を打ち切った後、すぐにプロトコル全体を再開しました。私はまさにこの栄養素システムを、今度は自分の耳に的を絞った個人的な「バイパス」として、再び使いました。</p>'
+  );
+  html = ra(html, '最初の経過のオージオグラムは、その改善を裏づけています。', '');
+  html = ra(html,
+    'ハイルプラクティカーで講師でもあり、30年以上にわたってまさにこのアプローチに取り組んできたMichael Prgometは、そのとき、これらの根深い葛藤を完全に解消し、自律神経系のバランスを取り戻すうえで、私を大いに助けてくれました。',
+    'ハイルプラクティカーで講師でもあり、30年以上にわたってまさにこのアプローチに取り組んできたMichael Prgometは、そのとき、こうした根深い緊張を解くのを助けてくれました。'
+  );
+  html = rr(html,
+    /<aside class="margin-note">\s*<span class="margin-note-label">明確化<\/span>\s*私はストレス性耳鳴りを経験したことは一度もありません。[^<]*<\/aside>/,
+    '<aside class="margin-note"><span class="margin-note-label">明確化</span>私はストレス性耳鳴りを経験したことは一度もありません。ここで共有する内容は、別の状況でこの方法を自分自身が体験したこと、ほかの人の経過を自分で見てきたこと、そしてPrgometの数十年にわたる実践に基づいています。</aside>'
+  );
+  html = rr(html,
+    /<p><strong>第二に<\/strong>[^<]*(?:症例や体験談|体験談)[^<]*ストレス性耳鳴り[^<]*<\/p>/,
+    '<p><strong>第二に</strong>、私は実践の場で、この取り組みによってほかの患者たちが明らかに改善していくのを、自分で見てきました。症状はさまざまな心身症状で、その中にはストレス性耳鳴りの人も数人いました。</p>'
+  );
+  html = rr(html,
+    /<p>この組み合わせ――私自身の非常に良い経験[^<]*治癒を約束するものとしてではなく[^<]*<\/p>/,
+    '<p>この組み合わせ――私自身の非常に良い体験、ほかの人の経過を自分で見てきたこと、そしてPrgometの数十年にわたる実践――から、私はこの道をここで共有することに確信を持っています。治癒を約束するものとしてではなく、もし私がストレス性耳鳴りに直面したら、自分ならこうする、というものとしてです。</p>'
+  );
+  html = rr(html,
+    /<p>私の道は、Michael Prgomet[^<]*その後の解消は主に睡眠中や夢の中に委ねます。<\/p>/,
+    '<p>私の道は、Michael Prgometを通じて知った方法による、的を絞った葛藤への取り組みです――感情を避け続けるのではなく、意識的に活性化して解消することです。</p>'
+  );
+  html = ra(html,
+    '実際の治癒は、その後の葛藤解消またはトラウマ解消として、主に夜間の睡眠中や夢の中で進みます。',
+    '実際の治癒を、夜の夢の中での処理に委ねる方法です。'
+  );
+  html = ra(html, 'ステップ5：葛藤またはトラウマの解消――実際の治癒が起こるところ', 'ステップ5：葛藤解消（トラウマ解消）――実際の治癒が起こるところ');
+  html = ra(html,
+    'それによって重金属は血液または尿へ移り、検査で検出できるようになります。',
+    'それによって重金属は血液中へ移り、場合によっては尿中へ排出され、血液や尿で検査によって検出できるようになります。'
+  );
+  html = ra(html, '右は作者が自宅の机でくつろいでいる', '右は作者が机でくつろいでいる');
+  html = ra(html, '右側は自宅の机でリラックスする著者', '右側は机でリラックスする著者');
   return html;
 }
 
 function sources(html: string) {
-  // Remove local audiogram-scope additions without erasing real study limitations.
-  html = rr(html, /(?:既存|現在)[^<]{0,80}(?:オージオグラム|聴力図)[^<]{0,120}(?:2回目|第二)[^<]*。\s*/g, '');
-  // Editorial residue only.
-  html = rr(html, /(?:重要|注意)[:：]?\s*(?:ガイドライン|指針|境界線)\s*8[:：]?\s*/g, '');
-  // Restore source role where personal counterclaim replaced the cited central-gain model.
   html = ra(html,
-    '私のモデルでは、中枢性ゲインはすでに存在する能動的な誤信号を増幅するだけで、入力の欠如そのものから耳鳴り音が生まれるわけではありません。',
-    'このモデルでは、入力が減ると中枢聴覚系が感度を上げ、その結果、神経系の自発活動がより強く知覚されうると説明されます。'
+    '私は、耳鳴りが二度治った元当事者であり、現存する私の聴力検査資料が対象としているのは、最初の経過だけです。私は取りつかれたように読みあさり、調べ、試してきました。',
+    '私は、耳鳴りが二度治った元当事者であり、取りつかれたように読みあさり、調べ、試してきた人間です。'
   );
-  // HPA/source-page reach and missing-high-dose-study property remain open, therefore untouched.
+  html = ra(html,
+    '現存する聴力検査資料は最初の経過だけに関するもので、二度目のエピソードには、それに相当する資料はありません。',
+    ''
+  );
+  html = rr(html,
+    /<p>SchaetteとMcAlpineは、中枢性ゲイン・モデルを説明しています。[^<]*入力喪失だけから耳鳴り音が生まれることはありません。<\/p>/,
+    '<p>中枢性ゲイン・モデルの土台となる研究です。聴覚入力が減ると、中枢聴覚系は感度を引き上げ、増幅されたノイズとして耳鳴りを生み出します。</p>'
+  );
+  html = rr(html,
+    /Auerbach、Rodrigues、Salviは、耳鳴りと聴覚過敏との関連で中枢性ゲインの概念を論じています。これはこの総説の立場であって、音の発生に関する私のモデルではありません。耳鳴りと聴覚過敏は同時に起こり得ますが、私はそれらを中枢性増幅の副作用とは位置づけていません。/,
+    '中枢性ゲインの概念に関する総説です。脳は末梢からの入力喪失を中枢での増幅によって補い、その副作用として耳鳴りや聴覚過敏が生じます。'
+  );
+  html = rr(html,
+    /<p>ストレス性耳鳴りは、騒音性耳鳴りより科学的に捉えるのが難しいものです。ここで私のモデルにとって決定的なのは[^<]*独立したHPA経路を導き出してはいません。<\/p>/,
+    '<p>ストレス性耳鳴りは、騒音性耳鳴りより科学的に捉えるのが難しいものです。しかし、その基礎にある原理――慢性的なストレスがHPA軸を介して蝸牛に直接作用し得ること――は、約15年前からよく研究されています。決定的な知見は、蝸牛そのものが完全な局所HPA系を備えていることです。蝸牛は全身性のストレスホルモンを受け取るだけでなく、局所でもそれを産生します。</p>'
+  );
+  html = ra(html,
+    'つまり、この研究が記述しているのは蝸牛の局所的な調節系であり、独立したHPA耳鳴り経路の証拠ではありません。',
+    'これは、ストレスが脳を介するだけでなく、耳に直接作用し得ることを示す、機序上の証拠です。'
+  );
+  html = rr(html,
+    /(<p>[^<]*Furuta[^<]*(?:ミネラルコルチコイド受容体|鉱質コルチコイド受容体)[^<]*)(<\/p>)/,
+    '$1 これが、心理的ストレスと末梢の内耳への影響を結ぶ機序上の橋渡しです。$2'
+  );
+  html = ra(html, 'これは著者たちの仮説であり、私は音の発生に関する自分のモデルとして採用してはいません。', '');
+  html = ra(html, 'この研究が記述しているのは、対象となった患者のストレス反応が変化していたということであり、HPA軸の疲弊が耳鳴りを引き起こすことを示したものではありません。', '');
+  html = rr(html,
+    /<p>この動物モデルでは、慢性的なコルチゾールストレス下のラットに[^<]*私のモデルにおける独立したストレス性耳鳴り経路の証拠ではありません。<\/p>/,
+    '<p>直接的な実験的証拠です。慢性的なコルチゾールストレス下のラットでは、急性の騒音曝露が一切ないにもかかわらず、聴覚過敏行動と聴覚皮質における耳鳴り様パターンが生じます。これは、ストレスが独立した発症経路となることを支持しています。</p>'
+  );
+  html = ra(html,
+    'これとは別の中枢性経路が、次の問いに関わります。',
+    '前のセクションでは、慢性的なストレスがHPA軸を介して内耳に直接作用し得ることを示しています。しかし、それは全体像の一部にすぎません。もう一つの、少なくとも同じくらい重要な部分は、次の問いに関わります。'
+  );
   return html;
 }
 
 function testimonials(html: string) {
-  // Restore worldwide, mutually independent, no-acquaintance relationship if the collection caveat replaced it.
-  html = ra(html,
-    'このコレクションには、耳鳴りだけでなく、ほかの健康テーマに関する補足的な体験談も含まれています。',
-    '世界各地で、互いに独立し、互いを知らない人たちが、似たような体験を語っています。'
+  return ra(html,
+    '自分に気づいた変化を、ずらりと挙げています。',
+    '自分自身の変化について、気づいたことをずらりと挙げています。'
   );
-  return html;
 }
 
 function products(html: string) {
-  // Historical 3 mg statement must not automatically become present dose.
-  html = ra(html,
-    '私は何年も、夜にミネラル複合製品と併せて、3 mgのメラトニンを定期的に摂っています。',
-    '私は何年もの間、夜にミネラル複合製品と併せて、3 mgのメラトニンを定期的に摂っていました。'
+  return ra(html,
+    'これは、よく知られ、十分に記録されているナイアシンへの反応です。',
+    'これは、<strong>よく知られ、十分に記録されているナイアシンへの反応</strong>です。'
   );
-  // Remove locally added "fully resolved" from shared Person data on this page when German only says it helped balance.
-  html = ra(html, 'それらの葛藤を完全に解消し、自律神経系のバランスを取り戻す助けになった', '自律神経系のバランスを取り戻す助けになった');
+}
+
+function imprint(html: string) {
+  html = ra(html, '具体的な権利侵害の兆候', '具体的な法令違反の兆候');
+  html = ra(html, '具体的な権利侵害', '具体的な法令違反');
+  html = ra(html, '該当する権利侵害', '該当する法令違反');
+  html = ra(html, '権利侵害が判明した場合', '法令違反が判明した場合');
   return html;
 }
 
-function noise(html: string) {
-  // Correct right-ear chronology together, not piecemeal.
-  html = ra(html,
-    'そのうえ、3日目には右耳にもすでに弱いピー音が現れていました。その少し後、すでにあったこの右耳の音は明らかに強まりました',
-    'そのうえ、その後さらに音へさらされた数日のうちに、右耳でも初めて弱いピー音を感じるようになりました。その少し後、この右耳の音は明らかに強まりました'
+function privacy(html: string) {
+  return ra(html,
+    '「データ管理者」の項に記載された住所宛てに',
+    '「データ管理者」の項に記載された連絡先を通じて'
   );
-  html = ra(html,
-    'まさにそれによって私の状態が悪化し、すでにあった右耳の弱い音が明らかに強くなったからです。',
-    'まさにそれによって私の状態が悪化し、右耳まで耳鳴りへ巻き込まれたからです。'
+}
+
+function contact(html: string) {
+  return ra(html,
+    '耳鳴りや聴力低下が起きたばかり、または突然現れた場合は、私の返事を待たずに、まず耳鼻咽喉科医を受診してください。',
+    '<strong>耳鳴りや聴力低下が起きたばかり、または突然現れた場合は、</strong>私の返事を待たずに、<strong>まず耳鼻咽喉科医を受診してください</strong>。'
   );
-  // Restore the general onset statement; do not route it to the unfinished FAQ.
-  html = ra(html,
-    '騒音性耳鳴りは、騒音にさらされた直後に気づくこともあれば、数時間後または数日後になって初めて意識されることもあります。私の場合、音に気づいたのは3日目でした。なぜなのかは、今でもはっきりとは分かりません。考えられる説明については、FAQで仮説として明確に説明します。',
-    '多くの人では、耳鳴りは騒音の出来事から比較的すぐ、数分から数時間以内に始まります。一方で、数時間後、あるいは数日後になって現れるケースもあります。'
-  );
-  // Restore the concrete Phase-1/Phase-2 conclusion instead of replacing it with a different model paragraph.
-  html = rr(html,
-    /<p>私の主要モデルにおいて、慢性の騒音性耳鳴りとは生理学的に何なのか。[^<]*<\/p>/,
-    '<p>私の確信では、慢性の騒音性耳鳴りとは、生きている細胞がエネルギー面の緊急運転から抜け出せず、フェーズ2の修復に必要なエネルギーが足りないため、修復がフェーズ1の大部分で凍りついている状態です。耳が「壊れて」いるのでも、脳が何もないところから幻の信号を作っているのでもありません。音は、実在する末梢の生存闘争の結果であり、脳はそれを増幅しているのです。</p>'
-  );
-  return html;
 }
 
 function gift(html: string) {
   html = ra(html,
-    '私の場合、当時の耳鳴りは典型的な騒音性耳鳴りで、主な引き金は騒音でした（薬剤によって急に起きたものではありません）。',
-    '私の場合、当時の耳鳴りは完全に騒音によるものでした（薬剤による急性の出来事で起きたものではありません）。'
+    '水銀原子が、酵素であるATP駆動型カルシウムポンプにある硫黄を含むチオール結合部位に結合し、',
+    '水銀原子が、通常の酵素、またはたとえばATP駆動型カルシウムポンプにある硫黄を含むチオール結合部位に結合し、'
   );
-  // In the thiol image description, the enzyme is specifically the ATP-driven calcium pump, not an alternative.
-  html = ra(html,
-    '酵素またはATP駆動型カルシウムポンプにある硫黄を含むチオール結合部位',
-    '酵素であるATP駆動型カルシウムポンプにある硫黄を含むチオール結合部位'
-  );
-  // Avoid strengthening permanent-open to "forever" if present.
-  html = ra(html, '永遠に開きっぱなし', '開きっぱなし');
   return html;
 }
 
 function stress(html: string) {
-  // Narrative intro: gradual resolution, not a new claim of completed conflict resolution at that local point.
   html = rr(html,
-    /<p>彼の(?:仕事|取り組み)[^<]*(?:完全に解消|完全に解決)[^<]*(?:自律神経)[^<]*<\/p>/g,
-    '<p>彼の取り組みによって、当時の深く根づいた内面的な緊張を、少しずつ解いていくことができました。</p>'
+    /<p>私は、試せることは何一つ残したくないと思うほど絶望していました。[^<]*Prgometの取り組みでした。Prgometは、このページで扱うまさにそのメカニズムに30年を超えて取り組んでいます。[^<]*自律神経系のバランスを取り戻すうえで、非常に大きな助けになったのが、Prgometの取り組みでした。<\/p>\s*<p>そして、まさにこの経験があるからこそ[^<]*<\/p>/,
+    '<p>私は、試せることは何一つ残したくないと思うほど絶望していました。当時私を助けたのは、薬でも従来型の治療でもなく、ハイルプラクティカーで講師でもあるMichael Prgometとの取り組みでした。Prgometは、このページで扱うまさにそのメカニズムに30年を超えて取り組んでいます。</p><p>彼の取り組みがあって初めて、当時、こうした根深い内面の緊張を少しずつ解いていけるようになりました。そして、まさにこの経験があるからこそ、私はこの記事を書いています――医学の教科書を引用しているからではなく、日常では自覚していなくても、神経系にどれほど大きな内面的な圧力がかかっているかを、身をもって感じたからです。</p>'
   );
-  // Direct core thesis, preserving Dustin's voice.
   html = rr(html,
-    /<p>私の説明モデルでは、ストレス性耳鳴り[^<]*(?:Prgomet|Klinghardt)[^<]*<\/p>/g,
-    '<p>今では、こう言えます。ストレス性耳鳴りは謎でも、思い込みでもありません。終わっていない葛藤によって生じる、脳内の持続的な電気状態が音として聞こえるものです。そこで何が起きているのかを理解すれば、なぜ音があるのか、そして自分に何ができるのかも分かります。</p>'
+    /<p>私の説明モデルでは、ストレス性耳鳴り[^<]*気のせいではありません。<\/p>/,
+    '<p>今では、こう言えます。ストレス性耳鳴りは謎でも、気のせいでもありません。それは、本当の意味では終わっていない葛藤が引き起こす、脳内の持続的な電気状態が音として聞こえているものです。そこで何が起きているかが分かれば、なぜ音がするのか、そして自分に何ができるのかも分かります。</p>'
   );
-  // HPA paragraph added locally on this page is not a second direct source in Dustin's model.
-  html = rr(html, /\s*<p><strong>重要な区別[^<]*<\/strong>[^<]*(?:HPA|コルチゾール)[^<]*<\/p>/g, '');
-  // Small local field effect remains a real physical effect within the model, not merely metaphor.
+  html = rr(html,
+    /<p>私の説明モデル：感情的な葛藤が本当の意味で処理されないと[^<]*葛藤から耳鳴りに至る連鎖全体を支持するものではありません。<\/p>/,
+    '<p>私の説明モデル：感情的な葛藤が本当の意味で処理されないと、関係する脳領域は無意識の中で活動し続けることがあります。このモデルによれば、そこには、ヴァン・デ・グラーフ球の静電気の蓄積に似た、持続的な電気的緊張状態が形成されます。このエネルギーは――この考え方では――逃げ道を求め、隣接する神経経路へ放電することがあります。その際に聴覚情報を処理する神経中枢が影響を受けると、私の経験では、持続的な耳鳴りになることがあります。すでに1950年代には、Penfieldの脳刺激実験によって、特定の脳領域を電気刺激すると音を<em>引き起こし得る</em>ことが示されていました。</p>'
+  );
+  html = ra(html, '私がCFSと心身相関の問題を抱えていた時期に得た個人的な印象：', '<strong>私の個人的な印象：</strong>');
   html = ra(html,
-    'これはモデルに帰属する仮定であり、ストレス性耳鳴りで直接測定された過程ではありません。',
-    'こうした局所的な電場作用は小さいものですが実在し、このモデルでは隣接する細胞を閾値の向こうまで押して、実際に発火させることがあります。'
+    '根本の葛藤を解消できれば、電気的な緊張領域は最も重要なエネルギー源を失います。',
+    '根本の葛藤を解消できれば、電気的な緊張領域は――私の経験では――その最も重要なエネルギー源を失います。'
   );
-  // Duration clue strength if local text was weakened to a generic possibility.
   html = rr(html,
-    /症状が急性ストレスなしでも続くこと自体[^<]*(?:可能性|説明)[^<]*<\/p>/g,
-    '症状が急性ストレスなしでも続くという「持続性」は重要な手がかりです。その場合、多くは神経系に慢性的な電気的誤作動が残っています。</p>'
+    /<p>小規模で局所的な、電気的緊張や場にかかわる現象という考えは[^<]*MEGで直接示されたとは、ここでは主張しません。<\/p>/,
+    '<p>脳が電気で働いていることは、多くの人が知っています。でも、こうした電気活動が耳鳴りのような現象とどう関わるのかを、普段の生活で考える人はほとんどいません。しかも、これは決して新しい知識ではありません。すでに1990年代には、てんかん専門施設の研究者たちが、いわゆるMEGスキャナーのような、極めて希少で高度に複雑な測定装置を使って、まさにそれを可視化していました。未解決の葛藤があると、特定の脳領域に活発な電気的緊張領域が存在することが、そこでの測定ではっきりと示されています。</p>'
   );
+  html = rr(html,
+    /<p>位置づけのために重要な点：私が経験した2度の耳鳴りのエピソードは[^<]*私自身の調査と統合に基づいています。<\/p>/,
+    '<p>だからこそ、ここでは、私自身のとても良い経験をもとに、脳に由来する耳鳴りに対する彼のアプローチを紹介しています。彼は、この現象を<strong>静電気的な緊張領域</strong>と呼んでいます。これは、小さなエネルギーの島のように、絶えず電力を消費し、神経経路へ電気刺激を送り出す、過活動状態で自立して働く神経中枢です。どの経路が影響を受けるかによって、胃から耳まで、まったく違う症状として現れます。これは一般的な推奨ではありません。私個人を助けてくれたものを共有しているだけです。</p>'
+  );
+  html = rr(html,
+    /<p>第四に、小さな電場作用を介して。[^<]*ストレス性耳鳴りで直接測定された過程ではありません。<\/p>/,
+    '<p><strong>第四に、小さな電場作用を介して。</strong>狭い領域で多くの神経細胞が同時に、しかも同期して活動すると、局所的な電場が生まれます。こうした電場は小さい――でも、実際に存在します。そして、隣接する細胞を発火の閾値を超えるところまで実際に押し上げ、その細胞自体を発火させることがあります。</p>'
+  );
+  html = rr(html,
+    /<p>ヴァン・デ・グラーフ球と「小さな稲妻」は[^<]*隣接する敏感な神経経路も刺激することがあります。<\/p>/,
+    '<p>この電気的な仕組みは、神経系の中にある小さなヴァン・デ・グラーフ球のようなものだと、大まかにイメージできます（もちろん、あくまでたとえです。実際の電圧は本物の高電圧球よりはるかに低いものの、働く原理は同じです）。葛藤がわずかに活動しているだけなら、大したことは起こりません。でも、トリガーが加わったり、睡眠不足、疲弊、強い内的緊張などの要因が重なったりすると、その電気的な緊張領域はさらに帯電します。やがて電圧が十分に高くなり、隣接する敏感な神経経路へ、小さな稲妻のように放電します。すると、その経路も一緒に発火するのです。</p>'
+  );
+  html = ra(html, '脳への電気刺激が示しうること', '科学的な証拠：電気刺激が音を生む');
+  html = rr(html,
+    /<p>PenfieldとPerotは1963年[^<]*想定されている電気的な緊張領域と放電の経路も証明するものではありません。<\/p>/,
+    '<p>すでに1950年代には、Wilder Penfieldらの研究者がモントリオールで、患者の脳を電気で刺激する実験を行っていました。その際、多くの患者が、音源がないにもかかわらず、音や音楽、声を聞きました。これらの実験が証明したのは、こういうことです。特定の脳領域や聴神経を電気で刺激すると、音が生じる――音源がなくてもです。</p>'
+  );
+  html = rr(html,
+    /<p>ストレス性耳鳴りへの当てはめは、私の説明モデルの一部であり[^<]*持続的な中枢活動から生じます。<\/p>/,
+    '<p>まさにこの原理が、ストレス性耳鳴りでも働いています。ただし、ここでは外から電極で刺激するのではなく、未解決の葛藤による持続的な電気活動が、内側から刺激を引き起こすのです。</p>'
+  );
+  html = rr(html,
+    /<p>重要な区別：HPA軸／コルチゾールによる一般的なストレスは[^<]*原因としては関与しませんでした。<\/p>/,
+    '<p>多くの人は、ストレスと聞くと、仕事や家族、日常生活など、外からの負担を自動的に思い浮かべます。でも、こうした状況に結びついたストレスは、たいてい、このタイプの耳鳴りの原因ではありません。決め手となるのは、<strong>内面に蓄えられたストレス</strong>です。未解決の感情的葛藤によって神経系の中に残り続け、持続的な電気活動を生み出すストレスです。</p>'
+  );
+  html = rr(html,
+    /<p>ある症状が急性ストレスのない状態でも続くという事実だけでは[^<]*一つの考えられる説明です。<\/p>/,
+    '<p>決定的な手がかりになるのが、症状の持続です。急性のストレスがなくても症状が残る場合、たいていは神経系に慢性的な電気的異常活動が起きています。</p>'
+  );
+  html = ra(html, '前頭前皮質は制御力を失います', '前頭前皮質の制御力が低下します');
+  html = ra(html, '隣接する聴覚処理経路へ稲妻のように放電する様子', '隣接する聴神経へ稲妻のように放電する様子');
+  html = ra(html, '03 · 聴覚路への放電', '03 · 聴神経への放電');
   return html;
 }
 
-function applyPathFixes(pathname: string, html: string) {
-  if (html.includes(STATIC_JA_BATCH)) return html;
-  const p = pathname.replace(/\.html$/, '');
+function faq(html: string) {
+  html = ra(html, '🛠️ このページは現在作成中です――近日公開します。', 'このページは現在作成中です。');
+  html = ra(html,
+    '早く来てくれましたね――それはいいことです。このページは今、作っているところです。ここでは、私自身の道のりで頭に浮かんだ、まさにその疑問を少しずつ集め、私が理解したとおりに答えていきます――自分の体験から、普段の言葉で、難しい専門用語を使わずに。この先数週間のうちに、またのぞいてみる価値があります。',
+    '当時、私自身が夜も眠れなくなるほど悩んだ疑問を、ここで少しずつ集め、今の私が理解しているとおりに答えていきます。'
+  );
+  html = ra(html,
+    '……そしてほかにも多くの日常的な疑問を、原因別ページと同じメカニズムに基づいて分かりやすく説明します。',
+    '……そして、ほかの日常的な疑問も。'
+  );
+  html = ra(html, '見に来てくれてありがとう――また近いうちに。🙌', '見に来てくれてありがとう。');
+  return html;
+}
+
+function applyPathFixes(pathname: string, source: string) {
+  let html = common(source);
+  const p = pathname.replace(/\/index(?:\.html)?$/, '/').replace(/\.html$/, '').replace(/\/+$/, '') || '/';
+  if (p === '/ja') return home(html);
   switch (p) {
     case '/ja/meine-geschichte-teil-1': return bio1(html);
     case '/ja/meine-geschichte-teil-2': return bio2(html);
     case '/ja/tinnitus-geheilt-erfahrungsbericht': return shortBio(html);
+    case '/ja/laermbedingter-tinnitus': return noise(html);
     case '/ja/mein-loesungsansatz': return approach(html);
     case '/ja/wissenschaftliche-quellen': return sources(html);
     case '/ja/erfahrungsberichte': return testimonials(html);
     case '/ja/produkte': return products(html);
-    case '/ja/laermbedingter-tinnitus': return noise(html);
-    case '/ja/medikamente-gifte-tinnitus': return gift(html);
+    case '/ja/impressum': return imprint(html);
+    case '/ja/datenschutz': return privacy(html);
+    case '/ja/kontakt': return contact(html);
     case '/ja/stressbedingter-tinnitus': return stress(html);
+    case '/ja/medikamente-gifte-tinnitus': return gift(html);
+    case '/ja/faq': return faq(html);
     default: return html;
   }
 }
 
 export default async (request: Request, context: any) => {
-  const url = new URL(request.url);
-  if (url.pathname === '/ja/faq' || url.pathname === '/ja/faq.html') return context.next();
   const response = await context.next();
-  // These responses must not be reconstructed with a body.
   if (request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
   const type = response.headers.get('content-type') || '';
   if (!type.includes('text/html')) return response;
-  const html = await response.text();
-  const fixed = applyPathFixes(url.pathname, html);
+  const source = await response.text();
+  const fixed = applyPathFixes(new URL(request.url).pathname, source);
   const headers = new Headers(response.headers);
   headers.delete('content-length');
   headers.set('x-tbr-ja-audit-fixes', VERSION);
