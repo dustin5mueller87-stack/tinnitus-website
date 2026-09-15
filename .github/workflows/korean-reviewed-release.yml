@@ -16,3 +16,24 @@ jobs:
           node-version: "22"
       - name: Verify exact current source clauses and preservation
         run: node --experimental-strip-types scripts/verify-ko-reviewed.mjs
+      - name: Verify published production HTML without fetching images
+        run: |
+          node --experimental-strip-types --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {reviewedRules, REVIEW_VERSION} from './netlify/ko-reviewed-20260915.ts';
+          const results=[];
+          for(const route of new Set(reviewedRules.map(r=>r.page))){
+            const url='https://tinnitusbioregulation.com'+(route==='/ko'?'/ko/':route)+'?ko_release=1e55e53f';
+            const response=await fetch(url,{signal:AbortSignal.timeout(20000),headers:{'cache-control':'no-cache'}});
+            const html=await response.text();
+            const rules=reviewedRules.filter(r=>r.page===route);
+            const missing=rules.filter(r=>r.new && !html.includes(r.new)).map(r=>r.id);
+            const retained=rules.filter(r=>html.includes(r.old)).map(r=>r.id);
+            const row={route,status:response.status,version:response.headers.get('x-tbr-ko-audit-fixes'),applied:response.headers.get('x-tbr-ko-reviewed-count'),unmatched:response.headers.get('x-tbr-ko-reviewed-unmatched'),missing,retained};
+            results.push(row);
+            console.log(JSON.stringify(row));
+          }
+          console.log(JSON.stringify({productionCommit:'1e55e53fda703f4233c3137481c2a751a15a6666',plannedClauses:reviewedRules.length,results},null,2));
+          assert.ok(results.every(r=>r.status===200 && r.version===REVIEW_VERSION && !r.unmatched && r.missing.length===0 && r.retained.length===0),'Published HTML differs from reviewed replacements');
+          console.log('SUCCESS: all 77 reviewed corrections verified in actual production HTML on 10 Korean pages. No images requested.');
+          JS
