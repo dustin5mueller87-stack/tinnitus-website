@@ -776,6 +776,26 @@ a:hover { text-decoration-thickness: 2px; }
   .compare-arrow { transform: rotate(90deg); padding: 8px 0; }
 }
 
+/* Vier Hörkurven nebeneinander (veröffentlichte Serien) */
+.audiogram-quad {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 24px 0;
+}
+.audiogram-quad .compare-thumb {
+  aspect-ratio: 5 / 4;
+}
+@media (max-width: 720px) {
+  .audiogram-quad { grid-template-columns: 1fr; }
+}
+.audiogram-source {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: -8px 0 24px;
+}
+
 /* Sprung-Inhaltsverzeichnis (auf Unterseiten) */
 .toc-jump {
   background: var(--bg-card);
