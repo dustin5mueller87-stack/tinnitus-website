@@ -2530,6 +2530,17 @@
           setAttributeIfChanged(sendButton, 'title', 'भेजें');
           setAttributeIfChanged(sendButton, 'aria-label', 'भेजें');
 
+          var privacyPrimary = shadowRoot.querySelector('.vfrc-privacy__primary-button');
+          if (privacyPrimary) {
+            var privacyText = (privacyPrimary.textContent || '').trim();
+            if (!privacyPrimary.children.length &&
+                (privacyText === 'Submit' || privacyText === 'सबमिट करें') &&
+                privacyPrimary.textContent !== 'स्वीकार करें और आगे बढ़ें') {
+              privacyPrimary.textContent = 'स्वीकार करें और आगे बढ़ें';
+            }
+            setAttributeIfChanged(privacyPrimary, 'aria-label', 'स्वीकार करें और आगे बढ़ें');
+          }
+
           var scrollIcon = shadowRoot.querySelector('[title="scroll"], [title="Scroll down"], [title="नीचे स्क्रॉल करें"]');
           if (scrollIcon) {
             setAttributeIfChanged(scrollIcon, 'title', 'नीचे स्क्रॉल करें');
