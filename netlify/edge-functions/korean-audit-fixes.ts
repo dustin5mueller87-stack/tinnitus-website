@@ -1,9 +1,10 @@
 /*
  * Collision-safe Korean translation corrections from the completed one-pass audit.
- * Scope is /ko/* only. German source pages and the unfinished FAQ are never changed.
+ * Scope is /ko/* only. German source pages are never changed.
  * Open author/source questions and unverified image/render items remain untouched.
  */
-const VERSION = '2026-09-07-v1';
+import { applyReviewed, REVIEW_VERSION } from '../ko-reviewed-20260915.ts';
+const VERSION = REVIEW_VERSION;
 
 function ra(text: string, from: string, to: string) {
   if (!from || from === to) return text;
@@ -30,9 +31,6 @@ function bio1(html: string) {
     '오른쪽 귀에 이미 있던 소리가 더 커졌습니다.',
     '오른쪽 귀까지 새로 이명에 끌려 들어갔습니다.'
   );
-  // Do not turn Dustin's own low-normal B12 into a confirmed deficiency.
-  html = ra(html, 'B12 결핍이 확인됐습니다.', 'B12 수치는 아직 정상 범위였지만 맨 아래쪽, 결핍 기준 바로 위였습니다.');
-  html = ra(html, '비타민 B12 결핍이 확인됐습니다.', '비타민 B12 수치는 아직 정상 범위였지만 맨 아래쪽, 결핍 기준 바로 위였습니다.');
   // Keep ingestion and injection verbs separate where one verb grammatically swallowed both.
   html = rr(html, /B12 주사와([^<]{0,120})을 먹기 시작했습니다/g, 'B12 주사를 맞고$1을 먹기 시작했습니다');
   return html;
@@ -55,20 +53,10 @@ function bio2(html: string) {
 }
 
 function shortBio(html: string) {
-  // IHHT was abandoned before treatment, not begun and then interrupted.
-  html = ra(html,
-    '모의 고지대 훈련(IHHT)도 시도했지만 공황 때문에 중단해야 했고, CFS 전문 병원에 입원하기 직전까지 갔습니다.',
-    '모의 고지대 훈련(IHHT)도 계획했지만 공황 때문에 실제 치료를 시작하기 전에 포기했고, CFS 전문 병원 입원 계획도 치료 전에 접었습니다.'
-  );
   // "Physically dead" means temporarily unable to function/signal, not biologically dead.
   html = ra(html,
     '세포의 배터리는 완전히 방전돼 몇 초 동안 물리적으로 죽고 ‘침묵’합니다(불응기).',
     '세포의 배터리는 완전히 방전돼 몇 초 동안 일시적으로 기능과 신호를 내지 못하고 ‘침묵’합니다(불응기).'
-  );
-  // Duration is counted from the real restart after ending the experiment.
-  html = ra(html,
-    '제 회복 과정은 약 3~4개월에 걸쳐 이어졌습니다. 주파수들이 체계적으로 하나씩 꺼지는 과정이었습니다.',
-    '실험을 끝내고 영양 루틴을 실제로 다시 시작한 시점부터 완전한 회복까지는 약 3~4개월이 걸렸습니다. 주파수들이 체계적으로 하나씩 꺼지는 과정이었습니다.'
   );
   return html;
 }
@@ -78,12 +66,6 @@ function approach(html: string) {
   html = rr(html, /\s*<p>[^<]*(?:그래서|때문에|괜히)[^<]*CFS[^<]*<\/p>/g, '');
   // Remove an added local audiogram-proof clause without weakening the rest of the sentence.
   html = ra(html, '첫 번째 이명이 호전된 과정은 여러 청력도에 기록돼 있으며, ', '');
-  // In this process "conflict resolution" and "trauma resolution" are two names for the same process.
-  html = ra(html, '갈등 해결 또는 트라우마 해결', '갈등 해결, 즉 트라우마 해결');
-  html = ra(html, '갈등 해소 또는 트라우마 해소', '갈등 해소, 즉 트라우마 해소');
-  // Mobilization test can show metals in blood and/or urine.
-  html = ra(html, '혈액 또는 소변에서', '혈액과 소변 중 한쪽 또는 양쪽에서');
-  html = ra(html, '혈액이나 소변에서', '혈액과 소변 중 한쪽 또는 양쪽에서');
   // The trace-element replacement is after mobilization/removal, not during it.
   html = ra(html, '중금속을 제거하는 동안 밀려난 미량 원소를 다시 채웁니다', '중금속을 제거한 뒤 밀려난 미량 원소를 다시 채웁니다');
   return html;
@@ -153,9 +135,6 @@ function gift(html: string) {
     '제 경우 당시 주된 유발 요인은 전형적인 소음성 이명이었고',
     '제 경우 당시 이명은 전적으로 소음으로 인해 생겼고'
   );
-  // Enzyme is specifically the ATP-driven calcium pump, not an alternative entity.
-  html = ra(html, '효소 또는 ATP 구동 칼슘 펌프', '효소, 즉 ATP 구동 칼슘 펌프');
-  html = ra(html, '효소나 ATP 구동 칼슘 펌프', '효소인 ATP 구동 칼슘 펌프');
   // Perfect storm: pumps approach limit AND the whole cell works at limit.
   html = ra(html,
     '칼슘 펌프나 세포가 이미 한계에 가까워져 있습니다.',
@@ -214,17 +193,20 @@ function applyPathFixes(pathname: string, html: string) {
 
 export default async (request: Request, context: any) => {
   const url = new URL(request.url);
-  if (url.pathname === '/ko/faq' || url.pathname === '/ko/faq.html') return context.next();
   const response = await context.next();
   // These responses must not be reconstructed with a body.
   if (request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
   const type = response.headers.get('content-type') || '';
   if (!type.includes('text/html')) return response;
   const html = await response.text();
-  const fixed = applyPathFixes(url.pathname, html);
+  const reviewed = applyReviewed(url.pathname, applyPathFixes(url.pathname, html));
+  const fixed = reviewed.html;
   const headers = new Headers(response.headers);
   headers.delete('content-length');
   headers.set('x-tbr-ko-audit-fixes', VERSION);
+  headers.set('x-tbr-ko-reviewed-count', String(reviewed.applied.length));
+  if (reviewed.unmatched.length) headers.set('x-tbr-ko-reviewed-unmatched', reviewed.unmatched.join(','));
+  if (fixed !== html) headers.delete('etag');
   return new Response(fixed, { status: response.status, statusText: response.statusText, headers });
 };
 
