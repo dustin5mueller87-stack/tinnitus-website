@@ -189,8 +189,8 @@ const groups: Record<string, [string, string, string][]> = {
   "/ko/stressbedingter-tinnitus": [
     [
       "STRESS-MYELIN",
-      "미엘린층(수초)을 형성하고 계속 치밀한 상태로 유지하는 데",
-      "미엘린층(수초)을 형성하고 능동적으로 더 치밀하게 만드는 데"
+      "<strong>미엘린층(수초)</strong>을 형성하고 계속 치밀한 상태로 유지하는 데",
+      "<strong>미엘린층(수초)</strong>을 형성하고 능동적으로 더 치밀하게 만드는 데"
     ],
     [
       "STRESS-BACK",
@@ -315,8 +315,8 @@ const groups: Record<string, [string, string, string][]> = {
     ],
     [
       "SOURCES-F05",
-      "56.7%에서 객관적 이명이 평균 30 dB 개선됐습니다",
-      "환자의 56.7%에서 이명이 객관적으로 평균 30 dB 개선됐습니다"
+      "<strong>56.7%</strong>에서 객관적 이명이 <strong>평균 30 dB</strong> 개선됐습니다",
+      "환자의 <strong>56.7%</strong>에서 이명이 객관적으로 <strong>평균 30 dB</strong> 개선됐습니다"
     ],
     [
       "SOURCES-F06A",
