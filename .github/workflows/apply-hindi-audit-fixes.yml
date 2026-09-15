@@ -1,0 +1,41 @@
+name: Apply Hindi audit fixes
+
+on:
+  push:
+    branches:
+      - hindi-audit-fixes-2026-09-15
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out publication branch
+        uses: actions/checkout@v4
+        with:
+          ref: hindi-audit-fixes-2026-09-15
+          fetch-depth: 0
+
+      - name: Apply strictly anchored Hindi fixes
+        run: python scripts/apply_hindi_audit_fixes_2026_09_15.py
+
+      - name: Remove one-shot patch machinery
+        run: |
+          rm -f scripts/apply_hindi_audit_fixes_2026_09_15.py
+          rm -f .github/workflows/apply-hindi-audit-fixes.yml
+
+      - name: Validate and commit only targeted changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --check
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Fix audited Hindi translation deviations"
+          git push origin HEAD:hindi-audit-fixes-2026-09-15
