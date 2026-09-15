@@ -216,7 +216,7 @@ function fixApproach(html) {
   html = replaceAll(
     html,
     'Así llegan a la sangre o la orina y pueden detectarse mediante pruebas de laboratorio.',
-    'Así llegan a la sangre, a la orina o a ambas y pueden detectarse mediante pruebas de laboratorio.'
+    'Así llegan a la sangre y, desde allí, a la orina; pueden detectarse en la sangre o en la orina mediante pruebas de laboratorio.'
   );
   html = replaceAll(html, 'por sí solo y por completo', 'por sí solo');
   html = replaceAll(html, 'más bien el menos frecuente', 'más bien un caso menos frecuente');
@@ -337,7 +337,7 @@ function fixToxins(html) {
   html = replaceAll(
     html,
     'de una enzima o de una bomba de calcio impulsada por ATP',
-    'de una enzima, concretamente una bomba de calcio impulsada por ATP'
+    'de una enzima, por ejemplo una bomba de calcio impulsada por ATP'
   );
   html = replaceAll(
     html,
