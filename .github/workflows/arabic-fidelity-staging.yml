@@ -2,45 +2,85 @@ name: Arabic fidelity staging
 on:
   push:
     branches: [automation/ar-fidelity-20260917]
-    paths: [.github/workflows/arabic-fidelity-staging.yml, .arabic-release.json]
+    paths: [.github/workflows/arabic-fidelity-staging.yml]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  snapshot:
+  assemble:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
-      - name: Read current approved source files without images
+      - name: Assemble verified Arabic-only candidate without publishing
         env:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
         run: |
           python3 - <<'PY'
-          import base64, hashlib, json, os, pathlib, urllib.request
-          repo=os.environ['REPOSITORY']
-          base='5eac5df84380001f3d83c1aefc93615dd1edb11c'
-          api='https://api.github.com/repos/'+repo
-          def get(route):
-              req=urllib.request.Request(api+route,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'})
-              with urllib.request.urlopen(req,timeout=45) as r: return json.load(r)
-          assert get('/git/ref/heads/main')['object']['sha']==base, 'Main moved; stop and rebase review'
-          pages=['index','tinnitus-geheilt-erfahrungsbericht','meine-geschichte-teil-1','meine-geschichte-teil-2','laermbedingter-tinnitus','mein-loesungsansatz','wissenschaftliche-quellen','erfahrungsberichte','produkte','stressbedingter-tinnitus','medikamente-gifte-tinnitus','faq']
-          paths=[prefix+p+'.html' for p in pages for prefix in ('','ar/')]
-          paths+=['site.js','site.css','ar/ar.css','site.webmanifest','ar/site.webmanifest']
-          root=pathlib.Path('snapshot'); root.mkdir()
-          manifest={'base':base,'files':{}}
-          for path in paths:
-              item=get('/contents/'+path+'?ref='+base)
-              data=base64.b64decode(item['content']); data.decode('utf-8')
-              assert hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()==item['sha']
+          import base64, difflib, gzip, hashlib, json, os, pathlib, re, urllib.request
+          api='https://api.github.com/repos/'+os.environ['REPOSITORY']
+          def request(route, body=None):
+              data=None if body is None else json.dumps(body,ensure_ascii=False).encode('utf-8')
+              req=urllib.request.Request(api+route,data=data,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'})
+              with urllib.request.urlopen(req,timeout=60) as r: return json.load(r)
+          def gitsha(data):
+              return hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()
+          parts=['26cdafd0aa1b9cbc034820e16a150be63b1efce9','6e662afe07ce4c358f7b77219f0322e4750f2b88','b68ce5fb118fa226436bb2c80bc263e427e91060','dcc572e119d4e571efa824c27fef6218cd7f076b','51cc0b9c20629bf2a0abef61b94ee427f47be8de','1c2aebff24ae4cd1d70d8f7083a3011bf9028983','384c76e13fd29941955bdc78e93e1f0b84d4e5af','34d7c94878a68b7e08f2ce3b588bb6726ed84ed8']
+          encoded=b''
+          for sha in parts:
+              item=request('/git/blobs/'+sha)
+              data=base64.b64decode(item['content'])
+              assert gitsha(data)==sha
+              encoded+=data
+          raw=gzip.decompress(base64.b64decode(encoded,validate=True))
+          expected='3efd729ec2289e2a2658a7fa488314720e6542bea2f20cd7c5ee0a9009f2c52d'
+          assert hashlib.sha256(raw).hexdigest()==expected, 'Patch payload checksum mismatch'
+          spec=json.loads(raw)
+          base=spec['base']
+          assert base=='5eac5df84380001f3d83c1aefc93615dd1edb11c'
+          assert request('/git/ref/heads/main')['object']['sha']==base, 'Main changed: stop; never overwrite'
+          assert len(spec['files'])==12 and len(spec['operations'])==86
+          allowed={'ar/'+p+'.html' for p in ['index','tinnitus-geheilt-erfahrungsbericht','meine-geschichte-teil-1','meine-geschichte-teil-2','laermbedingter-tinnitus','mein-loesungsansatz','wissenschaftliche-quellen','erfahrungsberichte','produkte','stressbedingter-tinnitus','medikamente-gifte-tinnitus','faq']}
+          assert set(spec['files'])==allowed
+          before={}; after={}
+          root=pathlib.Path('candidate'); root.mkdir()
+          for path, meta in spec['files'].items():
+              item=request('/contents/'+path+'?ref='+base)
+              data=base64.b64decode(item['content'])
+              assert item['sha']==meta['before_blob']==gitsha(data), path
+              german=request('/contents/'+meta['german_path']+'?ref='+base)
+              assert german['sha']==meta['german_blob'], 'German source changed: '+path
+              before[path]=data.decode('utf-8'); after[path]=before[path]
+          for op in spec['operations']:
+              path=op['path']; assert path in allowed
+              assert after[path].count(op['old'])==1, op['id']+' source is not unique'
+              after[path]=after[path].replace(op['old'],op['new'],1)
+          entries=[]; diff=[]
+          for path, text in after.items():
+              data=text.encode('utf-8'); expected_sha=spec['files'][path]['after_blob']
+              assert gitsha(data)==expected_sha, 'Output checksum mismatch: '+path
+              for tag in ('head','script','style','svg','header','footer'):
+                  pattern=r'<'+tag+r'\b[^>]*>[\s\S]*?</'+tag+r'>'
+                  assert re.findall(pattern,before[path],re.I)==re.findall(pattern,text,re.I), 'Protected '+tag+' changed: '+path
+              blob=request('/git/blobs',{'content':text,'encoding':'utf-8'})
+              assert blob['sha']==expected_sha
+              entries.append({'path':path,'mode':'100644','type':'blob','sha':blob['sha']})
               dest=root/path; dest.parent.mkdir(parents=True,exist_ok=True); dest.write_bytes(data)
-              manifest['files'][path]={'blob_sha':item['sha'],'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
-              print(path,item['sha'],len(data))
-          (root/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+              diff.extend(difflib.unified_diff(before[path].splitlines(True),text.splitlines(True),fromfile='a/'+path,tofile='b/'+path))
+              print(path,blob['sha'])
+          assert request('/git/ref/heads/main')['object']['sha']==base, 'Main changed during preparation; stop'
+          base_commit=request('/git/commits/'+base)
+          tree=request('/git/trees',{'base_tree':base_commit['tree']['sha'],'tree':entries})
+          message='fix(ar): publish reviewed translation corrections and author clarifications\n\nArabic fidelity release 2026-09-17. Twelve Arabic HTML files only. Applies the approved audit and 2026-09-15 author clarifications. Preserves 75 percent, functional silence, current German and all other languages, images, shared scripts and recent RU/PL/CS publications. Exact source and output blob checks passed.'
+          commit=request('/git/commits',{'message':message,'tree':tree['sha'],'parents':[base]})
+          result={'status':'candidate-verified-not-published','base':base,'base_tree':base_commit['tree']['sha'],'tree':tree['sha'],'commit':commit['sha'],'operations':len(spec['operations']),'files':spec['files'],'payload_sha256':expected}
+          (root/'candidate.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+          (root/'changes.diff').write_text(''.join(diff),encoding='utf-8')
+          print('CANDIDATE_COMMIT='+commit['sha'])
+          print('No branch ref was modified by this job.')
           PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: arabic-current-text-snapshot
-          path: snapshot
-          retention-days: 7
+          name: arabic-verified-candidate
+          path: candidate
+          retention-days: 14
           if-no-files-found: error
