@@ -1,0 +1,105 @@
+name: Prepare approved Portuguese translation release
+on:
+  push:
+    branches: ["tooling/pt-eu-release-20260917"]
+permissions:
+  contents: write
+concurrency:
+  group: pt-eu-release-preparation-20260917
+  cancel-in-progress: false
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Read exact HTML sources and prepare an unreferenced commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          INPUT_SHA: ${{ github.sha }}
+        shell: python
+        run: |
+          import os, json, base64, hashlib, pathlib, re, urllib.request, urllib.error
+          repo = os.environ['REPO']
+          assert repo == 'dustin5mueller87-stack/tinnitus-website'
+          api_root = 'https://api.github.com/repos/' + repo
+          out = pathlib.Path('release-artifacts'); out.mkdir()
+          def api(path, data=None):
+              req = urllib.request.Request(api_root + path, data=None if data is None else json.dumps(data).encode(), headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json', 'User-Agent': 'pt-eu-reviewed-release'})
+              with urllib.request.urlopen(req, timeout=45) as response:
+                  return json.load(response)
+          head = api('/git/ref/heads/main')['object']['sha']
+          commit = api('/git/commits/' + head)
+          tree = api('/git/trees/' + commit['tree']['sha'] + '?recursive=1')
+          assert not tree.get('truncated'), 'Incomplete tree: stop'
+          entries = {item['path']: item for item in tree['tree'] if item['type'] == 'blob'}
+          pairs = {
+              'pt/index.html': 'index.html',
+              'pt/o-meu-colapso-com-acufenos.html': 'tinnitus-geheilt-erfahrungsbericht.html',
+              'pt/a-minha-historia-parte-1.html': 'meine-geschichte-teil-1.html',
+              'pt/a-minha-historia-parte-2.html': 'meine-geschichte-teil-2.html',
+              'pt/acufenos-causados-pelo-ruido.html': 'laermbedingter-tinnitus.html',
+              'pt/a-minha-abordagem.html': 'mein-loesungsansatz.html',
+              'pt/fontes-cientificas.html': 'wissenschaftliche-quellen.html',
+              'pt/relatos-de-experiencias.html': 'erfahrungsberichte.html',
+              'pt/produtos.html': 'produkte.html',
+              'pt/acufenos-medicamentos-substancias-toxicas.html': 'medikamente-gifte-tinnitus.html',
+              'pt/faq.html': 'faq.html'
+          }
+          sources = {}
+          for pt, de in pairs.items():
+              for path in [de, pt]:
+                  item = entries[path]
+                  blob = api('/git/blobs/' + item['sha'])
+                  raw = base64.b64decode(blob['content'])
+                  digest = hashlib.sha1(b'blob ' + str(len(raw)).encode() + b'\0' + raw).hexdigest()
+                  assert digest == item['sha'], path
+                  sources[path] = {'sha': item['sha'], 'text': raw.decode('utf-8')}
+          (out / 'sources.json').write_text(json.dumps({'base': head, 'tree': commit['tree']['sha'], 'sources': sources}, ensure_ascii=False, indent=2))
+          (out / 'tree-before.json').write_text(json.dumps(tree, ensure_ascii=False, indent=2))
+          try:
+              payload_file = api('/contents/.github/pt-eu-release-patches.json?ref=' + os.environ['INPUT_SHA'])
+          except urllib.error.HTTPError as exc:
+              if exc.code != 404: raise
+              payload_file = None
+          if payload_file is None:
+              print('SNAPSHOT_READY base=' + head + ' text_files=' + str(len(sources)), flush=True)
+          else:
+              payload = json.loads(base64.b64decode(payload_file['content']))
+              assert payload['base'] == head, 'main changed: recheck before preparing'
+              changes = []
+              changed_text = {}
+              for path, spec in payload['files'].items():
+                  assert path in pairs and path.startswith('pt/') and path.endswith('.html')
+                  source = sources[path]
+                  assert source['sha'] == spec['sha'], 'Source changed: ' + path
+                  before = source['text']; after = before
+                  for fix in spec['edits']:
+                      count = after.count(fix['old'])
+                      assert count == fix.get('count', 1), str((path, fix['id'], 'expected', fix.get('count', 1), 'found', count))
+                      after = after.replace(fix['old'], fix['new'])
+                      changes.append({'path': path, 'id': fix['id'], 'occurrences': count, 'old': fix['old'], 'new': fix['new']})
+                  assert after != before, 'Empty file change'
+                  assert re.findall(r'<script\b[^>]*>[\s\S]*?</script>', before, re.I) == re.findall(r'<script\b[^>]*>[\s\S]*?</script>', after, re.I), 'Script changed'
+                  assert re.findall(r'<svg\b[\s\S]*?</svg>', before, re.I) == re.findall(r'<svg\b[\s\S]*?</svg>', after, re.I), 'SVG changed'
+                  assert re.findall(r'\b(?:src|data-source-asset)=["\x27]([^"\x27]+)', before) == re.findall(r'\b(?:src|data-source-asset)=["\x27]([^"\x27]+)', after), 'Asset changed'
+                  assert re.findall(r'\d+[\s\u00a0]*(?:%|por cento)', before) == re.findall(r'\d+[\s\u00a0]*(?:%|por cento)', after), 'Percentage changed'
+                  changed_text[path] = after
+              elements = []
+              for path, text in changed_text.items():
+                  blob = api('/git/blobs', {'content': text, 'encoding': 'utf-8'})
+                  elements.append({'path': path, 'mode': '100644', 'type': 'blob', 'sha': blob['sha']})
+              new_tree = api('/git/trees', {'base_tree': commit['tree']['sha'], 'tree': elements})
+              created = api('/git/commits', {'message': payload['message'], 'tree': new_tree['sha'], 'parents': [head]})
+              result = {'base': head, 'commit': created['sha'], 'tree': new_tree['sha'], 'files': elements, 'changes': changes}
+              (out / 'release-result.json').write_text(json.dumps(result, ensure_ascii=False, indent=2))
+              (out / 'expected.json').write_text(json.dumps(changed_text, ensure_ascii=False))
+              print('PREPARED_COMMIT=' + created['sha'], flush=True)
+              print('CHANGED_FILES=' + str(len(elements)) + ' PATCH_RULES=' + str(len(changes)), flush=True)
+              print('No branch reference or production site was changed by this job.', flush=True)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pt-eu-release-${{ github.run_id }}
+          path: release-artifacts/
+          retention-days: 30
