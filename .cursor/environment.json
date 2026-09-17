@@ -1,0 +1,17 @@
+{
+  "name": "Tinnitus Website",
+  "install": "sudo env PATH=\"$PATH\" npm install -g netlify-cli@27.5.2",
+  "terminals": [
+    {
+      "name": "netlify-dev",
+      "command": "netlify dev --dir=. --offline --port 8888",
+      "description": "Netlify local dev server for the static site. Serves the repo root, applies _redirects (clean URLs) and _headers, and runs the Deno edge functions in netlify/edge-functions on http://localhost:8888."
+    }
+  ],
+  "ports": [
+    {
+      "name": "netlify-dev",
+      "port": 8888
+    }
+  ]
+}
