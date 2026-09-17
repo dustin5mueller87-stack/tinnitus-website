@@ -1,0 +1,46 @@
+name: Arabic fidelity staging
+on:
+  push:
+    branches: [automation/ar-fidelity-20260917]
+    paths: [.github/workflows/arabic-fidelity-staging.yml, .arabic-release.json]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read current approved source files without images
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, os, pathlib, urllib.request
+          repo=os.environ['REPOSITORY']
+          base='5eac5df84380001f3d83c1aefc93615dd1edb11c'
+          api='https://api.github.com/repos/'+repo
+          def get(route):
+              req=urllib.request.Request(api+route,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'})
+              with urllib.request.urlopen(req,timeout=45) as r: return json.load(r)
+          assert get('/git/ref/heads/main')['object']['sha']==base, 'Main moved; stop and rebase review'
+          pages=['index','tinnitus-geheilt-erfahrungsbericht','meine-geschichte-teil-1','meine-geschichte-teil-2','laermbedingter-tinnitus','mein-loesungsansatz','wissenschaftliche-quellen','erfahrungsberichte','produkte','stressbedingter-tinnitus','medikamente-gifte-tinnitus','faq']
+          paths=[prefix+p+'.html' for p in pages for prefix in ('','ar/')]
+          paths+=['site.js','site.css','ar/ar.css','site.webmanifest','ar/site.webmanifest']
+          root=pathlib.Path('snapshot'); root.mkdir()
+          manifest={'base':base,'files':{}}
+          for path in paths:
+              item=get('/contents/'+path+'?ref='+base)
+              data=base64.b64decode(item['content']); data.decode('utf-8')
+              assert hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest()==item['sha']
+              dest=root/path; dest.parent.mkdir(parents=True,exist_ok=True); dest.write_bytes(data)
+              manifest['files'][path]={'blob_sha':item['sha'],'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()}
+              print(path,item['sha'],len(data))
+          (root/'manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: arabic-current-text-snapshot
+          path: snapshot
+          retention-days: 7
+          if-no-files-found: error
