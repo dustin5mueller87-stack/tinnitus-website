@@ -255,10 +255,3 @@
 /nl/* /nl/404.html 404
 /pl/* /pl/404.html 404
 /tr/* /tr/404.html 404
-
-# Pepperburn (FitLine-Partnerseiten, nicht Teil der Tinnitus-Indexierung)
-/pepperburn/datenschutz.html /pepperburn/datenschutz 301!
-/pepperburn/impressum.html /pepperburn/impressum 301!
-/pepperburn/index.html /pepperburn/ 301!
-/pepperburn/interesse.html /pepperburn/interesse 301!
-/pepperburn/kontakt.html /pepperburn/kontakt 301!
