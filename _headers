@@ -53,3 +53,6 @@
 
 /tr/site.webmanifest
   Content-Type: application/manifest+json
+
+/pepperburn/*
+  X-Robots-Tag: noindex, follow

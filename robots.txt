@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /pepperburn/
 
 Sitemap: https://tinnitusbioregulation.com/sitemap.xml
