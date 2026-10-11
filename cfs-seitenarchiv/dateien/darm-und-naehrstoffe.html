@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<!-- Version 3 · Umbau vom 11.10.2026 -->
+<title>Darm, Nährstoffe & Aufnahme — warum Therapien nicht ankommen · Dustin Müller</title>
+<meta name="description" content="Warum die meisten CFS-Therapien nicht ankommen — und warum das nicht an dir liegt. Die drei Schranken (Magen, Darm, Zellmembran) und warum aus 400 mg im schweren Stadium nur noch wenige mg werden.">
+<script>try{var t=localStorage.getItem('cfs-theme-v2')||'quiet';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','quiet');}</script>
+<link rel="stylesheet" href="assets/styles.css">
+<noscript><style>[data-view]{display:block}.reveal{opacity:1;transform:none}</style></noscript>
+<style>
+  .tim { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); padding: clamp(1.5rem,3vw,2.4rem); box-shadow: var(--shadow-sm); }
+  .tim__switch { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--paper-3); border-radius: var(--r-pill); margin-bottom: 1.8rem; }
+  .tim__switch button { appearance: none; border: 0; background: transparent; font-family: var(--sans); font-size: .86rem; font-weight: 700; color: var(--ink-2); padding: .55rem 1rem; border-radius: var(--r-pill); cursor: pointer; transition: all .2s; }
+  .tim__switch button[aria-selected="true"] { background: var(--card); color: var(--green-deep); box-shadow: var(--shadow-sm); }
+  .tim__funnel { display: grid; grid-template-columns: repeat(3, 1fr); gap: .8rem; margin-bottom: 1.6rem; }
+  .tim__node { text-align: center; }
+  .tim__node .lbl { font-family: var(--sans); font-size: .76rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+  .tim__node .val { font-family: var(--serif); font-weight: 300; font-size: clamp(1.6rem,4vw,2.4rem); color: var(--ink); line-height: 1; margin-top: .4rem; transition: color .4s; }
+  .tim__bar { height: 8px; border-radius: var(--r-pill); background: var(--paper-3); margin-top: .7rem; overflow: hidden; }
+  .tim__bar i { display: block; height: 100%; border-radius: var(--r-pill); background: var(--green); transition: width .6s var(--ease), background .4s; }
+  .tim__result { font-family: var(--sans); border-top: 1px solid var(--line); padding-top: 1.4rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .tim__result .dot { width: 12px; height: 12px; border-radius: 50%; margin-top: .35rem; flex: none; transition: background .4s; }
+  .tim__result b { display: block; font-size: 1.05rem; color: var(--ink); margin-bottom: .3rem; }
+  .tim__result p { font-size: 1rem; line-height: 1.5; color: var(--ink-2); }
+</style>
+<script defer src="assets/image-slot.js"></script>
+<script defer src="assets/site.js"></script>
+</head>
+<body data-page="darm">
+<a class="skip" href="#main">Zum Inhalt springen</a>
+<main id="main">
+
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">06 · Mechanismus</span>
+      <h1>Warum die meisten Therapien nicht ankommen.</h1>
+      <p class="lead" style="font-style:italic">Und warum das nicht an dir liegt.</p>
+      <div class="page-hero__meta">
+        <span class="note-inline">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 2 21h20L12 2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 9v5M12 17.5v.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          Persönlicher Erfahrungsbericht — keine medizinische Beratung.
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap" style="margin-bottom:2.5rem">
+    <div data-readmode data-scope="#darm-prose" data-default="kurz" class="readmode" role="tablist" aria-label="Lesemodus">
+      <button data-set="kurz" role="tab"><span>Kurzfassung</span><span class="sub">3 Min · wenig Energie</span></button>
+      <button data-set="lang" role="tab"><span>Ausführlich</span><span class="sub">die drei Schranken</span></button>
+    </div>
+  </div>
+
+  <div id="darm-prose">
+    <!-- KURZ -->
+    <div data-view="kurz">
+      <section class="wrap" style="max-width:var(--measure-wide);margin-inline:auto">
+        <div class="summary">
+          <span class="summary__tag">Die Kurzfassung</span>
+          <div class="prose">
+            <h3>Das Kernproblem</h3>
+            <p>Bei CFS — besonders ab Stadium 5 — sind drei Schranken hochgefahren, an denen klassische
+              Therapien reihenweise scheitern: die <strong>Magen-Schranke</strong> (Säure fehlt), die
+              <strong>Darm-Schranke</strong> (Leaky Gut, Dysbiose, Histamin), und die
+              <strong>Zellmembran-Schranke</strong> (selbst was im Blut ankommt, kommt nicht in die Zelle).</p>
+            <p>Die paradoxe Folge: <strong>Je kränker du bist, desto schlechter wirken normale Tabletten.</strong>
+              Genau bei den Patienten, die am dringendsten Nährstoffe bräuchten, bleiben sie wirkungslos.</p>
+            <blockquote class="inline-q" style="margin:1.2rem 0">Bei einem schwer kranken CFS-Körper ist nicht
+              der Mangel das Problem. Sondern die Fähigkeit, den Mangel zu beheben.</blockquote>
+            <h3>Die drei Schlüssel-Eigenschaften der wirksamen Form</h3>
+            <p>Damit Nährstoffe ankommen, müssen sie <strong>vor-aktiviert</strong> sein (B-Vitamine in
+              aktiver Form), <strong>vor-ionisiert</strong> (Mineralien als freie Ionen) und <strong>in
+              flüssiger oder mizellierter Form</strong> geliefert werden — mit Transport-Hilfen für die
+              Zellmembran.</p>
+            <p>Wenn du schon viele Nährstofftherapien probiert hast und nichts hat gewirkt — <strong>das war
+              nicht dein Fehler.</strong> Das war das Aufnahme-Problem deines Körpers.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- LANG -->
+    <div data-view="lang">
+      <section class="wrap">
+        <div class="prose measure center">
+          <h2>1 · Die unbequeme Wahrheit</h2>
+          <p>Wenn du in einem CFS-Forum schreibst „ich hab schon Magnesium, B12, NADH probiert — nichts
+            wirkt", kriegst du zwei Antworten: „Du musst höher dosieren" oder „andere Marken probieren".
+            Beide gehen am Kern vorbei. Ich hatte teure, hochdosierte Sachen in jeder Form. <strong>Mein
+            Körper konnte sie schlicht nicht verwerten.</strong> Du finanzierst den teuersten Urin
+            Deutschlands.</p>
+
+          <h2>2 · Die drei Schranken</h2>
+          <p>Nährstoffe nehmen einen langen Weg, vom Mund bis in die Zelle. Bei einem CFS-Stadium-7-Körper
+            sind drei Tore zu, durch die normalerweise alles muss.</p>
+        </div>
+
+        <div class="wrap" style="margin:2rem auto">
+          <div class="cards center" style="max-width:var(--measure-wide)">
+            <div class="card" style="border-top:4px solid var(--clay)"><h4>Schranke 1 · Der Magen</h4><p>Magensäure runtergefahren, Bauchspeicheldrüse müde, Galle träge. Der Sympathikus hat die Verdauung quasi abgeschaltet. Was du schluckst, wird nicht richtig zerlegt oder ionisiert.</p></div>
+            <div class="card" style="border-top:4px solid var(--clay)"><h4>Schranke 2 · Der Darm</h4><p>Schleimhaut entzündet, durchlässig (Leaky Gut). Die guten Bakterien fehlen (Dysbiose), Candida feiert, Histamin überlastet. Die Transportmoleküle sind erschöpft.</p></div>
+            <div class="card" style="border-top:4px solid var(--clay)"><h4>Schranke 3 · Die Zellmembran</h4><p>Selbst was es ins Blut schafft, muss durch die letzte Tür — rein in die Zelle. Bei CFS ist sie halb zu: Membranpotential gestört, Transport-Pumpen energielos.</p></div>
+          </div>
+        </div>
+
+        <div class="prose measure center">
+          <h2>3 · Das ATP-Paradox</h2>
+          <p>Die letzte Schranke ist die brutalste. Damit Magnesium in die Zelle kommt, muss es durch aktive
+            Tore — die nur bei richtigem Membranpotential funktionieren. Bei CFS ist die Membran depolarisiert.
+            Und um sie wieder herzustellen, braucht die Zelle ATP. ATP, das von den Mitochondrien produziert
+            wird. Mitochondrien, die wiederum Magnesium brauchen, um zu funktionieren.</p>
+          <p class="pullquote pullquote--wide">Die Zelle braucht Magnesium, um ATP zu produzieren. Aber sie
+            braucht ATP, um Magnesium aufzunehmen.</p>
+          <p>Es ist, als würde dir jemand sagen: „Du musst nur schwimmen, um aus dem Wasser rauszukommen." Und
+            du antwortest: „Ja super, aber ich bin gerade am Ertrinken." Genau deshalb machen <strong>vor-ionisierte
+            Mineralien</strong> einen Unterschied — der Körper muss die Aktivierungsarbeit nicht mehr leisten.</p>
+
+          <h2>4 · Warum mein System die Schranken umgangen hat</h2>
+          <p>Ich war in Stadium 8. Meine Mutter hatte mich mit einem drehbaren Bürostuhl zu Michael Prgomet geschoben. Er mischte mir einen Drink an, der aussah, als hätte jemand eine Brausetablette in Karottensaft gekippt — und der cremig, leicht süß, etwas säuerlich schmeckte. Nach 6.800 Euro für Therapien, die nichts gebracht hatten, hatte ich null Erwartung. <strong>Niacin-Flush nach rund 6 Minuten.</strong> Und gleichzeitig: echte, klare
+            Energie aus der Tiefe.</p>
+          <p>Erst Jahre später verstand ich, warum. Es war nichts Geheimnisvolles. Das <strong>Nährstoff-System</strong>
+            hat einfach die drei Schranken systematisch umgangen: <strong>flüssig und vor-ionisiert</strong>
+            (der Magen muss nichts mehr ionisieren), eine <strong>Trägermatrix</strong>, die Nährstoffe an die
+            aktiven Aufnahme-Stellen bringt, <strong>aktive Vitamin-Formen</strong> statt inaktiver Vorstufen,
+            und <strong>Niacin als hydraulischer Brecher</strong>, der die verengten Mikrokapillaren öffnet.</p>
+          <blockquote class="inline-q">Je schwerer betroffen jemand ist, desto brutaler wirkt diese Form der
+            Druckbetankung.</blockquote>
+          <p>Das war nicht „Wundermittel". Das war biochemische Wiederöffnung an einem System, das monatelang
+            trockengefallen war. <em>Wichtig: Es gibt nicht nur dieses System — auch andere zellgängige Wege
+            funktionieren. Und Nährstoffe allein heilen kein CFS. Sie sind ein Pfeiler von mehreren.</em></p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===================== TIM IN 3 WELTEN ===================== -->
+  <section class="section band" id="tim">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow clay">Tim in drei Welten</span>
+        <h2>Drei Versionen, ein Glas Magnesium.</h2>
+        <p>Dieselbe Person, je 400 mg Magnesium. Was am Ende in der Zelle ankommt, hängt nicht vom Produkt ab
+          — sondern vom Zustand des Körpers. Wähl eine Version.</p>
+      </div>
+
+      <div class="tim reveal" data-tim>
+        <div class="tim__switch" role="tablist" aria-label="Tim-Zustand">
+          <button data-tim-set="gesund" aria-selected="true" role="tab">Tim gesund</button>
+          <button data-tim-set="s3" aria-selected="false" role="tab">CFS Stadium 3</button>
+          <button data-tim-set="s7" aria-selected="false" role="tab">CFS Stadium 7</button>
+        </div>
+
+        <div class="tim__funnel">
+          <div class="tim__node"><div class="lbl">Im Glas</div><div class="val">400 mg</div><div class="tim__bar"><i style="width:100%;background:var(--ink-3)"></i></div></div>
+          <div class="tim__node"><div class="lbl">Ins Blut</div><div class="val" data-tim-blut>200–280</div><div class="tim__bar"><i data-tim-blut-bar style="width:60%"></i></div></div>
+          <div class="tim__node"><div class="lbl">In die Zelle</div><div class="val" data-tim-zelle style="color:var(--green-deep)">150–200</div><div class="tim__bar"><i data-tim-zelle-bar style="width:44%"></i></div></div>
+        </div>
+
+        <div class="tim__result">
+          <span class="dot" data-tim-dot style="background:var(--green)"></span>
+          <div><b data-tim-title>Deutliche Wirkung</b><p data-tim-text>Schlaf ist okay, Verdauung stabil,
+            normale Zellspannung. Bessere Muskelentspannung, ruhigerer Schlaf, klarerer Kopf. Wie es sein
+            soll.</p></div>
+        </div>
+      </div>
+
+      <p class="pullquote pullquote--wide center" style="text-align:center;margin-top:2.4rem">Magnesium wirkt
+        bei jedem. Es kommt nur bei Tim Nummer 3 nicht <em>an.</em></p>
+    </div>
+  </section>
+
+  <section class="refrain reveal">
+    <div class="wrap">
+      <svg class="refrain__mark" viewBox="0 0 200 40" fill="none" aria-hidden="true">
+        <path d="M4 10 C 34 12, 44 34, 66 35 C 92 36, 100 14, 130 11 C 160 8, 176 6, 196 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity=".5"/>
+        <circle cx="66" cy="35" r="4" fill="var(--clay)"/>
+      </svg>
+      <p>Dein Körper ist nicht kaputt. Er ist blockiert. Und Blockaden lassen sich umgehen — wenn man die
+        richtige Tür benutzt.</p>
+      <p class="sig">— Dustin</p>
+    </div>
+  </section>
+
+  <section class="section--tight" id="disclaimer">
+    <div class="wrap">
+      <div class="disclaimer reveal">
+        <div class="disclaimer__h">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2 2 21h20L12 2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 9v5M12 17.5v.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          Wichtiger Hinweis — kein Arzt, kein Heilversprechen
+        </div>
+        <div class="prose">
+          <p>Was du hier gelesen hast, ist mein persönlicher Erfahrungsbericht und meine eigene Auswertung der
+            Mechanismen. Die beschriebenen Vorgänge (Magensäure-Reduktion, Leaky Gut, Mastzellaktivierung,
+            Zellmembran-Depolarisation) sind biomedizinisch gut dokumentiert. Die konkrete Hochrechnung der
+            Aufnahme-Verluste ist eine <strong>plausible Modellrechnung</strong>, kein gemessener Einzelwert.
+            Die Wirkung des verwendeten Nährstoff-Systems beruht auf persönlicher Erfahrung, nicht auf einer
+            randomisierten Studie. Diese Seite enthält keine Kaufaufforderung und keine Dosierungsempfehlung.
+            Sprich mit einem Arzt oder erfahrenen Heilpraktiker deines Vertrauens. Meine Geschichte ist meine
+            Geschichte. Deine wird ihre eigene sein.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  var root = document.querySelector('[data-tim]');
+  if (!root) return;
+  var data = {
+    gesund: { blut: '200–280', blutW: 60, zelle: '150–200 mg', zelleW: 44, color: 'var(--green)', title: 'Deutliche Wirkung', text: 'Schlaf ist okay, Verdauung stabil, normale Zellspannung. Bessere Muskelentspannung, ruhigerer Schlaf, klarerer Kopf. Wie es sein soll.' },
+    s3:     { blut: '100–160', blutW: 33, zelle: '50–70 mg',   zelleW: 16, color: '#b59a3e', title: 'Vorsichtige Wirkung', text: 'Magen-Darm leicht angeschlagen, aber funktional. Etwas weniger Reizbarkeit, etwas besserer Schlaf. Ist nicht nichts — aber auch nicht der „Wow"-Effekt. Schritt für Schritt.' },
+    s7:     { blut: '40–60',   blutW: 14, zelle: '2–5 mg',     zelleW: 3,  color: 'var(--clay)', title: 'Spürt gar nichts', text: 'Verdauung stark eingeschränkt, kaum Zellspannung, Transport blockiert. Außer vielleicht Durchfall. Er denkt: „Magnesium wirkt bei mir nicht." Falsch — es kommt nur nicht an. Das ist ein Riesenunterschied.' }
+  };
+  var btns = root.querySelectorAll('[data-tim-set]');
+  var blut = root.querySelector('[data-tim-blut]'), blutBar = root.querySelector('[data-tim-blut-bar]');
+  var zelle = root.querySelector('[data-tim-zelle]'), zelleBar = root.querySelector('[data-tim-zelle-bar]');
+  var dot = root.querySelector('[data-tim-dot]'), title = root.querySelector('[data-tim-title]'), text = root.querySelector('[data-tim-text]');
+  function set(key) {
+    var d = data[key];
+    btns.forEach(function (b) { b.setAttribute('aria-selected', b.getAttribute('data-tim-set') === key); });
+    blut.textContent = d.blut; blutBar.style.width = d.blutW + '%';
+    zelle.textContent = d.zelle; zelle.style.color = d.color; zelleBar.style.width = d.zelleW + '%'; zelleBar.style.background = d.color;
+    dot.style.background = d.color; title.textContent = d.title; text.textContent = d.text;
+  }
+  btns.forEach(function (b) { b.addEventListener('click', function () { set(b.getAttribute('data-tim-set')); }); });
+  set('gesund');
+})();
+</script>
+<noscript><div class="wrap" style="padding:2rem 0"><p><a href='/impressum'>Impressum</a> · <a href='/datenschutz'>Datenschutz</a> · <a href='/kontakt'>Kontakt</a></p></div></noscript>
+</body>
+</html>

@@ -1,0 +1,31 @@
+Das hier ist eine vollständige Kopie der CFS-Seite von Dustin Müller.
+
+Live-Adresse:
+https://cfs-me-dustin-mueller.netlify.app/
+
+Gespeichert am: 11. Oktober 2026
+
+Für eine KI:
+Bitte die Datei kompletter-inhalt.md lesen.
+Darin steht der ganze Text aller Seiten, so als wäre die Seite geöffnet.
+Kurzfassung und ausführliche Fassung sind beide enthalten.
+
+Die Original-Seiten, die Schrift und die Gestaltung liegen im Ordner dateien.
+Die Startseite dort heißt index.html.
+
+Diese Kopie ist nur zum Lesen gespeichert.
+Sie ersetzt nicht die Live-Seite.
+
+Seiten:
+- Startseite: https://cfs-me-dustin-mueller.netlify.app/
+- Meine Geschichte: https://cfs-me-dustin-mueller.netlify.app/biografie
+- Was ist CFS: https://cfs-me-dustin-mueller.netlify.app/was-ist-cfs
+- PEM und Laktat: https://cfs-me-dustin-mueller.netlify.app/pem-und-laktat
+- Nitrosativer Stress: https://cfs-me-dustin-mueller.netlify.app/nitrosativer-stress
+- Darm und Nährstoffe: https://cfs-me-dustin-mueller.netlify.app/darm-und-naehrstoffe
+- Mein Ausweg: https://cfs-me-dustin-mueller.netlify.app/mein-ausweg
+- Studien und Belege: https://cfs-me-dustin-mueller.netlify.app/studien-und-belege
+- Meine Produkte: https://cfs-me-dustin-mueller.netlify.app/produkte
+- Impressum: https://cfs-me-dustin-mueller.netlify.app/impressum
+- Datenschutz: https://cfs-me-dustin-mueller.netlify.app/datenschutz
+- Kontakt: https://cfs-me-dustin-mueller.netlify.app/kontakt
