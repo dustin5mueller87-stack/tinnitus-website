@@ -191,24 +191,7 @@ function applyPathFixes(pathname: string, html: string) {
   }
 }
 
-export default async (request: Request, context: any) => {
-  const url = new URL(request.url);
-  const response = await context.next();
-  // These responses must not be reconstructed with a body.
-  if (request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
-  const type = response.headers.get('content-type') || '';
-  if (!type.includes('text/html')) return response;
-  const html = await response.text();
-  const reviewed = applyReviewed(url.pathname, applyPathFixes(url.pathname, html));
-  const fixed = reviewed.html;
-  const headers = new Headers(response.headers);
-  headers.delete('content-length');
-  headers.set('x-tbr-ko-audit-fixes', VERSION);
-  headers.set('x-tbr-ko-reviewed-count', String(reviewed.applied.length));
-  if (reviewed.unmatched.length) headers.set('x-tbr-ko-reviewed-unmatched', reviewed.unmatched.join(','));
-  if (fixed !== html) headers.delete('etag');
-  return new Response(fixed, { status: response.status, statusText: response.statusText, headers });
-};
+export default (_request: Request, context: any) => context.next();
 
 export const config = { path: '/ko/*' };
 export { applyPathFixes };

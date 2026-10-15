@@ -203,20 +203,7 @@ function applyPathFixes(pathname: string, html: string) {
   }
 }
 
-export default async (request: Request, context: any) => {
-  const url = new URL(request.url);
-  const response = await context.next();
-  // These responses must not be reconstructed with a body.
-  if (request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
-  const type = response.headers.get('content-type') || '';
-  if (!type.toLowerCase().includes('text/html')) return response;
-  const original = await response.text();
-  const fixed = applyPathFixes(url.pathname, original);
-  const headers = new Headers(response.headers);
-  headers.delete('content-length');
-  headers.set('x-tbr-it-audit-fixes', VERSION);
-  return new Response(fixed, { status: response.status, statusText: response.statusText, headers });
-};
+export default (_request: Request, context: any) => context.next();
 
 export const config = { path: '/it/*' };
 export { applyPathFixes };

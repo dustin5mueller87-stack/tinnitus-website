@@ -332,18 +332,7 @@ function applyPathFixes(pathname: string, source: string) {
   }
 }
 
-export default async (request: Request, context: any) => {
-  const response = await context.next();
-  if (request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
-  const type = response.headers.get('content-type') || '';
-  if (!type.includes('text/html')) return response;
-  const source = await response.text();
-  const fixed = applyPathFixes(new URL(request.url).pathname, source);
-  const headers = new Headers(response.headers);
-  headers.delete('content-length');
-  headers.set('x-tbr-ja-audit-fixes', VERSION);
-  return new Response(fixed, { status: response.status, statusText: response.statusText, headers });
-};
+export default (_request: Request, context: any) => context.next();
 
 export const config = { path: '/ja/*' };
 export { applyPathFixes };

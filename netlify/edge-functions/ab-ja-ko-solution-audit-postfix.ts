@@ -84,29 +84,7 @@ function fixKorean(html: string) {
   return html;
 }
 
-export default async (request: Request, context: any) => {
-  const response = await context.next();
-  // These responses must not be reconstructed with a body.
-  if (request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
-  const type = response.headers.get('content-type') || '';
-  if (!type.toLowerCase().includes('text/html')) return response;
-
-  const url = new URL(request.url);
-  const original = await response.text();
-  const corrected = url.pathname.startsWith('/ja/')
-    ? fixJapanese(original)
-    : fixKorean(original);
-
-  const headers = new Headers(response.headers);
-  headers.delete('content-length');
-  if (corrected !== original) headers.set('x-tbr-ja-ko-solution-postfix', VERSION);
-
-  return new Response(corrected, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
-};
+export default (_request: Request, context: any) => context.next();
 
 export const config = {
   path: [

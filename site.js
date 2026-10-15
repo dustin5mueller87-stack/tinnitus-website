@@ -416,6 +416,9 @@
     } : pageLang.indexOf('ar') === 0 ? {
       show: 'عرض الترجمة العربية',
       original: 'عرض الأصل الألماني'
+    } : pageLang.indexOf('es') === 0 ? {
+      show: 'Ver la traducción al español',
+      original: 'Ver el original en alemán'
     } : {
       show: 'Übersetzung anzeigen',
       original: 'Original anzeigen'

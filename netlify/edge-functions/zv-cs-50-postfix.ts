@@ -44,32 +44,7 @@ function patchApproach(html: string) {
   return html;
 }
 
-export default async (request: Request, context: any) => {
-  const url = new URL(request.url);
-  const response = await context.next();
-  // These responses must not be reconstructed with a body.
-  if (request.method === 'HEAD' || [204, 205, 304].includes(response.status)) return response;
-  const type = response.headers.get('content-type') || '';
-  if (!type.toLowerCase().includes('text/html')) return response;
-
-  let html = await response.text();
-  if (url.pathname === '/cs/meine-geschichte-teil-2' || url.pathname === '/cs/meine-geschichte-teil-2.html') {
-    html = patchBio2(html);
-  } else if (url.pathname === '/cs/tinnitus-geheilt-erfahrungsbericht' || url.pathname === '/cs/tinnitus-geheilt-erfahrungsbericht.html') {
-    html = patchShortBio(html);
-  } else if (url.pathname === '/cs/mein-loesungsansatz' || url.pathname === '/cs/mein-loesungsansatz.html') {
-    html = patchApproach(html);
-  }
-
-  const headers = new Headers(response.headers);
-  headers.delete('content-length');
-  headers.set('x-tbr-cs-50-postfix', '2026-09-07-v1');
-  return new Response(html, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
-};
+export default (_request: Request, context: any) => context.next();
 
 export const config = {
   path: [

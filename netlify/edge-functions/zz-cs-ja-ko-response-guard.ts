@@ -6,19 +6,7 @@
  */
 const VERSION = '2026-09-07-v1';
 
-export default async (_request: Request, context: any) => {
-  const response = await context.next();
-  const type = response.headers.get('content-type') || '';
-  if (!type.toLowerCase().includes('text/html')) return response;
-  const headers = new Headers(response.headers);
-  headers.delete('content-length');
-  headers.set('x-tbr-audit-response-guard', VERSION);
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
-};
+export default (_request: Request, context: any) => context.next();
 
 export const config = {
   path: ['/cs/*', '/ja/*', '/ko/*'],
