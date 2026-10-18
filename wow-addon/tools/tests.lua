@@ -107,7 +107,13 @@ end
 ok(byID[13695].liveOK and byID[13695].s.WDMG == 6, "Einschlag +6 im Spiel bestätigt")
 ok(byID[13695].name == Mock.spells[13695].name, "Client-Name übernommen")
 ok(byID[7457].s.STA == 5 and byID[7457].liveFrom == 3, "Schwache Ausdauer aus dem Spiel korrigiert (3 -> 5)")
-ok(byID[13640].s.STA == 4 and byID[13640].s.HP == nil, "Leben -> Ausdauer umgestellt")
+ok(byID[13640].s.STA == 4 and byID[13640].liveOK, "Brust - Große Ausdauer im Spiel bestätigt")
+local renamed = { s = { HP = 35 } }
+ns.ApplyLiveValue(renamed, isDE and "Erhöht die Ausdauer um 4." or "Increases Stamina by 4.")
+ok(renamed.s.STA == 4 and renamed.s.HP == nil and renamed.liveOK, "Leben -> Ausdauer umgestellt, wenn Forever umbenannt hat")
+local twoNumbers = { s = { STA = 3 } }
+ns.ApplyLiveValue(twoNumbers, "Erhöht die Ausdauer um 5 für 10 Sek.")
+ok(twoNumbers.s.STA == 3 and not twoNumbers.liveOK, "bei zwei Zahlen wird nichts geraten")
 ok(byID[20025].liveOK and byID[20025].s.AGI == 4, "Alle Werte +4 bestätigt")
 ok(byID[13419].liveMismatch and not byID[13419].live, "falsche Spell-ID wird ignoriert")
 ok(not byID[20034].liveOK and byID[20034].s.STR == 23, "Proc-Verzauberung wird nicht verfälscht")
@@ -342,14 +348,15 @@ for _, mat in ipairs(shopping.mats) do matByKey[mat.key] = mat end
 ok(matByKey[11134] and matByKey[11134].count == 4 and matByKey[11134].missing == 3, "Mystische Essenz: 4 gebraucht, 1 da, 3 fehlen")
 ok(matByKey[11139] and matByKey[11139].missing == 0 and matByKey[11139].have == 5, "Splitter liegen schon in der Tasche")
 ok(matByKey[11083] and matByKey[11083].missing == 1, "Seelenstaub fehlt")
-ok(shopping.unknown == 1 and shopping.missingMats == 2, ("unbekannt %d, fehlend %d"):format(shopping.unknown, shopping.missingMats))
+ok(matByKey[11137] and matByKey[11137].missing == 1, "Visionenstaub für Armschiene - Beweglichkeit (aus der Datenbank)")
+ok(shopping.unknown == 0 and shopping.missingMats == 3, ("unbekannt %d, fehlend %d"):format(shopping.unknown, shopping.missingMats))
 local offhandItem
 for _, item in ipairs(shopping.needed) do if item.label == ns.L.SLOT_OH_WEAPON then offhandItem = item end end
 ns:ToggleShopItem(offhandItem.key)
 local reduced = ns:BuildShopping()
 for _, mat in ipairs(reduced.mats) do if mat.key == 11134 then ok(mat.count == 2 and mat.missing == 1, "abgewählte Verzauberung zählt nicht mit") end end
 ns:ToggleShopItem(offhandItem.key)
-ok(#ns:BuildShopping().mats == 3, "wieder angewählt")
+ok(#ns:BuildShopping().mats == 4, "wieder angewählt")
 
 ----------------------------------------------------------------------
 -- Auktionshaus ohne Auctionator
@@ -365,7 +372,7 @@ local panel = VerzauberBeraterAHPanel
 ok(panel and panel:IsShown(), "Panel erscheint am Auktionshaus")
 local p1, anchor, p2, px, py = panel:GetPoint()
 ok(anchor == AuctionHouseFrame and p1 == "TOPLEFT" and p2 == "TOPRIGHT" and px == 8 and py == -200, "Panel hängt rechts am AH")
-ok(panel.main.label:GetText():find("2"), "Knopf zeigt 2 fehlende Materialien: " .. tostring(panel.main.label:GetText()))
+ok(panel.main.label:GetText():find("3"), "Knopf zeigt 3 fehlende Materialien: " .. tostring(panel.main.label:GetText()))
 local shownRows = 0
 for _, row in ipairs(panel.rows) do
 	if row:IsShown() then
@@ -374,17 +381,23 @@ for _, row in ipairs(panel.rows) do
 		Mock.Fire(row, "OnLeave")
 	end
 end
-ok(shownRows == 3, "3 Material-Zeilen im Panel")
+ok(shownRows == 4, "4 Material-Zeilen im Panel")
 panel.main:Click("LeftButton")
 ok(#Mock.ahSearches == 1 and AuctionHouseFrame.__mode == AuctionHouseFrameDisplayMode.Buy, "erste Suche im Blizzard-AH (Kaufen-Ansicht)")
 panel.main:Click("LeftButton")
 ok(#Mock.ahSearches == 2 and Mock.ahSearches[1] ~= Mock.ahSearches[2], "zweiter Klick sucht das nächste Material")
 panel.main:Click("LeftButton")
-ok(Mock.ahSearches[3] == Mock.ahSearches[1], "danach geht es wieder von vorn los")
-panel.rows[1]:Click()
-ok(#Mock.ahSearches == 4, "Klick auf eine Zeile sucht genau dieses Material")
-ok(Mock.ahSearches[4] == panel.rows[1].mat.name and Mock.itemNames[panel.rows[1].mat.key] == Mock.ahSearches[4],
-	"Suchbegriff ist der Item-Name in Client-Sprache: " .. Mock.ahSearches[4])
+ok(Mock.ahSearches[3] ~= Mock.ahSearches[1] and Mock.ahSearches[3] ~= Mock.ahSearches[2], "dritter Klick: drittes Material")
+panel.main:Click("LeftButton")
+ok(Mock.ahSearches[4] == Mock.ahSearches[1], "danach geht es wieder von vorn los")
+local missingRow
+for _, row in ipairs(panel.rows) do
+	if row:IsShown() and row.mat.missing > 0 and Mock.itemNames[row.mat.key] then missingRow = row end
+end
+missingRow:Click()
+ok(#Mock.ahSearches == 5, "Klick auf eine Zeile sucht genau dieses Material")
+ok(Mock.ahSearches[5] == missingRow.mat.name and Mock.itemNames[missingRow.mat.key] == Mock.ahSearches[5],
+	"Suchbegriff ist der Item-Name in Client-Sprache: " .. Mock.ahSearches[5])
 panel.main:Click("RightButton")
 ok(ns.db.ah.expanded == false and panel:GetHeight() == 38, "Rechtsklick klappt das Panel zu")
 panel.toggle:Click()
@@ -396,13 +409,13 @@ SlashCmdList.VERZAUBERBERATER("ah")
 ok(ns.db.ah.x == 8 and ns.db.ah.y == -200, "/vb ah setzt die Position zurück")
 Mock.bags[11134] = 4
 Mock.FireEvent("BAG_UPDATE_DELAYED")
-ok(panel.main.label:GetText():find("1"), "nach dem Kauf zählt der Knopf runter")
+ok(panel.main.label:GetText():find("2"), "nach dem Kauf zählt der Knopf runter")
 ns.UI:Open(4)
 local shopAH = ns.UI.pages[4]
 ok(shopAH.ah:IsShown() and shopAH.ah:GetAlpha() == 1 and not shopAH.listButton:IsShown(), "Fenster: AH-Knopf aktiv, ohne Auctionator keine Liste")
-ok(hoverRows(shopAH.enchants) >= 6 and hoverRows(shopAH.mats) == 3, "Einkaufslisten-Zeilen mit Tooltips")
+ok(hoverRows(shopAH.enchants) >= 6 and hoverRows(shopAH.mats) == 4, "Einkaufslisten-Zeilen mit Tooltips")
 shopAH.mats.rows[1]:Click()
-ok(#Mock.ahSearches == 5, "Material-Zeile im Fenster sucht im AH")
+ok(#Mock.ahSearches == 6, "Material-Zeile im Fenster sucht im AH")
 shopAH.enchants.rows[1]:Click()
 ok(not shopAH.shopping.needed[1].included, "Klick wählt eine Verzauberung ab")
 shopAH.enchants.rows[1]:Click()
@@ -418,10 +431,12 @@ Mock.FireEvent("BAG_UPDATE_DELAYED")
 ok(panel.price:IsShown() and panel.list:IsShown(), "Preis-Schätzung und Auctionator-Knopf sichtbar")
 panel.main:Click("LeftButton")
 local terms = Mock.auctionator.searches[1]
-ok(terms and #terms == 2, "alle fehlenden Mats auf einmal in Auctionator gesucht")
+ok(terms and #terms == 3, "alle fehlenden Mats auf einmal in Auctionator gesucht")
 panel.list:Click()
 local list = Mock.auctionator.lists[ns.L.AH_LIST_NAME]
-ok(list and #list == 2 and list[1]:find(";;") and (list[1]:find("3") or list[2]:find("3")), "Auctionator-Liste mit Mengen angelegt")
+local withAmount = false
+for _, entry in ipairs(list or {}) do if entry:find(";3$") then withAmount = true end end
+ok(list and #list == 3 and withAmount, "Auctionator-Liste mit Mengen angelegt")
 panel.rows[2]:Click()
 ok(#Mock.auctionator.searches == 2 and #Mock.auctionator.searches[2] == 1, "Einzelsuche über Auctionator")
 ns.UI:Open(4)

@@ -3,7 +3,7 @@
 ## Notes: Enchant advisor for WoW Forever: pick class, spec and level (10-60) and see the best enchant for every slot.
 ## Notes-deDE: Verzauberungs-Berater für WoW Forever: Klasse, Spec und Level (10-60) wählen und für jeden Slot die beste Verzauberung sehen.
 ## Author: Dustin
-## Version: 1.1.0
+## Version: 1.1.1
 ## IconTexture: Interface\Icons\Trade_Engraving
 ## SavedVariables: VerzauberBeraterDB
 ## SavedVariablesPerCharacter: VerzauberBeraterCharDB

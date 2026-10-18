@@ -59,6 +59,37 @@ ns.MATS = {
 	BAUXITE       = { "Bauxite", "Bauxite" },
 	CERULEAN_DYE  = { "Cerulean Dye", "Cerulean Dye" },
 	MAGENTA_DYE   = { "Magenta Dye", "Magenta Dye" },
+	[10998] = { "Geringe Astralessenz", "Lesser Astral Essence" },
+	[11082] = { "Große Astralessenz", "Greater Astral Essence" },
+	[11135] = { "Große mystische Essenz", "Greater Mystic Essence" },
+	[16202] = { "Geringe ewige Essenz", "Lesser Eternal Essence" },
+	[11138] = { "Kleiner leuchtender Splitter", "Small Glowing Shard" },
+	[11177] = { "Kleiner strahlender Splitter", "Small Radiant Shard" },
+	[14343] = { "Kleiner glänzender Splitter", "Small Brilliant Shard" },
+	[20725] = { "Nexuskristall", "Nexus Crystal" },
+	[7078] = { "Essenz des Feuers", "Essence of Fire" },
+	[7076] = { "Essenz der Erde", "Essence of Earth" },
+	[12808] = { "Essenz des Untodes", "Essence of Undeath" },
+	[12803] = { "Lebendige Essenz", "Living Essence" },
+	[8831] = { "Lila Lotus", "Purple Lotus" },
+	[13926] = { "Goldene Perle", "Golden Pearl" },
+	[5637] = { "Großer Fangzahn", "Large Fang" },
+	[7077] = { "Herz des Feuers", "Heart of Fire" },
+	[7075] = { "Kern der Erde", "Core of Earth" },
+	[7079] = { "Kugel des Wassers", "Globe of Water" },
+	[7081] = { "Hauch des Windes", "Breath of Wind" },
+	[7972] = { "Sekret des Untodes", "Ichor of Undeath" },
+	[7909] = { "Aquamarin", "Aquamarine" },
+	[8153] = { "Wildranke", "Wildvine" },
+	[3819] = { "Winterbiss", "Wintersbite" },
+	[2775] = { "Silbererz", "Silver Ore" },
+	PYRITE = { "Pyrite", "Pyrite" },
+	FRILLED_LICHEN = { "Frilled Lichen", "Frilled Lichen" },
+	FEL_CRYSTAL = { "Fel Crystal", "Fel Crystal" },
+	TORBERNITE = { "Torbernite", "Torbernite" },
+	AZEROTHIUM_BAR = { "Azerothium Bar", "Azerothium Bar" },
+	STRANGLEVINE = { "Stranglevine", "Stranglevine" },
+	ROSECAP = { "Rosecap", "Rosecap" },
 }
 
 local FAVOR45  = { T("ACA-Händler (Alynsia / Beneris), 45 Merchant's Favor", "ACA vendor (Alynsia / Beneris), 45 Merchant's Favor") }
@@ -84,9 +115,11 @@ add{ g = "2H", id = 7745, lvl = 12, sk = 100, src = "T", c = "F", was = "+2",
 	de = "Zweihandwaffe - Schwacher Einschlag", en = "2H Weapon - Minor Impact", s = { WDMG = 4 },
 	m = { { 10940, 1 }, { 10978, 1 } } }
 add{ g = "2H", id = 7793, lvl = 12, sk = 100, src = "T", c = "C",
-	de = "Zweihandwaffe - Geringe Intelligenz", en = "2H Weapon - Lesser Intellect", s = { INT = 3 } }
+	de = "Zweihandwaffe - Geringe Intelligenz", en = "2H Weapon - Lesser Intellect", s = { INT = 3 },
+	m = { { 10938, 4 } } }
 add{ g = "2H", id = 13380, lvl = 14, sk = 110, src = "T", c = "C",
-	de = "Zweihandwaffe - Geringe Willenskraft", en = "2H Weapon - Lesser Spirit", s = { SPI = 3 } }
+	de = "Zweihandwaffe - Geringe Willenskraft", en = "2H Weapon - Lesser Spirit", s = { SPI = 3 },
+	m = { { 10998, 1 }, { 10940, 3 } } }
 add{ g = "2H", id = 13529, lvl = 22, sk = 145, src = "T", c = "F", was = "+3",
 	de = "Zweihandwaffe - Geringer Einschlag", en = "2H Weapon - Lesser Impact", s = { WDMG = 5 },
 	m = { { 11083, 1 }, { 11084, 1 } } }
@@ -106,18 +139,22 @@ add{ g = "2H", id = 20030, lvl = 52, sk = 295, src = "D", c = "F",
 	de = "Zweihandwaffe - Überragender Einschlag", en = "2H Weapon - Superior Impact", s = { WDMG = 9 },
 	m = { { 14344, 4 }, { 16204, 10 } } }
 add{ g = "2H", id = 27837, lvl = 55, sk = 290, src = "D", c = "F",
-	de = "Zweihandwaffe - Beweglichkeit", en = "2H Weapon - Agility", s = { AGI = 25 } }
+	de = "Zweihandwaffe - Beweglichkeit", en = "2H Weapon - Agility", s = { AGI = 25 },
+	m = { { 14344, 10 }, { 16203, 6 }, { 16204, 14 }, { 7082, 4 } } }
 add{ g = "2H", id = 1248668, lvl = 55, sk = 290, src = "D", c = "N", w = BOP_UNKNOWN,
 	de = "Zweihandwaffe - Stärke", en = "2H Weapon - Strength", s = { STR = 25 },
 	m = { { 14344, 8 }, { 16203, 10 }, { 16204, 8 }, { 12363, 4 } } }
 add{ g = "2H", id = 20036, lvl = 55, sk = 300, src = "D", c = "F",
-	de = "Zweihandwaffe - Erhebliche Intelligenz", en = "2H Weapon - Major Intellect", s = { INT = 9 } }
+	de = "Zweihandwaffe - Erhebliche Intelligenz", en = "2H Weapon - Major Intellect", s = { INT = 9 },
+	m = { { 16203, 12 }, { 14344, 2 } } }
 add{ g = "2H", id = 20035, lvl = 55, sk = 300, src = "D", c = "C",
 	de = "Zweihandwaffe - Erhebliche Willenskraft", en = "2H Weapon - Major Spirit", s = { SPI = 9 } }
 add{ g = "2H", id = 1248607, lvl = 58, sk = 300, src = "V", c = "N", w = FAVOR240,
-	de = "Zweihandwaffe - Mächtige Zauberkraft", en = "2H Weapon - Mighty Spell Power", s = { SP = 55 } }
+	de = "Zweihandwaffe - Mächtige Zauberkraft", en = "2H Weapon - Mighty Spell Power", s = { SP = 55 },
+	m = { { "FEL_CRYSTAL", 4 }, { 16203, 6 }, { 7076, 4 }, { 12808, 4 }, { 20725, 4 }, { "TORBERNITE", 2 } } }
 add{ g = "2H", id = 1248636, lvl = 58, sk = 300, src = "V", c = "N", w = FAVOR240, noLive = true,
-	de = "Zweihandwaffe - Mächtige Heilkraft", en = "2H Weapon - Mighty Healing Power", s = { HEAL = 100, SPD = 34 } }
+	de = "Zweihandwaffe - Mächtige Heilkraft", en = "2H Weapon - Mighty Healing Power", s = { HEAL = 100, SPD = 34 },
+	m = { { "FEL_CRYSTAL", 4 }, { 16203, 6 }, { "AZEROTHIUM_BAR", 4 }, { "STRANGLEVINE", 4 }, { 20725, 4 }, { "TORBERNITE", 4 } } }
 add{ g = "2H", id = 1219580, lvl = 60, sk = 300, src = "V", c = "X", w = FAVOR240,
 	de = "Zweihandwaffe - Zauberschlag", en = "2H Weapon - Spellblasting", s = { SPD = 65 } }
 
@@ -125,7 +162,8 @@ add{ g = "2H", id = 1219580, lvl = 60, sk = 300, src = "V", c = "X", w = FAVOR24
 -- Waffe (Einhand- und Zweihandwaffen)
 ----------------------------------------------------------------------
 add{ g = "WEAPON", id = 7786, lvl = 10, sk = 90, src = "T", c = "C",
-	de = "Waffe - Schwacher Wildtiertöter", en = "Weapon - Minor Beastslayer", s = { BEAST = 2 } }
+	de = "Waffe - Schwacher Wildtiertöter", en = "Weapon - Minor Beastslayer", s = { BEAST = 2 },
+	m = { { 10940, 2 }, { 10939, 1 } } }
 add{ g = "WEAPON", id = 7788, lvl = 12, sk = 110, src = "T", c = "F",
 	de = "Waffe - Schwacher Schlag", en = "Weapon - Minor Striking", s = { WDMG = 1 },
 	m = { { 10940, 1 }, { 10938, 1 }, { 10978, 1 } } }
@@ -133,39 +171,47 @@ add{ g = "WEAPON", id = 13503, lvl = 22, sk = 140, src = "T", c = "F",
 	de = "Waffe - Geringer Schlag", en = "Weapon - Lesser Striking", s = { WDMG = 2 },
 	m = { { 11083, 1 }, { 11084, 1 } } }
 add{ g = "WEAPON", id = 13653, lvl = 25, sk = 175, src = "D", c = "C",
-	de = "Waffe - Geringer Wildtiertöter", en = "Weapon - Lesser Beastslayer", s = { BEAST = 6 } }
+	de = "Waffe - Geringer Wildtiertöter", en = "Weapon - Lesser Beastslayer", s = { BEAST = 6 },
+	m = { { 5637, 1 }, { 11138, 1 } } }
 add{ g = "WEAPON", id = 13655, lvl = 25, sk = 175, src = "D", c = "C",
 	de = "Waffe - Geringer Elementartöter", en = "Weapon - Lesser Elemental Slayer", s = { ELEM = 6 } }
 add{ g = "WEAPON", id = 1248805, lvl = 25, sk = 140, src = "V", c = "N", w = FAVOR45,
 	roles = { CASTER = true, HEALER = true }, s = { CRIT = 1.5 }, match = { "Offenbarung", "Revelation" },
 	de = "Waffe - Offenbarung", en = "Weapon - Revelation",
 	fde = "Zauber ohne Krit: Chance, dass dein nächster Zauber sicher kritisch trifft",
-	fen = "Non-crit spell: chance that your next spell is a guaranteed crit" }
+	fen = "Non-crit spell: chance that your next spell is a guaranteed crit",
+	m = { { 11083, 8 }, { 11084, 6 }, { 11082, 2 }, { "CERULEAN_DYE", 4 }, { "SULFURIC_ACID", 4 } } }
 add{ g = "WEAPON", id = 1248760, lvl = 25, sk = 140, src = "V", c = "N", w = FAVOR45,
 	roles = { MELEE = true, TANK = true }, s = { HP5 = 8 }, match = { "Erholung", "Recovery" },
 	de = "Waffe - Erholung", en = "Weapon - Recovery",
 	fde = "Wird ausgewichen/pariert: Chance auf Heilung um 5% deines Lebens",
-	fen = "When dodged/parried: chance to heal 5% of your health" }
-add{ g = "WEAPON", lvl = 25, sk = 140, src = "V", c = "X", w = FAVOR45,
+	fen = "When dodged/parried: chance to heal 5% of your health",
+	m = { { 11083, 6 }, { 11084, 4 }, { 11082, 6 }, { "PYRITE", 4 }, { 2775, 4 } } }
+add{ g = "WEAPON", id = 1248757, lvl = 25, sk = 140, src = "V", c = "X", w = FAVOR45,
 	roles = { CASTER = true, HEALER = true }, s = { SPI = 20 }, match = { "Einsicht", "Insight" },
+	m = { { 10940, 10 }, { 11084, 4 }, { 11082, 4 }, { "PYRITE", 4 }, { "FRILLED_LICHEN", 4 } },
 	de = "Waffe - Einsicht", en = "Weapon - Insight",
 	fde = "Chance beim Zaubern: +100% Willenskraft für 10 Sek.",
 	fen = "Chance on spell cast: +100% Spirit for 10 sec" }
 add{ g = "WEAPON", id = 21931, lvl = 30, sk = 190, src = "D", c = "C",
-	de = "Waffe - Wintermacht", en = "Weapon - Winter's Might", s = { FROSTSP = 7 } }
+	de = "Waffe - Wintermacht", en = "Weapon - Winter's Might", s = { FROSTSP = 7 },
+	m = { { 11135, 1 }, { 11137, 1 }, { 11139, 1 }, { 3819, 1 } } }
 add{ g = "WEAPON", id = 13693, lvl = 30, sk = 195, src = "T", c = "F",
-	de = "Waffe - Schlag", en = "Weapon - Striking", s = { WDMG = 3 } }
+	de = "Waffe - Schlag", en = "Weapon - Striking", s = { WDMG = 3 },
+	m = { { 11135, 1 }, { 11139, 1 } } }
 add{ g = "WEAPON", id = 13915, lvl = 38, sk = 230, src = "D", c = "C", noLive = true,
 	s = { DEMON = 6 }, match = { "Dämonen", "Demon" },
 	de = "Waffe - Dämonentöten", en = "Weapon - Demonslaying",
 	fde = "Chance bei Treffer gegen Dämonen: Betäubung und Schaden",
 	fen = "Chance on hit vs demons: stun and damage" }
 add{ g = "WEAPON", id = 13943, lvl = 40, sk = 245, src = "T", c = "F",
-	de = "Waffe - Großer Schlag", en = "Weapon - Greater Striking", s = { WDMG = 4 } }
+	de = "Waffe - Großer Schlag", en = "Weapon - Greater Striking", s = { WDMG = 4 },
+	m = { { 11178, 1 }, { 11175, 1 } } }
 add{ g = "WEAPON", id = 13898, lvl = 46, sk = 265, src = "D", c = "C", noLive = true,
 	s = { AP = 28 }, match = { "Feurig", "Fiery" },
 	de = "Waffe - Feurige Waffe", en = "Weapon - Fiery Weapon",
-	fde = "Chance bei Treffer: zusätzlicher Feuerschaden", fen = "Chance on hit: extra fire damage" }
+	fde = "Chance bei Treffer: zusätzlicher Feuerschaden", fen = "Chance on hit: extra fire damage",
+	m = { { 11177, 2 }, { 7078, 1 } } }
 add{ g = "WEAPON", id = 20029, lvl = 50, sk = 285, src = "D", c = "C", noLive = true,
 	s = { DODGE = 1 }, match = { "Eisig", "Icy" },
 	de = "Waffe - Eisiger Hauch", en = "Weapon - Icy Chill",
@@ -176,11 +222,14 @@ add{ g = "WEAPON", id = 20033, lvl = 55, sk = 295, src = "D", c = "C", noLive = 
 	fde = "Chance bei Treffer: Schattenschaden und ein Fluch, der den Schaden des Ziels senkt",
 	fen = "Chance on hit: shadow damage and a curse that lowers the target's damage" }
 add{ g = "WEAPON", id = 20031, lvl = 55, sk = 300, src = "D", c = "F",
-	de = "Waffe - Überragender Schlag", en = "Weapon - Superior Striking", s = { WDMG = 5 } }
+	de = "Waffe - Überragender Schlag", en = "Weapon - Superior Striking", s = { WDMG = 5 },
+	m = { { 14344, 2 }, { 16203, 10 } } }
 add{ g = "WEAPON", id = 23800, lvl = 55, sk = 290, src = "D", c = "C",
-	de = "Waffe - Beweglichkeit", en = "Weapon - Agility", s = { AGI = 15 } }
+	de = "Waffe - Beweglichkeit", en = "Weapon - Agility", s = { AGI = 15 },
+	m = { { 14344, 6 }, { 16203, 6 }, { 16204, 4 }, { 7082, 2 } } }
 add{ g = "WEAPON", id = 23799, lvl = 55, sk = 290, src = "D", c = "C",
-	de = "Waffe - Stärke", en = "Weapon - Strength", s = { STR = 15 } }
+	de = "Waffe - Stärke", en = "Weapon - Strength", s = { STR = 15 },
+	m = { { 14344, 6 }, { 16203, 6 }, { 16204, 4 }, { 7076, 2 } } }
 add{ g = "WEAPON", id = 20032, lvl = 58, sk = 300, src = "D", c = "C", noLive = true,
 	s = { AP = 12, HP5 = 6 }, match = { "Lebensdieb", "Lifesteal" },
 	de = "Waffe - Lebensdiebstahl", en = "Weapon - Lifestealing",
@@ -193,15 +242,18 @@ add{ g = "WEAPON", id = 20034, lvl = 58, sk = 300, src = "D", c = "F", noLive = 
 	where = T("Formel-Drop (Classic: Scharlachroter Kreuzzug, Westliche Pestländer)", "Formula drop (Classic: Scarlet Crusade, Western Plaguelands)"),
 	m = { { 14344, 4 }, { 12811, 2 } } }
 add{ g = "WEAPON", id = 23804, lvl = 58, sk = 300, src = "D", c = "C",
-	de = "Waffe - Mächtige Intelligenz", en = "Weapon - Mighty Intellect", s = { INT = 22 } }
+	de = "Waffe - Mächtige Intelligenz", en = "Weapon - Mighty Intellect", s = { INT = 22 },
+	m = { { 14344, 15 }, { 16203, 12 }, { 16204, 20 } } }
 add{ g = "WEAPON", id = 23803, lvl = 58, sk = 300, src = "D", c = "C",
 	de = "Waffe - Mächtige Willenskraft", en = "Weapon - Mighty Spirit", s = { SPI = 20 } }
 add{ g = "WEAPON", id = 22749, lvl = 60, sk = 300, src = "RAID", c = "F",
 	where = T("Geschmolzener Kern", "Molten Core"),
-	de = "Waffe - Zauberkraft", en = "Weapon - Spell Power", s = { SP = 30 } }
+	de = "Waffe - Zauberkraft", en = "Weapon - Spell Power", s = { SP = 30 },
+	m = { { 14344, 4 }, { 16203, 12 }, { 7078, 4 }, { 7080, 4 }, { 7082, 4 }, { 13926, 2 } } }
 add{ g = "WEAPON", id = 22750, lvl = 60, sk = 300, src = "RAID", c = "F", noLive = true,
 	where = T("Geschmolzener Kern", "Molten Core"),
-	de = "Waffe - Heilkraft", en = "Weapon - Healing Power", s = { HEAL = 55, SPD = 19 } }
+	de = "Waffe - Heilkraft", en = "Weapon - Healing Power", s = { HEAL = 55, SPD = 19 },
+	m = { { 14344, 4 }, { 16203, 8 }, { 12803, 6 }, { 7080, 6 }, { 12811, 1 } } }
 
 ----------------------------------------------------------------------
 -- Armschienen
@@ -210,107 +262,140 @@ add{ g = "WRIST", id = 7418, lvl = 10, sk = 1, src = "T", c = "F", was = T("+5 L
 	de = "Armschiene - Minderwertige Ausdauer", en = "Bracer - Inferior Stamina", s = { STA = 2 },
 	m = { { 247786, 1 } } }
 add{ g = "WRIST", id = 1248458, lvl = 10, sk = 70, src = "T", c = "N",
-	de = "Armschiene - Schwache Intelligenz", en = "Bracer - Minor Intellect", s = { INT = 3 } }
+	de = "Armschiene - Schwache Intelligenz", en = "Bracer - Minor Intellect", s = { INT = 3 },
+	m = { { 10938, 1 } } }
 add{ g = "WRIST", id = 7428, lvl = 10, sk = 60, src = "T", c = "C",
 	de = "Armschiene - Schwache Ablenkung", en = "Bracer - Minor Deflection", s = { DEF = 1 } }
 add{ g = "WRIST", id = 7766, lvl = 10, sk = 60, src = "T", c = "C",
 	de = "Armschiene - Schwache Willenskraft", en = "Bracer - Minor Spirit", s = { SPI = 1 } }
 add{ g = "WRIST", id = 7457, lvl = 10, sk = 80, src = "T", c = "F", was = "+1",
-	de = "Armschiene - Schwache Ausdauer", en = "Bracer - Minor Stamina", s = { STA = 3 } }
+	de = "Armschiene - Schwache Ausdauer", en = "Bracer - Minor Stamina", s = { STA = 3 },
+	m = { { 10940, 2 } } }
 add{ g = "WRIST", id = 7779, lvl = 12, sk = 80, src = "T", c = "F", was = "+1",
-	de = "Armschiene - Schwache Beweglichkeit", en = "Bracer - Minor Agility", s = { AGI = 3 } }
+	de = "Armschiene - Schwache Beweglichkeit", en = "Bracer - Minor Agility", s = { AGI = 3 },
+	m = { { 10940, 1 }, { 10938, 2 } } }
 add{ g = "WRIST", id = 7782, lvl = 12, sk = 80, src = "D", c = "F", was = "+1",
-	de = "Armschiene - Schwache Stärke", en = "Bracer - Minor Strength", s = { STR = 3 } }
+	de = "Armschiene - Schwache Stärke", en = "Bracer - Minor Strength", s = { STR = 3 },
+	m = { { 10940, 3 } } }
 add{ g = "WRIST", id = 1248459, lvl = 12, sk = 90, src = "T", c = "N", noLive = true,
-	de = "Armschiene - Schwache Heilkraft", en = "Bracer - Minor Healing Power", s = { HEAL = 8, SPD = 3 } }
+	de = "Armschiene - Schwache Heilkraft", en = "Bracer - Minor Healing Power", s = { HEAL = 8, SPD = 3 },
+	m = { { 10938, 2 } } }
 add{ g = "WRIST", id = 7859, lvl = 18, sk = 120, src = "T", c = "C",
 	de = "Armschiene - Geringe Willenskraft", en = "Bracer - Lesser Spirit", s = { SPI = 3 } }
 add{ g = "WRIST", id = 13501, lvl = 20, sk = 130, src = "T", c = "F", was = "+3",
-	de = "Armschiene - Geringe Ausdauer", en = "Bracer - Lesser Stamina", s = { STA = 4 } }
+	de = "Armschiene - Geringe Ausdauer", en = "Bracer - Lesser Stamina", s = { STA = 4 },
+	m = { { 11083, 1 } } }
 add{ g = "WRIST", id = 13536, lvl = 22, sk = 140, src = "T", c = "F", was = "+3",
-	de = "Armschiene - Geringe Stärke", en = "Bracer - Lesser Strength", s = { STR = 4 } }
+	de = "Armschiene - Geringe Stärke", en = "Bracer - Lesser Strength", s = { STR = 4 },
+	m = { { 11083, 1 } } }
 add{ g = "WRIST", id = 13622, lvl = 24, sk = 150, src = "T", c = "C",
-	de = "Armschiene - Geringe Intelligenz", en = "Bracer - Lesser Intellect", s = { INT = 3 } }
+	de = "Armschiene - Geringe Intelligenz", en = "Bracer - Lesser Intellect", s = { INT = 3 },
+	m = { { 11082, 1 } } }
 add{ g = "WRIST", id = 13648, lvl = 24, sk = 170, src = "T", c = "F",
 	de = "Armschiene - Ausdauer", en = "Bracer - Stamina", s = { STA = 5 }, m = { { 11083, 3 } } }
 add{ g = "WRIST", id = 1248460, lvl = 26, sk = 140, src = "D", c = "N", w = BOP_UNKNOWN,
-	de = "Armschiene - Geringe Beweglichkeit", en = "Bracer - Lesser Agility", s = { AGI = 4 } }
+	de = "Armschiene - Geringe Beweglichkeit", en = "Bracer - Lesser Agility", s = { AGI = 4 },
+	m = { { 11134, 1 } } }
 add{ g = "WRIST", id = 13642, lvl = 28, sk = 165, src = "T", c = "F",
 	de = "Armschiene - Willenskraft", en = "Bracer - Spirit", s = { SPI = 5 } }
 add{ g = "WRIST", id = 13661, lvl = 28, sk = 180, src = "T", c = "C",
-	de = "Armschiene - Stärke", en = "Bracer - Strength", s = { STR = 5 } }
+	de = "Armschiene - Stärke", en = "Bracer - Strength", s = { STR = 5 },
+	m = { { 11137, 1 } } }
 add{ g = "WRIST", id = 1248498, lvl = 28, sk = 195, src = "T", c = "N", noLive = true,
 	de = "Armschiene - Geringe Heilkraft", en = "Bracer - Lesser Healing Power", s = { HEAL = 16, SPD = 6 },
 	m = { { 11134, 2 } } }
 add{ g = "WRIST", id = 1248497, lvl = 30, src = "T", c = "N",
-	de = "Armschiene - Beweglichkeit", en = "Bracer - Agility", s = { AGI = 5 } }
+	de = "Armschiene - Beweglichkeit", en = "Bracer - Agility", s = { AGI = 5 },
+	m = { { 11137, 1 } } }
 add{ g = "WRIST", id = 13822, lvl = 36, sk = 210, src = "T", c = "F",
-	de = "Armschiene - Intelligenz", en = "Bracer - Intellect", s = { INT = 5 } }
+	de = "Armschiene - Intelligenz", en = "Bracer - Intellect", s = { INT = 5 },
+	m = { { 11174, 1 } } }
 add{ g = "WRIST", id = 13846, lvl = 36, sk = 220, src = "T", c = "F",
 	de = "Armschiene - Große Willenskraft", en = "Bracer - Greater Spirit", s = { SPI = 7 } }
 add{ g = "WRIST", id = 13931, lvl = 41, sk = 235, src = "D", c = "F", was = "+3",
-	de = "Armschiene - Ablenkung", en = "Bracer - Deflection", s = { DEF = 7 } }
+	de = "Armschiene - Ablenkung", en = "Bracer - Deflection", s = { DEF = 7 },
+	m = { { 11174, 2 }, { 11176, 1 } } }
 add{ g = "WRIST", id = 13945, lvl = 41, sk = 225, src = "T", c = "F",
 	de = "Armschiene - Große Ausdauer", en = "Bracer - Greater Stamina", s = { STA = 7 }, m = { { 11176, 3 } } }
 add{ g = "WRIST", id = 13939, lvl = 41, sk = 240, src = "T", c = "F",
-	de = "Armschiene - Große Stärke", en = "Bracer - Greater Strength", s = { STR = 7 } }
+	de = "Armschiene - Große Stärke", en = "Bracer - Greater Strength", s = { STR = 7 },
+	m = { { 11176, 1 }, { 11174, 2 } } }
 add{ g = "WRIST", id = 1248500, lvl = 42, src = "T", c = "N",
-	de = "Armschiene - Große Beweglichkeit", en = "Bracer - Greater Agility", s = { AGI = 7 } }
+	de = "Armschiene - Große Beweglichkeit", en = "Bracer - Greater Agility", s = { AGI = 7 },
+	m = { { 11176, 3 }, { 11174, 1 } } }
 add{ g = "WRIST", id = 20008, lvl = 44, sk = 255, src = "T", c = "C",
-	de = "Armschiene - Große Intelligenz", en = "Bracer - Greater Intellect", s = { INT = 7 } }
+	de = "Armschiene - Große Intelligenz", en = "Bracer - Greater Intellect", s = { INT = 7 },
+	m = { { 16202, 2 } } }
 add{ g = "WRIST", id = 20009, lvl = 50, sk = 270, src = "T", c = "C",
 	de = "Armschiene - Überragende Willenskraft", en = "Bracer - Superior Spirit", s = { SPI = 9 } }
 add{ g = "WRIST", id = 20010, lvl = 52, sk = 295, src = "D", c = "C",
-	de = "Armschiene - Überragende Stärke", en = "Bracer - Superior Strength", s = { STR = 9 } }
+	de = "Armschiene - Überragende Stärke", en = "Bracer - Superior Strength", s = { STR = 9 },
+	m = { { 16204, 6 }, { 16203, 6 } } }
 add{ g = "WRIST", id = 20011, lvl = 54, sk = 300, src = "D", c = "C",
-	de = "Armschiene - Überragende Ausdauer", en = "Bracer - Superior Stamina", s = { STA = 9 } }
+	de = "Armschiene - Überragende Ausdauer", en = "Bracer - Superior Stamina", s = { STA = 9 },
+	m = { { 16204, 15 } } }
 add{ g = "WRIST", id = 1248599, lvl = 54, src = "D", c = "N",
-	de = "Armschiene - Überragende Beweglichkeit", en = "Bracer - Superior Agility", s = { AGI = 9 } }
+	de = "Armschiene - Überragende Beweglichkeit", en = "Bracer - Superior Agility", s = { AGI = 9 },
+	m = { { 16204, 3 }, { 16203, 3 }, { 14344, 1 } } }
 add{ g = "WRIST", id = 1248661, lvl = 56, sk = 300, src = "V", c = "N", w = FAVOR240,
-	de = "Armschiene - Überragende Intelligenz", en = "Bracer - Superior Intellect", s = { INT = 9 } }
-add{ g = "WRIST", lvl = 56, sk = 300, src = "V", c = "X", w = FAVOR240,
+	de = "Armschiene - Überragende Intelligenz", en = "Bracer - Superior Intellect", s = { INT = 9 },
+	m = { { 16203, 10 } } }
+add{ g = "WRIST", id = 1248665, lvl = 56, sk = 300, src = "V", c = "X", w = FAVOR240,
 	de = "Armschiene - Überragende Ablenkung", en = "Bracer - Superior Deflection", s = { DEF = 9 } }
 add{ g = "WRIST", id = 23801, lvl = 58, sk = 290, src = "R", c = "C",
 	where = T("Argentumdämmerung", "Argent Dawn"),
-	de = "Armschiene - Manaregeneration", en = "Bracer - Mana Regeneration", s = { MP5 = 4 } }
+	de = "Armschiene - Manaregeneration", en = "Bracer - Mana Regeneration", s = { MP5 = 4 },
+	m = { { 16204, 16 }, { 16203, 4 }, { 7080, 2 } } }
 add{ g = "WRIST", id = 23802, lvl = 58, sk = 300, src = "D", c = "C", noLive = true,
-	de = "Armschiene - Heilung", en = "Bracer - Healing", s = { HEAL = 24, SPD = 8 } }
+	de = "Armschiene - Heilkraft", en = "Bracer - Healing Power", s = { HEAL = 24, SPD = 8 },
+	m = { { 14344, 2 }, { 16204, 20 }, { 16203, 4 }, { 12803, 6 } } }
 add{ g = "WRIST", id = 1220624, lvl = 58, sk = 300, src = "V", c = "N", w = FAVOR240,
-	de = "Armschiene - Große Zauberkraft", en = "Bracer - Greater Spellpower", s = { SP = 16 } }
+	de = "Armschiene - Große Zauberkraft", en = "Bracer - Greater Spellpower", s = { SP = 16 },
+	m = { { 16203, 3 }, { 16204, 9 }, { 12808, 12 }, { 8831, 2 } } }
 
 ----------------------------------------------------------------------
 -- Brust
 ----------------------------------------------------------------------
 add{ g = "CHEST", id = 7420, lvl = 10, sk = 15, src = "T", c = "X", was = T("+5 Leben", "+5 health"),
-	de = "Brust - Minderwertige Ausdauer", en = "Chest - Inferior Stamina", s = { STA = 2 } }
+	de = "Brust - Minderwertige Ausdauer", en = "Chest - Inferior Stamina", s = { STA = 2 },
+	m = { { 10940, 1 } } }
 add{ g = "CHEST", id = 7443, lvl = 10, sk = 20, src = "T", c = "C",
 	de = "Brust - Schwaches Mana", en = "Chest - Minor Mana", s = { MANA = 5 } }
 add{ g = "CHEST", id = 7426, lvl = 10, sk = 40, src = "T", c = "C", s = { ABSORB = 10 }, noLive = true,
 	de = "Brust - Schwache Absorption", en = "Chest - Minor Absorption",
 	fde = "Absorbiert ab und zu ein wenig Schaden", fen = "Occasionally absorbs a little damage" }
 add{ g = "CHEST", id = 7748, lvl = 12, sk = 60, src = "T", c = "X", was = T("+15 Leben", "+15 health"),
-	de = "Brust - Geringe Ausdauer", en = "Chest - Lesser Stamina", s = { STA = 3 } }
-add{ g = "CHEST", id = 7776, lvl = 15, sk = 80, src = "T", c = "C",
-	de = "Brust - Geringes Mana", en = "Chest - Lesser Mana", s = { MANA = 20 } }
+	de = "Brust - Geringe Ausdauer", en = "Chest - Lesser Stamina", s = { STA = 3 },
+	m = { { 10940, 1 }, { 10938, 1 } } }
+add{ g = "CHEST", id = 7776, lvl = 15, sk = 80, src = "T", c = "X", was = T("Geringes Mana, +20 Mana", "Lesser Mana, +20 mana"),
+	de = "Brust - Geringe Intelligenz", en = "Chest - Lesser Intellect", s = { INT = 2 },
+	m = { { 10938, 2 } } }
 add{ g = "CHEST", id = 7857, lvl = 18, sk = 120, src = "T", c = "X", was = T("+25 Leben", "+25 health"),
-	de = "Brust - Ausdauer", en = "Chest - Stamina", s = { STA = 4 } }
+	de = "Brust - Ausdauer", en = "Chest - Stamina", s = { STA = 4 },
+	m = { { 10940, 2 }, { 10998, 1 } } }
 add{ g = "CHEST", id = 13538, lvl = 22, sk = 140, src = "T", c = "C", s = { ABSORB = 20 }, noLive = true,
 	de = "Brust - Geringe Absorption", en = "Chest - Lesser Absorption",
 	fde = "Absorbiert ab und zu etwas Schaden", fen = "Occasionally absorbs some damage" }
 add{ g = "CHEST", id = 13607, lvl = 22, sk = 145, src = "T", c = "C",
 	de = "Brust - Mana", en = "Chest - Mana", s = { MANA = 30 } }
 add{ g = "CHEST", id = 13626, lvl = 24, sk = 150, src = "T", c = "C",
-	de = "Brust - Schwache Werte", en = "Chest - Minor Stats", s = ALL(1) }
-add{ g = "CHEST", id = 13640, lvl = 26, sk = 160, src = "T", c = "C",
-	de = "Brust - Große Gesundheit", en = "Chest - Greater Health", s = { HP = 35 } }
-add{ g = "CHEST", id = 13663, lvl = 28, sk = 185, src = "T", c = "C",
-	de = "Brust - Großes Mana", en = "Chest - Greater Mana", s = { MANA = 50 } }
+	de = "Brust - Schwache Werte", en = "Chest - Minor Stats", s = ALL(1),
+	m = { { 10998, 1 }, { 11083, 1 }, { 11084, 1 } } }
+add{ g = "CHEST", id = 13640, lvl = 26, sk = 160, src = "T", c = "X", was = T("Große Gesundheit, +35 Leben", "Greater Health, +35 health"),
+	de = "Brust - Große Ausdauer", en = "Chest - Greater Stamina", s = { STA = 4 },
+	m = { { 11083, 2 } } }
+add{ g = "CHEST", id = 13663, lvl = 28, sk = 185, src = "T", c = "X", was = T("Großes Mana, +50 Mana", "Greater Mana, +50 mana"),
+	de = "Brust - Große Intelligenz", en = "Chest - Greater Intellect", s = { INT = 4 },
+	m = { { 11134, 1 } } }
 add{ g = "CHEST", id = 13700, lvl = 30, sk = 200, src = "T", c = "C",
-	de = "Brust - Geringe Werte", en = "Chest - Lesser Stats", s = ALL(2) }
-add{ g = "CHEST", id = 13858, lvl = 38, sk = 220, src = "T", c = "C",
-	de = "Brust - Überragende Gesundheit", en = "Chest - Superior Health", s = { HP = 50 } }
-add{ g = "CHEST", id = 13917, lvl = 40, sk = 230, src = "T", c = "C",
-	de = "Brust - Überragendes Mana", en = "Chest - Superior Mana", s = { MANA = 65 } }
+	de = "Brust - Geringe Werte", en = "Chest - Lesser Stats", s = ALL(2),
+	m = { { 11135, 1 }, { 11137, 1 }, { 11139, 1 } } }
+add{ g = "CHEST", id = 13858, lvl = 38, sk = 220, src = "T", c = "X", was = T("Überragende Gesundheit, +50 Leben", "Superior Health, +50 health"),
+	de = "Brust - Überragende Ausdauer", en = "Chest - Superior Stamina", s = { STA = 5 },
+	m = { { 11137, 3 } } }
+add{ g = "CHEST", id = 13917, lvl = 40, sk = 230, src = "T", c = "X", was = T("Überragendes Mana, +65 Mana", "Superior Mana, +65 mana"),
+	de = "Brust - Überragende Intelligenz", en = "Chest - Superior Intellect", s = { INT = 5 },
+	m = { { 11175, 1 } } }
 add{ g = "CHEST", id = 1249071, lvl = 42, sk = 220, src = "V", c = "N", w = FAVOR120, noLive = true,
 	s = { ABSORB = 60 }, match = { "Absorption" },
 	de = "Brust - Absorption", en = "Chest - Absorption",
@@ -318,9 +403,11 @@ add{ g = "CHEST", id = 1249071, lvl = 42, sk = 220, src = "V", c = "N", w = FAVO
 	fen = "25% chance when hit: absorbs 50 damage (at most every 5 sec)",
 	m = { { 11176, 10 }, { 11175, 4 }, { 11178, 2 } } }
 add{ g = "CHEST", id = 13941, lvl = 44, sk = 245, src = "T", c = "C",
-	de = "Brust - Werte", en = "Chest - Stats", s = ALL(3) }
-add{ g = "CHEST", id = 20026, lvl = 50, sk = 275, src = "D", c = "C",
-	de = "Brust - Erhebliche Gesundheit", en = "Chest - Major Health", s = { HP = 100 } }
+	de = "Brust - Werte", en = "Chest - Stats", s = ALL(3),
+	m = { { 11178, 1 }, { 11176, 1 }, { 11175, 1 } } }
+add{ g = "CHEST", id = 20026, lvl = 50, sk = 275, src = "D", c = "X", was = T("Erhebliche Gesundheit, +100 Leben", "Major Health, +100 health"),
+	de = "Brust - Erhebliche Ausdauer", en = "Chest - Major Stamina", s = { STA = 10 },
+	m = { { 16204, 6 }, { 14343, 1 } } }
 add{ g = "CHEST", id = 20028, lvl = 52, sk = 290, src = "D", c = "C",
 	de = "Brust - Erhebliches Mana", en = "Chest - Major Mana", s = { MANA = 100 } }
 add{ g = "CHEST", id = 20025, lvl = 55, sk = 300, src = "D", c = "F",
@@ -333,32 +420,42 @@ add{ g = "CHEST", id = 20025, lvl = 55, sk = 300, src = "D", c = "F",
 add{ g = "BACK", id = 7454, lvl = 10, sk = 45, src = "T", c = "C",
 	de = "Umhang - Schwacher Widerstand", en = "Cloak - Minor Resistance", s = { RES = 1 } }
 add{ g = "BACK", id = 7771, lvl = 10, sk = 70, src = "T", c = "C",
-	de = "Umhang - Schwacher Schutz", en = "Cloak - Minor Protection", s = { ARMOR = 10 } }
+	de = "Umhang - Schwacher Schutz", en = "Cloak - Minor Protection", s = { ARMOR = 10 },
+	m = { { 10940, 2 } } }
 add{ g = "BACK", id = 13419, lvl = 16, sk = 110, src = "V", c = "C",
 	where = T("Händler in Eschental und im Steinkrallengebirge", "Vendors in Ashenvale and Stonetalon"),
-	de = "Umhang - Schwache Beweglichkeit", en = "Cloak - Minor Agility", s = { AGI = 1 } }
+	de = "Umhang - Schwache Beweglichkeit", en = "Cloak - Minor Agility", s = { AGI = 1 },
+	m = { { 10998, 1 } } }
 add{ g = "BACK", id = 13421, lvl = 16, sk = 115, src = "T", c = "C",
-	de = "Umhang - Geringer Schutz", en = "Cloak - Lesser Protection", s = { ARMOR = 20 } }
+	de = "Umhang - Geringer Schutz", en = "Cloak - Lesser Protection", s = { ARMOR = 20 },
+	m = { { 10940, 3 }, { 10978, 1 } } }
 add{ g = "BACK", id = 7861, lvl = 18, sk = 125, src = "T", c = "C",
 	de = "Umhang - Geringer Feuerwiderstand", en = "Cloak - Lesser Fire Resistance", s = { FIRERES = 5 } }
 add{ g = "BACK", id = 13522, lvl = 20, sk = 135, src = "T", c = "C",
 	de = "Umhang - Geringer Schattenwiderstand", en = "Cloak - Lesser Shadow Resistance", s = { SHADOWRES = 10 } }
 add{ g = "BACK", id = 13635, lvl = 24, sk = 155, src = "T", c = "F", was = "+30",
-	de = "Umhang - Verteidigung", en = "Cloak - Defense", s = { ARMOR = 60 } }
+	de = "Umhang - Verteidigung", en = "Cloak - Defense", s = { ARMOR = 60 },
+	m = { { 11138, 1 }, { 11083, 1 } } }
 add{ g = "BACK", id = 13794, lvl = 26, sk = 175, src = "T", c = "C",
-	de = "Umhang - Widerstand", en = "Cloak - Resistance", s = { RES = 3 } }
+	de = "Umhang - Widerstand", en = "Cloak - Resistance", s = { RES = 3 },
+	m = { { 11174, 1 } } }
 add{ g = "BACK", id = 13657, lvl = 28, sk = 195, src = "T", c = "C",
 	de = "Umhang - Feuerwiderstand", en = "Cloak - Fire Resistance", s = { FIRERES = 7 } }
 add{ g = "BACK", id = 13746, lvl = 32, sk = 205, src = "T", c = "C",
-	de = "Umhang - Große Verteidigung", en = "Cloak - Greater Defense", s = { ARMOR = 50 } }
+	de = "Umhang - Große Verteidigung", en = "Cloak - Greater Defense", s = { ARMOR = 50 },
+	m = { { 11137, 1 } } }
 add{ g = "BACK", id = 13882, lvl = 36, sk = 225, src = "D", c = "F",
-	de = "Umhang - Geringe Beweglichkeit", en = "Cloak - Lesser Agility", s = { AGI = 3 } }
+	de = "Umhang - Geringe Beweglichkeit", en = "Cloak - Lesser Agility", s = { AGI = 3 },
+	m = { { 11174, 1 } } }
 add{ g = "BACK", id = 20014, lvl = 46, sk = 265, src = "T", c = "C",
-	de = "Umhang - Großer Widerstand", en = "Cloak - Greater Resistance", s = { RES = 5 } }
+	de = "Umhang - Großer Widerstand", en = "Cloak - Greater Resistance", s = { RES = 5 },
+	m = { { 16202, 1 }, { 7077, 1 }, { 7075, 1 }, { 7079, 1 }, { 7081, 1 }, { 7972, 1 } } }
 add{ g = "BACK", id = 20015, lvl = 52, sk = 285, src = "D", c = "C",
-	de = "Umhang - Überragende Verteidigung", en = "Cloak - Superior Defense", s = { ARMOR = 70 } }
+	de = "Umhang - Überragende Verteidigung", en = "Cloak - Superior Defense", s = { ARMOR = 70 },
+	m = { { 16204, 8 } } }
 add{ g = "BACK", id = 1219587, lvl = 56, sk = 300, src = "V", c = "N", w = FAVOR240,
-	de = "Umhang - Beweglichkeit", en = "Cloak - Agility", s = { AGI = 5 } }
+	de = "Umhang - Beweglichkeit", en = "Cloak - Agility", s = { AGI = 5 },
+	m = { { 16203, 3 }, { 16204, 9 }, { 7078, 1 } } }
 add{ g = "BACK", id = 25084, lvl = 60, sk = 300, src = "RAID", c = "C", w = AQ,
 	de = "Umhang - Subtilität", en = "Cloak - Subtlety", s = { THREATRED = 2 } }
 add{ g = "BACK", id = 25086, lvl = 60, sk = 300, src = "RAID", c = "C", w = AQ,
@@ -380,9 +477,11 @@ add{ g = "HANDS", id = 13620, lvl = 20, sk = 145, src = "T", c = "C", util = tru
 add{ g = "HANDS", id = 13698, lvl = 30, sk = 200, src = "T", c = "C", util = true, prof = 393,
 	de = "Handschuhe - Kürschnerei", en = "Gloves - Skinning", fde = "+5 Kürschnerei", fen = "+5 Skinning" }
 add{ g = "HANDS", id = 13815, lvl = 35, sk = 210, src = "T", c = "C",
-	de = "Handschuhe - Beweglichkeit", en = "Gloves - Agility", s = { AGI = 5 } }
+	de = "Handschuhe - Beweglichkeit", en = "Gloves - Agility", s = { AGI = 5 },
+	m = { { 11137, 1 } } }
 add{ g = "HANDS", id = 13887, lvl = 36, sk = 220, src = "T", c = "C",
-	de = "Handschuhe - Stärke", en = "Gloves - Strength", s = { STR = 5 } }
+	de = "Handschuhe - Stärke", en = "Gloves - Strength", s = { STR = 5 },
+	m = { { 11174, 1 }, { 11137, 2 } } }
 add{ g = "HANDS", id = 13841, lvl = 36, sk = 215, src = "T", c = "C", util = true, prof = 186,
 	de = "Handschuhe - Fortgeschrittener Bergbau", en = "Gloves - Advanced Mining", fde = "+5 Bergbau", fen = "+5 Mining" }
 add{ g = "HANDS", id = 13868, lvl = 38, sk = 225, src = "T", c = "C", util = true, prof = 182,
@@ -390,11 +489,14 @@ add{ g = "HANDS", id = 13868, lvl = 38, sk = 225, src = "T", c = "C", util = tru
 add{ g = "HANDS", id = 13947, lvl = 40, sk = 250, src = "D", c = "C", util = true,
 	de = "Handschuhe - Reiten", en = "Gloves - Riding Skill", fde = "Etwas schnelleres Reiten", fen = "Slightly faster riding" }
 add{ g = "HANDS", id = 13948, lvl = 45, sk = 250, src = "D", c = "C",
-	de = "Handschuhe - Schwache Hast", en = "Gloves - Minor Haste", s = { HASTE = 1 } }
+	de = "Handschuhe - Schwache Hast", en = "Gloves - Minor Haste", s = { HASTE = 1 },
+	m = { { 11178, 1 }, { 8153, 1 } } }
 add{ g = "HANDS", id = 20012, lvl = 48, sk = 270, src = "D", c = "C",
-	de = "Handschuhe - Große Beweglichkeit", en = "Gloves - Greater Agility", s = { AGI = 7 } }
+	de = "Handschuhe - Große Beweglichkeit", en = "Gloves - Greater Agility", s = { AGI = 7 },
+	m = { { 16202, 2 }, { 16204, 2 } } }
 add{ g = "HANDS", id = 20013, lvl = 52, sk = 295, src = "D", c = "C",
-	de = "Handschuhe - Große Stärke", en = "Gloves - Greater Strength", s = { STR = 7 } }
+	de = "Handschuhe - Große Stärke", en = "Gloves - Greater Strength", s = { STR = 7 },
+	m = { { 16203, 4 }, { 16204, 4 } } }
 add{ g = "HANDS", lvl = 60, sk = 300, src = "V", c = "X",
 	de = "Handschuhe - Überragende Stärke", en = "Gloves - Superior Strength", s = { STR = 15 } }
 add{ g = "HANDS", lvl = 60, sk = 300, src = "V", c = "X",
@@ -420,28 +522,38 @@ add{ g = "HANDS", id = 25080, lvl = 60, sk = 300, src = "RAID", c = "C", w = AQ,
 -- Stiefel
 ----------------------------------------------------------------------
 add{ g = "FEET", id = 7863, lvl = 18, sk = 125, src = "T", c = "C",
-	de = "Stiefel - Schwache Ausdauer", en = "Boots - Minor Stamina", s = { STA = 1 } }
+	de = "Stiefel - Schwache Ausdauer", en = "Boots - Minor Stamina", s = { STA = 1 },
+	m = { { 10940, 4 } } }
 add{ g = "FEET", id = 7867, lvl = 18, sk = 125, src = "T", c = "C",
-	de = "Stiefel - Schwache Beweglichkeit", en = "Boots - Minor Agility", s = { AGI = 1 } }
+	de = "Stiefel - Schwache Beweglichkeit", en = "Boots - Minor Agility", s = { AGI = 1 },
+	m = { { 10940, 3 }, { 10998, 1 } } }
 add{ g = "FEET", id = 13637, lvl = 24, sk = 160, src = "T", c = "C",
-	de = "Stiefel - Geringe Beweglichkeit", en = "Boots - Lesser Agility", s = { AGI = 3 } }
+	de = "Stiefel - Geringe Beweglichkeit", en = "Boots - Lesser Agility", s = { AGI = 3 },
+	m = { { 11083, 1 } } }
 add{ g = "FEET", id = 13644, lvl = 24, sk = 170, src = "T", c = "C",
-	de = "Stiefel - Geringe Ausdauer", en = "Boots - Lesser Stamina", s = { STA = 3 } }
+	de = "Stiefel - Geringe Ausdauer", en = "Boots - Lesser Stamina", s = { STA = 3 },
+	m = { { 11083, 2 } } }
 add{ g = "FEET", id = 13687, lvl = 28, sk = 190, src = "D", c = "C",
 	de = "Stiefel - Geringe Willenskraft", en = "Boots - Lesser Spirit", s = { SPI = 3 } }
 add{ g = "FEET", id = 13836, lvl = 34, sk = 215, src = "T", c = "C",
-	de = "Stiefel - Ausdauer", en = "Boots - Stamina", s = { STA = 5 } }
+	de = "Stiefel - Ausdauer", en = "Boots - Stamina", s = { STA = 5 },
+	m = { { 11137, 2 } } }
 add{ g = "FEET", id = 13890, lvl = 36, sk = 225, src = "D", c = "C", util = true,
 	de = "Stiefel - Schwaches Tempo", en = "Boots - Minor Speed",
-	fde = "Etwas mehr Lauftempo - super zum Leveln", fen = "Slightly faster run speed - great for leveling" }
+	fde = "Etwas mehr Lauftempo - super zum Leveln", fen = "Slightly faster run speed - great for leveling",
+	m = { { 11177, 1 }, { 7909, 1 }, { 11174, 1 } } }
 add{ g = "FEET", id = 13935, lvl = 38, sk = 235, src = "T", c = "C",
-	de = "Stiefel - Beweglichkeit", en = "Boots - Agility", s = { AGI = 5 } }
+	de = "Stiefel - Beweglichkeit", en = "Boots - Agility", s = { AGI = 5 },
+	m = { { 11175, 1 } } }
 add{ g = "FEET", id = 20020, lvl = 46, sk = 260, src = "D", c = "C",
-	de = "Stiefel - Große Ausdauer", en = "Boots - Greater Stamina", s = { STA = 7 } }
+	de = "Stiefel - Große Ausdauer", en = "Boots - Greater Stamina", s = { STA = 7 },
+	m = { { 11176, 6 } } }
 add{ g = "FEET", id = 20024, lvl = 50, sk = 275, src = "D", c = "C",
-	de = "Stiefel - Willenskraft", en = "Boots - Spirit", s = { SPI = 5 } }
+	de = "Stiefel - Willenskraft", en = "Boots - Spirit", s = { SPI = 5 },
+	m = { { 16203, 2 }, { 16202, 1 } } }
 add{ g = "FEET", id = 20023, lvl = 52, sk = 295, src = "D", c = "C",
-	de = "Stiefel - Große Beweglichkeit", en = "Boots - Greater Agility", s = { AGI = 7 } }
+	de = "Stiefel - Große Beweglichkeit", en = "Boots - Greater Agility", s = { AGI = 7 },
+	m = { { 16203, 8 } } }
 
 ----------------------------------------------------------------------
 -- Schild
@@ -449,23 +561,30 @@ add{ g = "FEET", id = 20023, lvl = 52, sk = 295, src = "D", c = "C",
 add{ g = "SHIELD", id = 13378, lvl = 14, sk = 105, src = "T", c = "C",
 	de = "Schild - Schwache Ausdauer", en = "Shield - Minor Stamina", s = { STA = 1 } }
 add{ g = "SHIELD", id = 13464, lvl = 16, sk = 115, src = "T", c = "C",
-	de = "Schild - Geringer Schutz", en = "Shield - Lesser Protection", s = { ARMOR = 30 } }
+	de = "Schild - Geringer Schutz", en = "Shield - Lesser Protection", s = { ARMOR = 30 },
+	m = { { 10940, 1 }, { 10978, 1 } } }
 add{ g = "SHIELD", id = 13485, lvl = 20, sk = 130, src = "T", c = "C",
 	de = "Schild - Geringe Willenskraft", en = "Shield - Lesser Spirit", s = { SPI = 3 } }
 add{ g = "SHIELD", id = 13631, lvl = 24, sk = 155, src = "T", c = "C",
-	de = "Schild - Geringe Ausdauer", en = "Shield - Lesser Stamina", s = { STA = 3 } }
+	de = "Schild - Geringe Ausdauer", en = "Shield - Lesser Stamina", s = { STA = 3 },
+	m = { { 11134, 1 } } }
 add{ g = "SHIELD", id = 13659, lvl = 28, sk = 180, src = "T", c = "C",
-	de = "Schild - Willenskraft", en = "Shield - Spirit", s = { SPI = 5 } }
+	de = "Schild - Willenskraft", en = "Shield - Spirit", s = { SPI = 5 },
+	m = { { 11134, 1 }, { 11137, 1 } } }
 add{ g = "SHIELD", id = 13689, lvl = 30, sk = 195, src = "D", c = "C",
-	de = "Schild - Geringes Blocken", en = "Shield - Lesser Block", s = { BLOCK = 2 } }
+	de = "Schild - Geringes Blocken", en = "Shield - Lesser Block", s = { BLOCK = 2 },
+	m = { { 11135, 1 }, { 11137, 1 }, { 11139, 1 } } }
 add{ g = "SHIELD", id = 13817, lvl = 34, sk = 210, src = "T", c = "C",
-	de = "Schild - Ausdauer", en = "Shield - Stamina", s = { STA = 5 } }
+	de = "Schild - Ausdauer", en = "Shield - Stamina", s = { STA = 5 },
+	m = { { 11137, 2 } } }
 add{ g = "SHIELD", id = 13933, lvl = 38, sk = 235, src = "D", c = "C",
 	de = "Schild - Frostwiderstand", en = "Shield - Frost Resistance", s = { FROSTRES = 8 } }
 add{ g = "SHIELD", id = 13905, lvl = 40, sk = 230, src = "T", c = "C",
-	de = "Schild - Große Willenskraft", en = "Shield - Greater Spirit", s = { SPI = 7 } }
+	de = "Schild - Große Willenskraft", en = "Shield - Greater Spirit", s = { SPI = 7 },
+	m = { { 11174, 2 }, { 11176, 1 } } }
 add{ g = "SHIELD", id = 20017, lvl = 46, sk = 265, src = "T", c = "C",
-	de = "Schild - Große Ausdauer", en = "Shield - Greater Stamina", s = { STA = 7 } }
+	de = "Schild - Große Ausdauer", en = "Shield - Greater Stamina", s = { STA = 7 },
+	m = { { 11176, 6 } } }
 add{ g = "SHIELD", id = 20016, lvl = 50, sk = 280, src = "D", c = "C",
 	de = "Schild - Überragende Willenskraft", en = "Shield - Superior Spirit", s = { SPI = 9 } }
 
@@ -476,12 +595,14 @@ add{ g = "NECK", id = 1249019, lvl = 42, sk = 210, src = "V", c = "N", w = FAVOR
 	de = "Halskette - Stärke", en = "Necklace - Strength", s = { STR = 5 },
 	m = { { 11175, 4 }, { 11178, 4 }, { 11176, 10 }, { "SULFURIC_ACID", 4 }, { "BAUXITE", 4 } } }
 add{ g = "NECK", id = 1249059, lvl = 42, sk = 210, src = "V", c = "N", w = FAVOR120,
-	de = "Halskette - Beweglichkeit", en = "Necklace - Agility", s = { AGI = 5 } }
+	de = "Halskette - Beweglichkeit", en = "Necklace - Agility", s = { AGI = 5 },
+	m = { { 11175, 2 }, { 11178, 8 }, { 11176, 6 }, { "SULFURIC_ACID", 4 }, { "MAGENTA_DYE", 4 } } }
 add{ g = "NECK", id = 1249057, lvl = 42, sk = 210, src = "V", c = "N", w = FAVOR120,
 	de = "Halskette - Zauberkraft", en = "Necklace - Spell Power", s = { SP = 6 },
 	m = { { 11175, 5 }, { 11178, 3 }, { 11176, 8 }, { "CERULEAN_DYE", 4 }, { "MAGENTA_DYE", 4 } } }
 add{ g = "NECK", id = 1249058, lvl = 42, sk = 210, src = "V", c = "N", w = FAVOR120, noLive = true,
-	de = "Halskette - Heilkraft", en = "Necklace - Healing Power", s = { HEAL = 11, SPD = 4 } }
+	de = "Halskette - Heilkraft", en = "Necklace - Healing Power", s = { HEAL = 11, SPD = 4 },
+	m = { { 11175, 3 }, { 11178, 5 }, { 11176, 4 }, { "PYRITE", 4 }, { "ROSECAP", 4 } } }
 add{ g = "NECK", id = 1249060, lvl = 42, sk = 210, src = "V", c = "N", w = FAVOR120,
 	de = "Halskette - Ablenkung", en = "Necklace - Deflection", s = { DEF = 5 },
 	m = { { 11175, 8 }, { 11178, 2 }, { 11176, 2 }, { "CERULEAN_DYE", 4 }, { "MAGENTA_DYE", 4 } } }
