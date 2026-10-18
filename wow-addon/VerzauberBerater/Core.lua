@@ -82,6 +82,8 @@ local DB_DEFAULTS = {
 	showUtility = true,
 	levelUp = true,
 	window = {},
+	shopOnlyMissing = true,
+	ah = { show = true, expanded = true, x = 8, y = -200 },
 }
 local CHAR_DEFAULTS = {
 	specKey = nil,      -- vom Spieler gewählter Spec
@@ -497,6 +499,10 @@ end
 local rankCache = {}
 function ns:InvalidateCache()
 	wipe(rankCache)
+	-- Rezepte ohne Client-Materialien beim nächsten Mal erneut abfragen
+	for _, e in ipairs(self.ENCHANTS or EMPTY) do
+		if e.liveMats == false then e.liveMats = nil end
+	end
 end
 
 -- Alle sinnvollen Kandidaten für einen Slot, beste zuerst (unabhängig vom Level).
@@ -1029,6 +1035,107 @@ function ns:ScanGear()
 end
 
 ----------------------------------------------------------------------
+-- Materialien und Einkaufsliste
+----------------------------------------------------------------------
+local ENCHANTING_SOURCES = { T = true, D = true, V = true, R = true, RAID = true }
+ns.ENCHANTING_SOURCES = ENCHANTING_SOURCES
+
+-- Rezept-Materialien direkt aus dem Client. Nur Grund-Materialien zählen,
+-- optionale oder verändernde Reagenzien bleiben draußen.
+local function LiveMats(e)
+	if e.liveMats ~= nil then return e.liveMats or nil end
+	e.liveMats = false
+	if not (e.id and C_TradeSkillUI and C_TradeSkillUI.GetRecipeSchematic) then return nil end
+	local schematic = SafeCall(C_TradeSkillUI.GetRecipeSchematic, e.id, false)
+	if type(schematic) ~= "table" or type(schematic.reagentSlotSchematics) ~= "table" then return nil end
+	local basic = Enum and Enum.CraftingReagentType and Enum.CraftingReagentType.Basic or 1
+	local mats = {}
+	for _, slot in ipairs(schematic.reagentSlotSchematics) do
+		local reagent = slot.reagents and slot.reagents[1]
+		if reagent and reagent.itemID and slot.required ~= false and (slot.reagentType == nil or slot.reagentType == basic) then
+			mats[#mats + 1] = { reagent.itemID, slot.quantityRequired or 1 }
+			if NeedsItemLoad(reagent.itemID) then
+				itemWaiters[reagent.itemID] = itemWaiters[reagent.itemID] or {}
+				SafeCall(C_Item.RequestLoadItemDataByID, reagent.itemID)
+			end
+		end
+	end
+	if #mats == 0 then return nil end
+	e.liveMats = mats
+	return mats
+end
+
+-- Materialien einer Verzauberung: aus dem Spiel, sonst aus der Datenbank.
+-- Zweiter Rückgabewert: true, wenn sie aus dem Spiel stammen.
+function ns:MatsFor(e)
+	local live = LiveMats(e)
+	if live then return live, true end
+	return e.m, false
+end
+
+function ns:ItemCount(key)
+	if type(key) ~= "number" or not (C_Item and C_Item.GetItemCount) then return 0 end
+	return SafeCall(C_Item.GetItemCount, key, true) or 0 -- Taschen und Bank
+end
+
+-- Vom Spieler abgewählte Einträge der Einkaufsliste (gilt für diese Sitzung)
+ns.shopExcluded = {}
+
+-- Einkaufsliste: welche Verzauberungen, wie viel Material, was fehlt noch.
+-- Grundlage ist entweder der Ausrüstungs-Scan (nur Fehlendes) oder die Auswahl oben im Fenster.
+function ns:BuildShopping()
+	local result = { needed = {}, mats = {}, unknown = 0, missingMats = 0, onlyMissing = self.db.shopOnlyMissing }
+	if result.onlyMissing then
+		local scan = self:ScanGear()
+		if scan then
+			result.spec, result.level = scan.spec, scan.level
+			for _, entry in ipairs(scan.rows) do
+				if (entry.status == "MISSING" or entry.status == "BETTER") and entry.reco.best then
+					tinsert(result.needed, { label = entry.row.label, e = entry.reco.best.e })
+				end
+			end
+		end
+	else
+		local spec = self:SelectedSpec()
+		if spec then
+			result.spec, result.level = spec, self.sel.level
+			local own = spec.class.file == self:PlayerClassFile()
+			for _, row in ipairs(self:BuildRecommendations(spec, self:SelectedSetup(), self.sel.level, own and self:IsEnchanter())) do
+				if row.reco.best then tinsert(result.needed, { label = row.label, e = row.reco.best.e }) end
+			end
+		end
+	end
+
+	local totals = {}
+	for _, item in ipairs(result.needed) do
+		item.key = item.label .. "|" .. item.e.index
+		item.included = not self.shopExcluded[item.key]
+		if item.included then
+			local mats = self:MatsFor(item.e)
+			if mats then
+				for _, mat in ipairs(mats) do totals[mat[1]] = (totals[mat[1]] or 0) + mat[2] end
+			elseif ENCHANTING_SOURCES[item.e.src] then
+				result.unknown = result.unknown + 1
+			end
+		end
+	end
+	for key, count in pairs(totals) do
+		local have = self:ItemCount(key)
+		local mat = { key = key, count = count, have = have, missing = math.max(0, count - have),
+			name = self:MatName(key), icon = self:MatIcon(key) }
+		if mat.missing > 0 then result.missingMats = result.missingMats + 1 end
+		tinsert(result.mats, mat)
+	end
+	tsort(result.mats, function(a, b) return a.name < b.name end)
+	return result
+end
+
+function ns:ToggleShopItem(key)
+	self.shopExcluded[key] = not self.shopExcluded[key] or nil
+	self:Fire("SHOPPING_CHANGED")
+end
+
+----------------------------------------------------------------------
 -- Level-Up: neue Verzauberungen ansagen
 ----------------------------------------------------------------------
 function ns:OnLevelUp(newLevel)
@@ -1119,6 +1226,8 @@ SlashCmdList.VERZAUBERBERATER = function(msg)
 	elseif cmd == "reset" then
 		ns.UI:ResetPosition()
 		ns:Print(L.RESET_DONE)
+	elseif cmd == "ah" then
+		ns.AH:ResetPosition()
 	else
 		ns:Print(L.HELP)
 	end

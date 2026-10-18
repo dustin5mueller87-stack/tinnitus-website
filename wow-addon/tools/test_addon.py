@@ -91,7 +91,7 @@ def run(dump, locale, report=False):
     missing = sorted(str(k) for k in g.Mock.missingGlobals.keys())
     mocked = []
     for namespace in ("C_ClassColor", "C_AddOns", "C_Item", "C_Spell", "C_TooltipInfo", "C_Texture", "C_Timer",
-                      "C_ClassTalents", "C_Traits", "TooltipUtil", "ChatFrameUtil"):
+                      "C_ClassTalents", "C_Traits", "C_TradeSkillUI", "TooltipUtil", "ChatFrameUtil"):
         for func in g[namespace].keys():
             mocked.append(f"{namespace}.{func}")
     if report:

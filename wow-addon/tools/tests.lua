@@ -99,8 +99,11 @@ ok(ns.version == "1.0.0-test", "Version aus der TOC gelesen")
 ----------------------------------------------------------------------
 -- Live-Abgleich mit Client-Daten
 ----------------------------------------------------------------------
-local byID = {}
-for _, e in ipairs(ns.ENCHANTS) do if e.id then byID[e.id] = e end end
+local byID, byEn = {}, {}
+for _, e in ipairs(ns.ENCHANTS) do
+	if e.id then byID[e.id] = e end
+	byEn[e.en] = e
+end
 ok(byID[13695].liveOK and byID[13695].s.WDMG == 6, "Einschlag +6 im Spiel bestätigt")
 ok(byID[13695].name == Mock.spells[13695].name, "Client-Name übernommen")
 ok(byID[7457].s.STA == 5 and byID[7457].liveFrom == 3, "Schwache Ausdauer aus dem Spiel korrigiert (3 -> 5)")
@@ -302,14 +305,152 @@ ns.UI.pages[3].rescan:Click()
 ----------------------------------------------------------------------
 ns.UI:SelectTab(4)
 local shopPage = ns.UI.pages[4]
-ok(#shopPage.needed == 6, "Einkaufsliste: 6 Slots brauchen etwas (" .. #shopPage.needed .. ")")
+ok(#shopPage.shopping.needed == 6, "Einkaufsliste: 6 Slots brauchen etwas (" .. #shopPage.shopping.needed .. ")")
 ok(#Mock.opened == 0, "noch keine Chat-Anfrage")
 shopPage.chat:Click()
 ok(#Mock.opened == 1 and #Mock.opened[1] <= 255, "Chat-Anfrage vorbereitet: " .. tostring(Mock.opened[1]))
 ok(not Mock.opened[1]:find("Zielfernrohr") and not Mock.opened[1]:find("Scope"), "nur echte Verzauberungen in der Anfrage")
 shopPage.onlyMissing:Click()
-ok(not shopPage.onlyMissing:GetChecked() and #shopPage.needed == 9, "Einkaufsliste für die ganze Auswahl (" .. #shopPage.needed .. ")")
+ok(not shopPage.onlyMissing:GetChecked() and #shopPage.shopping.needed == 9, "Einkaufsliste für die ganze Auswahl (" .. #shopPage.shopping.needed .. ")")
 shopPage.onlyMissing:Click()
+ok(ns.db.shopOnlyMissing == true and #shopPage.shopping.needed == 6, "zurück auf 'nur was fehlt'")
+
+----------------------------------------------------------------------
+-- Materialien aus dem Spiel
+----------------------------------------------------------------------
+Mock.schematics[13693] = { recipeType = 3, reagentSlotSchematics = {
+	{ reagentType = 1, required = true, quantityRequired = 2, reagents = { { itemID = 11134 } } },
+	{ reagentType = 1, required = true, quantityRequired = 1, reagents = { { itemID = 11139 } } },
+	{ reagentType = 0, required = false, quantityRequired = 1, reagents = { { itemID = 99999 } } },
+} }
+Mock.schematics[13637] = { reagentSlotSchematics = {
+	{ reagentType = 1, required = true, quantityRequired = 1, reagents = { { itemID = 11083 } } },
+} }
+Mock.itemNames[11134] = isDE and "Geringe mystische Essenz" or "Lesser Mystic Essence"
+Mock.itemNames[11083] = isDE and "Seelenstaub" or "Soul Dust"
+ns:InvalidateCache()
+local mats, live = ns:MatsFor(byEn["Weapon - Striking"])
+ok(live and #mats == 2 and mats[1][1] == 11134 and mats[1][2] == 2 and mats[2][1] == 11139,
+	"Materialien aus dem Spiel, optionale Reagenzien bleiben draußen")
+local staticMats, staticLive = ns:MatsFor(byEn["2H Weapon - Impact"])
+ok(not staticLive and staticMats[1][1] == 11137, "ohne Client-Daten gelten die Materialien aus der Datenbank")
+
+Mock.bags = { [11139] = 5, [11134] = 1 }
+local shopping = ns:BuildShopping()
+local matByKey = {}
+for _, mat in ipairs(shopping.mats) do matByKey[mat.key] = mat end
+ok(matByKey[11134] and matByKey[11134].count == 4 and matByKey[11134].missing == 3, "Mystische Essenz: 4 gebraucht, 1 da, 3 fehlen")
+ok(matByKey[11139] and matByKey[11139].missing == 0 and matByKey[11139].have == 5, "Splitter liegen schon in der Tasche")
+ok(matByKey[11083] and matByKey[11083].missing == 1, "Seelenstaub fehlt")
+ok(shopping.unknown == 1 and shopping.missingMats == 2, ("unbekannt %d, fehlend %d"):format(shopping.unknown, shopping.missingMats))
+local offhandItem
+for _, item in ipairs(shopping.needed) do if item.label == ns.L.SLOT_OH_WEAPON then offhandItem = item end end
+ns:ToggleShopItem(offhandItem.key)
+local reduced = ns:BuildShopping()
+for _, mat in ipairs(reduced.mats) do if mat.key == 11134 then ok(mat.count == 2 and mat.missing == 1, "abgewählte Verzauberung zählt nicht mit") end end
+ns:ToggleShopItem(offhandItem.key)
+ok(#ns:BuildShopping().mats == 3, "wieder angewählt")
+
+----------------------------------------------------------------------
+-- Auktionshaus ohne Auctionator
+----------------------------------------------------------------------
+Mock.CreateAuctionHouse()
+SlashCmdList.VERZAUBERBERATER("ah")
+ns.AH:SearchAll()
+ok(find(Mock.chat, "Auktionshaus") or find(Mock.chat, "auction house"), "Hinweis, wenn das AH zu ist")
+AuctionHouseFrame:Show()
+Mock.FireEvent("AUCTION_HOUSE_SHOW")
+Mock.RunTimers()
+local panel = VerzauberBeraterAHPanel
+ok(panel and panel:IsShown(), "Panel erscheint am Auktionshaus")
+local p1, anchor, p2, px, py = panel:GetPoint()
+ok(anchor == AuctionHouseFrame and p1 == "TOPLEFT" and p2 == "TOPRIGHT" and px == 8 and py == -200, "Panel hängt rechts am AH")
+ok(panel.main.label:GetText():find("2"), "Knopf zeigt 2 fehlende Materialien: " .. tostring(panel.main.label:GetText()))
+local shownRows = 0
+for _, row in ipairs(panel.rows) do
+	if row:IsShown() then
+		shownRows = shownRows + 1
+		Mock.Fire(row, "OnEnter")
+		Mock.Fire(row, "OnLeave")
+	end
+end
+ok(shownRows == 3, "3 Material-Zeilen im Panel")
+panel.main:Click("LeftButton")
+ok(#Mock.ahSearches == 1 and AuctionHouseFrame.__mode == AuctionHouseFrameDisplayMode.Buy, "erste Suche im Blizzard-AH (Kaufen-Ansicht)")
+panel.main:Click("LeftButton")
+ok(#Mock.ahSearches == 2 and Mock.ahSearches[1] ~= Mock.ahSearches[2], "zweiter Klick sucht das nächste Material")
+panel.main:Click("LeftButton")
+ok(Mock.ahSearches[3] == Mock.ahSearches[1], "danach geht es wieder von vorn los")
+panel.rows[1]:Click()
+ok(#Mock.ahSearches == 4, "Klick auf eine Zeile sucht genau dieses Material")
+ok(Mock.ahSearches[4] == panel.rows[1].mat.name and Mock.itemNames[panel.rows[1].mat.key] == Mock.ahSearches[4],
+	"Suchbegriff ist der Item-Name in Client-Sprache: " .. Mock.ahSearches[4])
+panel.main:Click("RightButton")
+ok(ns.db.ah.expanded == false and panel:GetHeight() == 38, "Rechtsklick klappt das Panel zu")
+panel.toggle:Click()
+ok(ns.db.ah.expanded == true and panel:GetHeight() > 100, "wieder aufgeklappt")
+Mock.Fire(panel.toggle, "OnDragStart")
+Mock.Fire(panel.toggle, "OnDragStop")
+ok(ns.db.ah.x == 390 and ns.db.ah.y == -200, ("Position gespeichert: %s / %s"):format(tostring(ns.db.ah.x), tostring(ns.db.ah.y)))
+SlashCmdList.VERZAUBERBERATER("ah")
+ok(ns.db.ah.x == 8 and ns.db.ah.y == -200, "/vb ah setzt die Position zurück")
+Mock.bags[11134] = 4
+Mock.FireEvent("BAG_UPDATE_DELAYED")
+ok(panel.main.label:GetText():find("1"), "nach dem Kauf zählt der Knopf runter")
+ns.UI:Open(4)
+local shopAH = ns.UI.pages[4]
+ok(shopAH.ah:IsShown() and shopAH.ah:GetAlpha() == 1 and not shopAH.listButton:IsShown(), "Fenster: AH-Knopf aktiv, ohne Auctionator keine Liste")
+ok(hoverRows(shopAH.enchants) >= 6 and hoverRows(shopAH.mats) == 3, "Einkaufslisten-Zeilen mit Tooltips")
+shopAH.mats.rows[1]:Click()
+ok(#Mock.ahSearches == 5, "Material-Zeile im Fenster sucht im AH")
+shopAH.enchants.rows[1]:Click()
+ok(not shopAH.shopping.needed[1].included, "Klick wählt eine Verzauberung ab")
+shopAH.enchants.rows[1]:Click()
+ok(shopAH.shopping.needed[1].included, "und wieder an")
+
+----------------------------------------------------------------------
+-- Auktionshaus mit Auctionator
+----------------------------------------------------------------------
+Mock.InstallAuctionator()
+Mock.auctionator.prices[11083] = 2500
+Mock.bags[11134] = 1
+Mock.FireEvent("BAG_UPDATE_DELAYED")
+ok(panel.price:IsShown() and panel.list:IsShown(), "Preis-Schätzung und Auctionator-Knopf sichtbar")
+panel.main:Click("LeftButton")
+local terms = Mock.auctionator.searches[1]
+ok(terms and #terms == 2, "alle fehlenden Mats auf einmal in Auctionator gesucht")
+panel.list:Click()
+local list = Mock.auctionator.lists[ns.L.AH_LIST_NAME]
+ok(list and #list == 2 and list[1]:find(";;") and (list[1]:find("3") or list[2]:find("3")), "Auctionator-Liste mit Mengen angelegt")
+panel.rows[2]:Click()
+ok(#Mock.auctionator.searches == 2 and #Mock.auctionator.searches[2] == 1, "Einzelsuche über Auctionator")
+ns.UI:Open(4)
+ok(shopAH.listButton:IsShown(), "Fenster: Auctionator-Knopf sichtbar")
+shopAH.ah:Click()
+ok(#Mock.auctionator.searches == 3, "Fenster-Knopf sucht über Auctionator")
+Auctionator = nil
+
+-- Auktionshaus schließen und Option abschalten
+ns.UI:Open(4)
+AuctionHouseFrame:Hide()
+ok(not panel:IsShown(), "Panel verschwindet mit dem AH")
+ok(shopAH.ah:GetAlpha() < 1, "Fenster-Knopf wird ausgegraut, wenn das AH zugeht")
+AuctionHouseFrame:Show()
+Mock.FireEvent("AUCTION_HOUSE_SHOW")
+Mock.RunTimers()
+ok(panel:IsShown(), "Panel kommt beim nächsten Besuch wieder")
+Mock.FireEvent("AUCTION_HOUSE_CLOSED")
+ok(not panel:IsShown(), "AUCTION_HOUSE_CLOSED blendet aus")
+ns.AH:SetEnabled(false)
+AuctionHouseFrame:Show()
+Mock.FireEvent("AUCTION_HOUSE_SHOW")
+Mock.RunTimers()
+ok(not panel:IsShown(), "abgeschaltet: kein Panel")
+ns.AH:SetEnabled(true)
+ok(panel:IsShown(), "wieder eingeschaltet")
+AuctionHouseFrame:Hide()
+Mock.FireEvent("AUCTION_HOUSE_CLOSED")
+Mock.bags = {}
 
 -- Alle Verzauberungen: Filter und Häkchen
 ns.UI:SelectTab(5)

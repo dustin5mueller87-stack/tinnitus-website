@@ -33,6 +33,18 @@ Oben wählst du **Klasse**, **Spec**, **Waffen-Setup** (Zweihand, zwei Einhandwa
 
 Außerdem zeigt das Add-on bei unverzauberten Gegenständen im Tooltip direkt einen Tipp an und meldet beim Level-Up, wenn eine neue Verzauberung sinnvoll wird.
 
+## Auktionshaus
+
+Sobald du das Auktionshaus öffnest, erscheint rechts daneben das Verzauber-Panel:
+
+- **"Verzauber-Mats suchen (N)"** sucht alle Materialien, die dir noch fehlen. Mit [Auctionator](https://www.curseforge.com/wow/addons/auctionator) geht das in einem Rutsch im Einkaufs-Reiter. Ohne Auctionator sucht jeder Klick das nächste Material im normalen Auktionshaus.
+- Die **Liste** zeigt jedes Material mit Menge. Was du schon in Taschen oder Bank hast, wird abgezogen. Ein Klick auf eine Zeile sucht genau dieses Material.
+- Mit Auctionator gibt es eine **Preis-Schätzung** und einen Knopf, der die Einkaufsliste "Verzauber-Berater" samt Mengen in Auctionator anlegt.
+- Welche Verzauberungen mitzählen, stellst du im Register **Einkaufsliste** ein: entweder nur, was dir laut Ausrüstungs-Scan fehlt, oder alles für die Auswahl oben. Einzelne Verzauberungen wählst du per Klick ab und wieder an.
+- Das Panel lässt sich am kleinen Pfeil-Knopf verschieben. Rechtsklick auf den großen Knopf klappt es zu, `/vb ah` setzt die Position zurück.
+
+Die Materialien liest das Add-on, wo möglich, direkt aus den Rezeptdaten deines Clients. Sonst nimmt es die Angaben aus der Datenbank.
+
 ## Woher die Daten kommen
 
 - Werte und Rezepte stammen vom WoW-Forever-Beta-Stand 1.60.1 (Oktober 2026). Zusammengetragen sind sie aus Wowhead Forever, BlizzardWatch, Warcraft Tavern, Zockify, Icy Veins und weiteren Seiten.

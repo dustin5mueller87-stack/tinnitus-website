@@ -16,7 +16,7 @@ local TAB_RECO, TAB_PLAN, TAB_GEAR, TAB_SHOP, TAB_ALL, TAB_INFO = 1, 2, 3, 4, 5,
 local GREEN, GREY, GOLD, PURPLE, ORANGE, RED, YELLOW =
 	"|cff1eff00", "|cff9d9d9d", "|cffffd100", "|cffa335ee", "|cffff8c26", "|cffff4d4d", "|cffffd940"
 
-local ENCHANTING_SOURCES = { T = true, D = true, V = true, R = true, RAID = true }
+local ENCHANTING_SOURCES = ns.ENCHANTING_SOURCES
 
 ----------------------------------------------------------------------
 -- Gemeinsame Helfer
@@ -46,9 +46,10 @@ local function EnchantLines(e, spec, row, level)
 	tinsert(lines, { format(L.TT_LEVEL, e.lvl), C.gold[1], C.gold[2], C.gold[3] })
 	if e.sk then tinsert(lines, { format(L.TT_SKILL, e.sk), 1, 1, 1 }) end
 	tinsert(lines, { format(L.TT_SOURCE, ns:SourceText(e)), 1, 1, 1 })
-	if e.m then
-		tinsert(lines, { L.TT_MATS, C.gold[1], C.gold[2], C.gold[3] })
-		for _, mat in ipairs(e.m) do
+	local mats, live = ns:MatsFor(e)
+	if mats then
+		tinsert(lines, { live and L.TT_MATS_LIVE or L.TT_MATS, C.gold[1], C.gold[2], C.gold[3] })
+		for _, mat in ipairs(mats) do
 			tinsert(lines, { "   " .. mat[2] .. "x " .. ns:MatName(mat[1]), 0.9, 0.9, 0.9 })
 		end
 	elseif ENCHANTING_SOURCES[e.src] then
@@ -424,7 +425,60 @@ end
 ----------------------------------------------------------------------
 local Shop = {}
 
-local function CreateShopRow(list)
+local function CreateShopEnchantRow(list)
+	local row = CreateFrame("Button", nil, list)
+	W.RowBackground(row)
+	row.box = CreateFrame("Frame", nil, row, W.TEMPLATE)
+	row.box:SetSize(14, 14)
+	row.box:SetPoint("LEFT", 5, 0)
+	W.Backdrop(row.box, C.field, C.edge)
+	row.mark = row.box:CreateTexture(nil, "OVERLAY")
+	row.mark:SetPoint("TOPLEFT", 3, -3)
+	row.mark:SetPoint("BOTTOMRIGHT", -3, 3)
+	row.mark:SetColorTexture(C.gold[1], C.gold[2], C.gold[3], 1)
+	row.icon = row:CreateTexture(nil, "ARTWORK")
+	row.icon:SetSize(18, 18)
+	row.icon:SetPoint("LEFT", 26, 0)
+	row.text = W.Text(row, "GameFontHighlightSmall")
+	row.text:SetPoint("LEFT", 50, 0)
+	row.text:SetPoint("RIGHT", -4, 0)
+	row.text:SetWordWrap(false)
+	row:SetScript("OnClick", function(self)
+		if self.item then ns:ToggleShopItem(self.item.key) end
+	end)
+	row:SetScript("OnEnter", function(self)
+		if not self.item then return end
+		local lines = EnchantLines(self.item.e)
+		tinsert(lines, 1, { L.SHOP_INCLUDE_TIP, C.purple[1] + 0.2, C.purple[2] + 0.3, C.purple[3] })
+		W.ShowTip(self, self.item.e.name, lines)
+	end)
+	row:SetScript("OnLeave", W.HideTip)
+	return row
+end
+
+local function UpdateShopEnchantRow(row, item, index)
+	W.Zebra(row, index)
+	row.item = item.item
+	local shown = item.item ~= nil
+	row.box:SetShown(shown)
+	row.icon:SetShown(shown)
+	if not shown then
+		row.text:SetText(item.text)
+		return
+	end
+	local entry = item.item
+	row.mark:SetShown(entry.included)
+	row.icon:SetTexture("Interface\\Icons\\Trade_Engraving")
+	row.icon:SetDesaturated(not entry.included)
+	-- "Zweihandwaffe: Einschlag (+6 Waffenschaden)" statt doppeltem Slot-Namen
+	local e = entry.e
+	local name = ns:ShortName(e)
+	local label = e.fx and name or (name .. " (" .. ns:EffectText(e) .. ")")
+	local text = GOLD .. entry.label .. ":|r " .. label .. " " .. Badges(e)
+	row.text:SetText(entry.included and text or (GREY .. entry.label .. ": " .. name .. "|r"))
+end
+
+local function CreateShopMatRow(list)
 	local row = CreateFrame("Button", nil, list)
 	W.RowBackground(row)
 	row.icon = row:CreateTexture(nil, "ARTWORK")
@@ -432,113 +486,116 @@ local function CreateShopRow(list)
 	row.icon:SetPoint("LEFT", 4, 0)
 	row.text = W.Text(row, "GameFontHighlightSmall")
 	row.text:SetPoint("LEFT", 28, 0)
-	row.text:SetPoint("RIGHT", -4, 0)
+	row.text:SetPoint("RIGHT", -84, 0)
 	row.text:SetWordWrap(false)
+	row.state = W.Text(row, "GameFontHighlightSmall", "RIGHT")
+	row.state:SetPoint("RIGHT", -4, 0)
+	row.state:SetWidth(80)
+	row:SetScript("OnClick", function(self)
+		if self.mat then ns.AH:SearchMat(self.mat) end
+	end)
 	row:SetScript("OnEnter", function(self)
-		if self.e then UI:ShowEnchantTip(self, self.e) end
+		local mat = self.mat
+		if not mat then return end
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		if type(mat.key) == "number" and GameTooltip.SetItemByID then
+			GameTooltip:SetItemByID(mat.key)
+		else
+			GameTooltip:AddLine(mat.name, 1, 1, 1)
+		end
+		GameTooltip:AddLine(L.SHOP_MAT_TIP, C.purple[1] + 0.2, C.purple[2] + 0.3, C.purple[3], true)
+		GameTooltip:Show()
 	end)
 	row:SetScript("OnLeave", W.HideTip)
 	return row
 end
 
-local function UpdateShopRow(row, item, index)
+local function UpdateShopMatRow(row, item, index)
 	W.Zebra(row, index)
-	row.e = item.e
-	row.icon:SetTexture(item.icon)
-	row.icon:SetShown(item.icon ~= nil)
-	row.text:SetText(item.text)
+	local mat = item.mat
+	row.mat = mat
+	row.icon:SetShown(mat ~= nil)
+	if not mat then
+		row.text:SetText(item.text)
+		row.state:SetText("")
+		return
+	end
+	row.icon:SetTexture(mat.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+	row.text:SetText(mat.count .. "x " .. mat.name)
+	if mat.missing > 0 then
+		row.state:SetText(GOLD .. format(L.SHOP_STILL, mat.missing) .. "|r")
+	else
+		row.state:SetText(GREEN .. format(L.SHOP_HAVE, mat.have) .. "|r")
+	end
 end
 
 function Shop:Build(parent)
 	local page = Page(parent)
 	self.frame = page
-	self.onlyMissing = W.Checkbox(page, L.SHOP_ONLY_MISSING, function() Shop:Refresh() end)
+	self.onlyMissing = W.Checkbox(page, L.SHOP_ONLY_MISSING, function(checked)
+		ns.db.shopOnlyMissing = checked
+		ns:Fire("SHOPPING_CHANGED")
+	end)
 	self.onlyMissing:SetPoint("TOPLEFT", 4, -4)
-	self.onlyMissing:SetChecked(true)
 	self.forText = W.Text(page, "GameFontDisableSmall", "RIGHT")
 	self.forText:SetPoint("TOPRIGHT", -4, -6)
 
 	self.leftHeader = W.Text(page, "GameFontNormal")
 	self.leftHeader:SetPoint("TOPLEFT", 4, -30)
 	self.leftHeader:SetText(L.SHOP_ENCHANTS)
-	self.enchants = W.ScrollList(page, 24, CreateShopRow, UpdateShopRow)
+	self.enchants = W.ScrollList(page, 24, CreateShopEnchantRow, UpdateShopEnchantRow)
 	self.enchants:SetPoint("TOPLEFT", 0, -50)
 	self.enchants:SetPoint("BOTTOMRIGHT", page, "BOTTOM", -6, 34)
 
 	self.rightHeader = W.Text(page, "GameFontNormal")
 	self.rightHeader:SetPoint("TOPLEFT", page, "TOP", 8, -30)
 	self.rightHeader:SetText(L.SHOP_MATS)
-	self.mats = W.ScrollList(page, 24, CreateShopRow, UpdateShopRow)
+	self.mats = W.ScrollList(page, 24, CreateShopMatRow, UpdateShopMatRow)
 	self.mats:SetPoint("TOPLEFT", page, "TOP", 6, -50)
 	self.mats:SetPoint("BOTTOMRIGHT", 0, 34)
 
 	self.note = W.Text(page, "GameFontDisableSmall")
 	self.note:SetPoint("BOTTOMLEFT", 4, 10)
-	self.chat = W.Button(page, L.SHOP_CHAT, 220, 24, function() Shop:PostToChat() end)
+	self.chat = W.Button(page, L.SHOP_CHAT, 200, 24, function() Shop:PostToChat() end)
 	self.chat:SetPoint("BOTTOMRIGHT", -2, 4)
 	self.chat.tip = L.SHOP_CHAT_TIP
-end
-
-function Shop:Collect()
-	local needed = {}
-	local spec, level
-	if self.onlyMissing:GetChecked() then
-		local scan = ns:ScanGear()
-		if scan then
-			spec, level = scan.spec, scan.level
-			for _, entry in ipairs(scan.rows) do
-				if (entry.status == "MISSING" or entry.status == "BETTER") and entry.reco.best then
-					tinsert(needed, { label = entry.row.label, e = entry.reco.best.e })
-				end
-			end
-		end
-	else
-		spec, level = ns:SelectedSpec(), ns.sel.level
-		local own = spec.class.file == ns:PlayerClassFile()
-		for _, row in ipairs(ns:BuildRecommendations(spec, ns:SelectedSetup(), level, own and ns:IsEnchanter())) do
-			if row.reco.best then tinsert(needed, { label = row.label, e = row.reco.best.e }) end
-		end
-	end
-	return needed, spec, level
+	self.listButton = W.Button(page, L.AH_LIST, 130, 24, function() ns.AH:CreateList() end)
+	self.listButton:SetPoint("RIGHT", self.chat, "LEFT", -6, 0)
+	self.listButton.tip = format(L.AH_LIST_TIP, L.AH_LIST_NAME)
+	self.ah = W.Button(page, L.SHOP_AH, 170, 24, function() ns.AH:SearchAll() end)
+	self.ah:SetPoint("RIGHT", self.listButton, "LEFT", -6, 0)
+	self.ah.tip = L.SHOP_AH_TIP
 end
 
 function Shop:Refresh()
-	local needed, spec, level = self:Collect()
-	self.needed = needed
-	self.forText:SetText(spec and format(L.SHOP_FOR, ns:SpecLabel(spec), level) or "")
+	local shopping = ns:BuildShopping()
+	self.shopping = shopping
+	self.onlyMissing:SetChecked(shopping.onlyMissing)
+	self.forText:SetText(shopping.spec and format(L.SHOP_FOR, ns:SpecLabel(shopping.spec), shopping.level) or "")
 
-	local enchantRows, totals, unknown = {}, {}, 0
-	for _, item in ipairs(needed) do
-		local e = item.e
-		tinsert(enchantRows, { e = e, text = GOLD .. item.label .. ":|r " .. ns:EnchantLabel(e) .. " " .. Badges(e),
-			icon = "Interface\\Icons\\Trade_Engraving" })
-		if e.m then
-			for _, mat in ipairs(e.m) do totals[mat[1]] = (totals[mat[1]] or 0) + mat[2] end
-		elseif ENCHANTING_SOURCES[e.src] then
-			unknown = unknown + 1
-		end
-	end
-	local matRows = {}
-	for key, count in pairs(totals) do
-		tinsert(matRows, { text = count .. "x " .. ns:MatName(key), icon = ns:MatIcon(key), name = ns:MatName(key) })
-	end
-	tsort(matRows, function(a, b) return a.name < b.name end)
-	if #enchantRows == 0 then
-		tinsert(enchantRows, { text = GREY .. L.SHOP_NOTHING .. "|r" })
-	end
-	if #matRows == 0 and #needed > 0 then
-		tinsert(matRows, { text = GREY .. L.SHOP_NO_MATS .. "|r" })
-	end
+	local enchantRows, matRows = {}, {}
+	for _, item in ipairs(shopping.needed) do tinsert(enchantRows, { item = item }) end
+	for _, mat in ipairs(shopping.mats) do tinsert(matRows, { mat = mat }) end
+	if #enchantRows == 0 then tinsert(enchantRows, { text = GREY .. L.SHOP_NOTHING .. "|r" }) end
+	if #matRows == 0 and #shopping.needed > 0 then tinsert(matRows, { text = GREY .. L.SHOP_NO_MATS .. "|r" }) end
 	self.enchants:SetData(enchantRows)
 	self.mats:SetData(matRows)
-	self.note:SetText(unknown > 0 and format(L.SHOP_UNKNOWN, unknown) or "")
-	self.chat:SetShown(#needed > 0)
+	self.note:SetText(shopping.unknown > 0 and format(L.SHOP_UNKNOWN, shopping.unknown) or "")
+
+	local included = 0
+	for _, item in ipairs(shopping.needed) do
+		if item.included then included = included + 1 end
+	end
+	self.chat:SetShown(included > 0)
+	self.ah:SetShown(#shopping.mats > 0)
+	self.ah:SetAlpha(ns.AH:IsOpen() and 1 or 0.45)
+	self.listButton:SetShown(ns.AH:HasAuctionator() and shopping.missingMats > 0)
 end
 
 function Shop:PostToChat()
 	local names = {}
-	for _, item in ipairs(self.needed or {}) do
-		if ENCHANTING_SOURCES[item.e.src] then tinsert(names, item.e.name) end
+	for _, item in ipairs(self.shopping and self.shopping.needed or {}) do
+		if item.included and ENCHANTING_SOURCES[item.e.src] then tinsert(names, item.e.name) end
 	end
 	if #names == 0 then return end
 	local message = format(L.SHOP_CHAT_MSG, tconcat(names, ", "))
@@ -681,11 +738,14 @@ local Info = {}
 function Info:Build(parent)
 	local page = Page(parent)
 	self.frame = page
-	self.text = W.Text(page, "GameFontHighlight")
+	self.text = W.Text(page, "GameFontHighlightSmall")
 	self.text:SetPoint("TOPLEFT", 8, -8)
-	self.text:SetPoint("TOPRIGHT", -8, -8)
+	self.text:SetPoint("TOPRIGHT", -320, -8)
 	self.text:SetJustifyV("TOP")
 	self.text:SetSpacing(2)
+	local optionsTitle = W.Text(page, "GameFontNormal")
+	optionsTitle:SetPoint("TOPLEFT", page, "TOPRIGHT", -300, -8)
+	optionsTitle:SetText(OPTIONS or "Optionen")
 	self.text:SetText(format(L.INFO_TEXT,
 		W.AtlasMarkup(W.ATLAS.star, 14, GOLD .. "*|r"),
 		W.AtlasMarkup(W.ATLAS.warn, 14, ORANGE .. "?|r")))
@@ -695,11 +755,12 @@ function Info:Build(parent)
 		{ L.OPT_TOOLTIP, function() return ns.db.tooltip end, function(v) ns.db.tooltip = v end },
 		{ L.OPT_UTILITY, function() return ns.db.showUtility end, function(v) ns.db.showUtility = v; ns:InvalidateCache() end },
 		{ L.OPT_LEVELUP, function() return ns.db.levelUp end, function(v) ns.db.levelUp = v end },
+		{ L.OPT_AH, function() return ns.db.ah.show end, function(v) ns.AH:SetEnabled(v) end },
 	}
 	self.boxes = {}
 	for i, option in ipairs(options) do
 		local box = W.Checkbox(page, option[1], option[3])
-		box:SetPoint("BOTTOMLEFT", 10, 34 + (#options - i) * 24)
+		box:SetPoint("TOPLEFT", page, "TOPRIGHT", -300, -12 - i * 26)
 		box.getter = option[2]
 		self.boxes[i] = box
 	end
@@ -918,6 +979,12 @@ end
 ns:On("SELECTION_CHANGED", function() UI:Refresh() end)
 ns:On("DATA_CHANGED", function() UI:Refresh() end)
 ns:On("SPEC_CHANGED", function() UI:Refresh() end)
+ns:On("SHOPPING_CHANGED", function()
+	if UI.activeTab == TAB_SHOP then UI:Refresh() end
+end)
+ns:On("AH_STATE", function()
+	if UI.activeTab == TAB_SHOP then UI:Refresh() end
+end)
 ns:On("GEAR_CHANGED", function()
 	if UI.activeTab == TAB_GEAR or UI.activeTab == TAB_SHOP or UI.activeTab == TAB_RECO then UI:Refresh() end
 end)

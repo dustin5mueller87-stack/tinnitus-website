@@ -40,7 +40,7 @@ L.SETUP_2H       = T("Zweihandwaffe", "Two-hander")
 L.SETUP_DW       = T("Zwei Einhandwaffen", "Dual wield")
 L.SETUP_1HS      = T("Einhand + Schild", "One-hand + shield")
 L.SETUP_1HOH     = T("Einhand + Nebenhand", "One-hand + off-hand")
-L.SETUP_AUTO_IS  = T("Automatisch (%s)", "Automatic (%s)")
+L.SETUP_AUTO_IS  = T("Auto (%s)", "Auto (%s)")
 
 -- Slots
 L.SLOT_HEAD      = T("Kopf", "Head")
@@ -205,6 +205,41 @@ L.SHOP_CHAT_TIP  = T("Öffnet die Chat-Eingabe mit einer fertigen Anfrage. Du mu
 L.SHOP_CHAT_MSG  = T("Suche Verzauberer für: %s - Trinkgeld inklusive, bitte /w!", "LF enchanter for: %s - tip included, please /w!")
 L.SHOP_FOR       = T("Für: %s - Level %d", "For: %s - level %d")
 L.SHOP_NO_MATS   = T("(keine Verzauberkunst-Materialien nötig)", "(no enchanting materials needed)")
+L.SHOP_INCLUDE_TIP = T("Klicken: diese Verzauberung in die Einkaufsliste aufnehmen oder weglassen.", "Click: include or skip this enchant in the shopping list.")
+L.SHOP_HAVE      = T("hast %d", "have %d")
+L.SHOP_STILL     = T("noch %d", "need %d")
+L.SHOP_AH        = T("Im Auktionshaus suchen", "Search auction house")
+L.SHOP_AH_TIP    = T("Sucht die fehlenden Materialien im Auktionshaus. Das Auktionshaus muss dafür offen sein.", "Searches the missing materials at the auction house. The auction house has to be open.")
+L.SHOP_MAT_TIP   = T("Klicken: dieses Material im Auktionshaus suchen", "Click: search this material at the auction house")
+
+-- Auktionshaus
+L.AH_BUTTON      = T("Verzauber-Mats suchen (%d)", "Search enchant mats (%d)")
+L.AH_BUTTON_DONE = T("Alle Verzauber-Mats da!", "All enchant mats ready!")
+L.AH_BUTTON_NONE = T("Keine Verzauberung nötig", "No enchants needed")
+L.AH_FOR         = T("Für: %s - Level %d", "For: %s - level %d")
+L.AH_ONLY_MISSING= T("nur was dir fehlt", "only what you miss")
+L.AH_SELECTION   = T("deine Auswahl im Fenster", "your selection in the window")
+L.AH_PRICE       = T("Geschätzt: %s", "Estimated: %s")
+L.AH_PRICE_SRC   = T("laut Auctionator-Preisen für die fehlenden Mats", "based on Auctionator prices for the missing mats")
+L.AH_LIST        = T("Auctionator-Liste", "Auctionator list")
+L.AH_LIST_TIP    = T("Legt in Auctionator die Einkaufsliste \"%s\" mit allen fehlenden Mats und Mengen an.", "Creates the Auctionator shopping list \"%s\" with all missing mats and amounts.")
+L.AH_LIST_NAME   = T("Verzauber-Berater", "Enchant Advisor")
+L.AH_LIST_DONE   = T("Auctionator-Einkaufsliste \"%s\" angelegt: %d Materialien.", "Auctionator shopping list \"%s\" created: %d materials.")
+L.AH_LIST_FAIL   = T("Auctionator wollte die Liste nicht anlegen. Ist es aktuell?", "Auctionator refused to create the list. Is it up to date?")
+L.AH_WINDOW      = T("Details", "Details")
+L.AH_WINDOW_TIP  = T("Öffnet die Einkaufsliste im Verzauber-Berater: dort kannst du Verzauberungen ab- und anwählen.", "Opens the shopping list in the Enchant Advisor, where you can include or skip enchants.")
+L.AH_MAIN_TIP    = T("Linksklick: alle fehlenden Mats suchen - mit Auctionator auf einmal, sonst eins nach dem anderen.\nRechtsklick: Liste auf- oder zuklappen.\nAm Rand ziehen: verschieben.", "Left-click: search all missing mats - all at once with Auctionator, otherwise one after another.\nRight-click: expand or collapse the list.\nDrag the border: move.")
+L.AH_SEARCH_MANY = T("Suche %d Materialien in Auctionator ...", "Searching %d materials in Auctionator ...")
+L.AH_SEARCH_ONE  = T("Suche %s (%d/%d) - nochmal klicken für das nächste Material.", "Searching %s (%d/%d) - click again for the next material.")
+L.AH_SEARCH_SINGLE = T("Suche %s ...", "Searching %s ...")
+L.AH_ALL_THERE   = T("Du hast schon alle Materialien in Taschen oder Bank.", "You already have all materials in your bags or bank.")
+L.AH_NOT_OPEN    = T("Öffne zuerst das Auktionshaus.", "Open the auction house first.")
+L.AH_FAILED      = T("Die Suche ließ sich nicht starten - das Auktionshaus ist vielleicht gerade beschäftigt.", "Could not start the search - the auction house may be busy.")
+L.AH_UNKNOWN     = T("%d Verzauberung(en) ohne bekannte Materialien", "%d enchant(s) without known materials")
+L.AH_MORE        = T("... und %d weitere", "... and %d more")
+L.AH_RESET       = T("Position des Auktionshaus-Knopfs zurückgesetzt.", "Auction house button position reset.")
+L.OPT_AH         = T("Knopf im Auktionshaus anzeigen", "Show button at the auction house")
+L.TT_MATS_LIVE   = T("Materialien (aus dem Spiel):", "Materials (from the game):")
 
 -- Alle Verzauberungen
 L.ALL_FILTER     = T("Slot", "Slot")
@@ -236,8 +271,11 @@ L.INFO_TEXT = T(
 	"|cffffd100Wichtig|r\n" ..
 	"WoW Forever ist noch in der Beta, Blizzard dreht ständig an den Zahlen. Wenn ein Wert ingame anders ist, " ..
 	"gilt das Spiel - die Daten stehen in Data\\Enchants.lua und lassen sich leicht anpassen.\n\n" ..
+	"|cffffd100Auktionshaus|r\n" ..
+	"Am Auktionshaus erscheint rechts das Verzauber-Panel: ein Klick sucht alle fehlenden Materialien " ..
+	"(mit Auctionator auf einmal, sonst eins nach dem anderen). Was du schon in Taschen oder Bank hast, wird abgezogen.\n\n" ..
 	"|cffffd100Befehle|r\n" ..
-	"/vb - Fenster an/aus     /vb scan - Ausrüstung prüfen\n" ..
+	"/vb - Fenster an/aus     /vb scan - Ausrüstung prüfen     /vb ah - AH-Panel zurücksetzen\n" ..
 	"/vb minimap - Minimap-Button an/aus     /vb reset - Fensterposition zurücksetzen",
 	"|cffffd100How it works|r\n" ..
 	"Pick class, spec, weapon setup and level at the top. The advisor scores every known enchant with your spec's stat weights " ..
@@ -250,8 +288,11 @@ L.INFO_TEXT = T(
 	"|cffffd100Important|r\n" ..
 	"WoW Forever is still in beta and Blizzard keeps tuning numbers. If a value differs in game, the game wins - " ..
 	"the data lives in Data\\Enchants.lua and is easy to adjust.\n\n" ..
+	"|cffffd100Auction house|r\n" ..
+	"At the auction house the enchant panel appears on the right: one click searches all missing materials " ..
+	"(all at once with Auctionator, otherwise one after another). What you already have in bags or bank is subtracted.\n\n" ..
 	"|cffffd100Commands|r\n" ..
-	"/vb - toggle window     /vb scan - check gear\n" ..
+	"/vb - toggle window     /vb scan - check gear     /vb ah - reset auction house panel\n" ..
 	"/vb minimap - toggle minimap button     /vb reset - reset window position")
 
 -- Chat / Level-Up
@@ -263,6 +304,6 @@ L.MINIMAP_TIP    = T("Linksklick: Fenster öffnen/schließen\nZiehen: Button ver
 L.MINIMAP_ON     = T("Minimap-Button an.", "Minimap button shown.")
 L.MINIMAP_OFF    = T("Minimap-Button aus. Mit /vb minimap holst du ihn zurück.", "Minimap button hidden. Use /vb minimap to bring it back.")
 L.RESET_DONE     = T("Fensterposition zurückgesetzt.", "Window position reset.")
-L.HELP           = T("Befehle: /vb, /vb scan, /vb minimap, /vb reset", "Commands: /vb, /vb scan, /vb minimap, /vb reset")
+L.HELP           = T("Befehle: /vb, /vb scan, /vb plan, /vb minimap, /vb reset, /vb ah (AH-Knopf zurücksetzen)", "Commands: /vb, /vb scan, /vb plan, /vb minimap, /vb reset, /vb ah (reset auction house button)")
 L.TOOLTIP_TIP    = T("Tipp: %s", "Tip: %s")
 L.TOOLTIP_OK     = T("Verzaubert", "Enchanted")

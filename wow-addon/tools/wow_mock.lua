@@ -66,6 +66,10 @@ MIXINS.GameTooltipTemplate = {
 		return true
 	end,
 	SetHyperlink = function(self, link) self.__itemLink = link end,
+	SetItemByID = function(self, itemID)
+		assert(type(itemID) == "number", "SetItemByID braucht eine Item-ID")
+		self.__lines = { Mock.itemNames[itemID] or ("Item " .. itemID) }
+	end,
 	GetItem = function(self) return "Item", self.__itemLink, nil end,
 }
 
@@ -128,6 +132,18 @@ function impl:GetWidth() return self.__w or DefaultSize(self, "GetWidth") end
 function impl:GetHeight() return self.__h or (DefaultSize(self, "GetHeight") - 60) end
 function impl:GetSize() return self:GetWidth(), self:GetHeight() end
 function impl:GetCenter() return 400, 300 end
+function impl:GetLeft() return self.__left or 300 end
+function impl:GetRight() return (self.__left or 300) + self:GetWidth() end
+function impl:GetTop() return self.__top or 700 end
+function impl:GetBottom() return (self.__top or 700) - self:GetHeight() end
+function impl:StartMoving() self.__moving = true end
+function impl:StopMovingOrSizing()
+	-- Wie im Spiel: nach dem Ziehen hängt der Frame an einer neuen Bildschirmposition
+	self.__moving = false
+	self.__left, self.__top = 1250, 520
+end
+function impl:SetAlpha(alpha) assert(type(alpha) == "number", "SetAlpha braucht eine Zahl") self.__alpha = alpha end
+function impl:GetAlpha() return self.__alpha or 1 end
 function impl:GetEffectiveScale() return 1 end
 function impl:GetScale() return 1 end
 
@@ -393,6 +409,61 @@ C_Item = {
 	IsItemDataCachedByID = function(id) return Mock.itemNames[id] ~= nil end,
 	RequestLoadItemDataByID = function(id) table.insert(Mock.log, "item-request " .. id) end,
 }
+
+Mock.bags = {}        -- itemID -> Anzahl in Taschen und Bank
+Mock.schematics = {}  -- Rezept-Spell-ID -> Schema, wie es C_TradeSkillUI liefert
+C_Item.GetItemCount = function(item, includeBank)
+	assert(type(item) == "number", "GetItemCount im Test nur mit Item-ID")
+	return Mock.bags[item] or 0
+end
+C_TradeSkillUI = {
+	GetRecipeSchematic = function(recipeID, isRecraft)
+		assert(isRecraft == false, "GetRecipeSchematic: isRecraft angeben")
+		return Mock.schematics[recipeID]
+	end,
+}
+function GetMoneyString(copper, separateThousands)
+	return ("%dg %ds %dc"):format(math.floor(copper / 10000), math.floor(copper / 100) % 100, copper % 100)
+end
+
+-- Modernes Auktionshaus (wie im Forever-Client): AuctionHouseFrame mit SearchBar
+Mock.ahSearches = {}
+function Mock.CreateAuctionHouse()
+	local ah = CreateFrame("Frame", "AuctionHouseFrame", UIParent)
+	ah.__w, ah.__h, ah.__left, ah.__top = 800, 540, 60, 720
+	local bar = CreateFrame("Frame", nil, ah)
+	ah.SearchBar = bar
+	bar.SearchBox = CreateFrame("EditBox", nil, bar)
+	bar.SearchButton = CreateFrame("Button", nil, bar)
+	bar.SetSearchText = function(self, text) self.SearchBox:SetText(text) end
+	bar.StartSearch = function(self) table.insert(Mock.ahSearches, self.SearchBox:GetText()) end
+	ah.SetDisplayMode = function(self, mode) self.__mode = mode end
+	AuctionHouseFrameDisplayMode = { Buy = { "Buy" } }
+	ah:Hide()
+	return ah
+end
+
+-- Auctionator mit seiner öffentlichen API v1
+Mock.auctionator = { searches = {}, lists = {}, prices = {} }
+function Mock.InstallAuctionator()
+	Auctionator = { API = { v1 = {
+		MultiSearchExact = function(callerID, terms)
+			assert(type(callerID) == "string" and type(terms) == "table", "MultiSearchExact: falsche Parameter")
+			assert(AuctionHouseFrame and AuctionHouseFrame:IsShown(), "MultiSearchExact: AH muss offen sein")
+			for _, term in ipairs(terms) do assert(not term:find("[\";]"), "verbotene Zeichen im Suchbegriff") end
+			table.insert(Mock.auctionator.searches, terms)
+		end,
+		CreateShoppingList = function(callerID, listName, entries)
+			assert(type(callerID) == "string" and type(listName) == "string" and type(entries) == "table", "CreateShoppingList: falsche Parameter")
+			Mock.auctionator.lists[listName] = entries
+		end,
+		ConvertToSearchString = function(callerID, term)
+			assert(type(term) == "table" and type(term.searchString) == "string", "ConvertToSearchString: falsche Parameter")
+			return ('"%s";;;;;;;;;;;;;%s'):format(term.searchString, tostring(term.quantity or ""))
+		end,
+		GetAuctionPriceByItemID = function(callerID, itemID) return Mock.auctionator.prices[itemID] end,
+	} } }
+end
 
 C_Spell = {
 	GetSpellName = function(id) local s = Mock.spells[id]; return s and s.cached ~= false and s.name or nil end,
