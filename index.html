@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Chronischer Tinnitus: Wie ich ihn zweimal loswurde</title>
-<link rel="stylesheet" href="site.css">
+<script>(function(){var r=document.documentElement;var v='dark';try{var s=localStorage.getItem('tb-ansicht');if(s==='dark'||s==='light'){v=s;}}catch(e){}r.setAttribute('data-theme',v);})();</script>
+<link rel="stylesheet" href="/design/tb-latin.css?v=cfadf8b30a">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="manifest" href="/site.webmanifest">
@@ -96,269 +97,445 @@
 </head>
 <body>
 <a class="skip-link" href="#main-content">Zum Hauptinhalt</a>
-<header class="site-header" id="siteHeader">
-  <div class="nav-inner">
-    <a class="brand" href="/" aria-label="Startseite">Tinnitus<span class="brand-dot" aria-hidden="true"></span></a>
-    <nav id="primaryNav" aria-label="Hauptnavigation">
-      <ul class="nav-list">
-        <li><a href="/" class="active">Start</a></li>
-        <li class="nav-dropdown">
-          <button type="button" aria-haspopup="true" aria-expanded="false">Meine Geschichte<span class="nav-caret" aria-hidden="true"></span></button>
-          <ul class="submenu">
-            <li><a href="/tinnitus-geheilt-erfahrungsbericht">Mein Tinnitus-Crash (Kurzgeschichte)</a></li>
-            <li><a href="/meine-geschichte-teil-1">Lang-Bio Teil 1: Die Höllenfahrt</a></li>
-            <li><a href="/meine-geschichte-teil-2">Lang-Bio Teil 2: Der Härtetest</a></li>
-          </ul>
-        </li>
-        <li class="nav-dropdown">
-          <button type="button" aria-haspopup="true" aria-expanded="false">Ursachen<span class="nav-caret" aria-hidden="true"></span></button>
-          <ul class="submenu">
-            <li><a href="/laermbedingter-tinnitus">Lärmbedingter Tinnitus</a></li>
-            <li><a href="/stressbedingter-tinnitus">Stressbedingter Tinnitus</a></li>
-            <li><a href="/medikamente-gifte-tinnitus">Medikamenten-/Gift-Tinnitus</a></li>
-          </ul>
-        </li>
-        <li><a href="/mein-loesungsansatz">Lösungsansatz</a></li>
-        <li><a href="/produkte">Meine Produkte</a></li>
-        <li><a href="/wissenschaftliche-quellen">Quellen</a></li>
-        <li><a href="/erfahrungsberichte">Erfahrungsberichte</a></li>
-        <li><a href="/kontakt">Kontakt</a></li>
-      </ul>
-    </nav>
-    <details class="lang-switch">
-      <summary aria-label="Sprache: Deutsch" title="Sprache: Deutsch">
-        <span class="lang-current" aria-hidden="true">DE</span>
-        <span class="lang-switch-caret" aria-hidden="true"></span>
-      </summary>
-      <div class="lang-menu">
-        <a href="/" hreflang="de" class="active" aria-current="page"><span class="lang-code" dir="ltr">DE</span><span class="lang-name" lang="de" dir="ltr">Deutsch</span></a>
-        <a href="/en/" hreflang="en"><span class="lang-code" dir="ltr">EN</span><span class="lang-name" lang="en" dir="ltr">English</span></a>
-        <a href="/it/" hreflang="it"><span class="lang-code" dir="ltr">IT</span><span class="lang-name" lang="it" dir="ltr">Italiano</span></a>
-        <a href="/fr/" hreflang="fr"><span class="lang-code" dir="ltr">FR</span><span class="lang-name" lang="fr" dir="ltr">Français</span></a>
-        <a href="/nl/" hreflang="nl"><span class="lang-code" dir="ltr">NL</span><span class="lang-name" lang="nl" dir="ltr">Nederlands</span></a>
-        <a href="/es/" hreflang="es"><span class="lang-code" dir="ltr">ES</span><span class="lang-name" lang="es" dir="ltr">Español</span></a>
-        <a href="/tr/" hreflang="tr"><span class="lang-code" dir="ltr">TR</span><span class="lang-name" lang="tr" dir="ltr">Türkçe</span></a>
-        <a href="/pl/" hreflang="pl"><span class="lang-code" dir="ltr">PL</span><span class="lang-name" lang="pl" dir="ltr">Polski</span></a>
-        <a href="/ru/" hreflang="ru"><span class="lang-code" dir="ltr">RU</span><span class="lang-name" lang="ru" dir="ltr">Русский</span></a>
-        <a href="/cs/" hreflang="cs"><span class="lang-code" dir="ltr">CS</span><span class="lang-name" lang="cs" dir="ltr">Čeština</span></a>
-        <a href="/ja/" hreflang="ja"><span class="lang-code" dir="ltr">JA</span><span class="lang-name" lang="ja" dir="ltr">日本語</span></a>
-        <a href="/ko/" hreflang="ko"><span class="lang-code" dir="ltr">KO</span><span class="lang-name" lang="ko" dir="ltr">한국어</span></a>
-        <a href="/id/" hreflang="id"><span class="lang-code" dir="ltr">ID</span><span class="lang-name" lang="id" dir="ltr">Bahasa Indonesia</span></a>
-        <a href="/hi/" hreflang="hi"><span class="lang-code" dir="ltr">HI</span><span class="lang-name" lang="hi" dir="ltr">हिंदी</span></a>
-        <a href="/ar/" hreflang="ar"><span class="lang-code" dir="ltr">AR</span><span class="lang-name" lang="ar" dir="rtl">العربية</span></a>
-        <a href="/pt/" hreflang="pt-PT"><span class="lang-code" dir="ltr">PT</span><span class="lang-name" lang="pt-PT" dir="ltr">Português (Portugal)</span></a>
-      </div>
-    </details>
-    <button class="nav-burger" id="navBurger" type="button" aria-label="Menü" aria-expanded="false" aria-controls="primaryNav">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
-    </button>
-  </div>
+<div class="tb-page" data-marks="aus" style="font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif; color: var(--text); background: var(--bg); min-height: 100%;">
+
+
+
+<header class="tb-header">
+<div class="tb-wrap tb-wrap-wide tb-header-inner">
+<a class="tb-brand" href="#start" aria-label="Tinnitus Bioregulation – zur Startseite">
+<svg class="tb-mark" viewBox="0 0 32 32" aria-hidden="true"><circle class="tb-mark-dot" cx="10" cy="16" r="3.4"></circle><path d="M16.5 10.2a8 8 0 0 1 0 11.6"></path><path d="M21.5 6a14 14 0 0 1 0 20"></path></svg>
+<span><span class="tb-brand-name">Tinnitus Bioregulation</span><span class="tb-brand-by">von Dustin Müller</span></span>
+</a>
+<nav class="tb-nav" aria-label="Hauptmenü">
+<a href="/" class="is-active" aria-current="page">Start</a>
+<div class="tb-navgroup">
+<button type="button" class="tb-navbtn" aria-expanded="false" aria-haspopup="true">Meine Geschichte <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<div class="tb-sub">
+<a href="/tinnitus-geheilt-erfahrungsbericht">Mein Tinnitus-Crash (Kurzgeschichte)</a>
+<a href="/meine-geschichte-teil-1">Lang-Bio Teil 1: Die Höllenfahrt</a>
+<a href="/meine-geschichte-teil-2">Lang-Bio Teil 2: Der Härtetest</a>
+</div>
+</div>
+<div class="tb-navgroup">
+<button type="button" class="tb-navbtn" aria-expanded="false" aria-haspopup="true">Ursachen <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<div class="tb-sub">
+<a href="/laermbedingter-tinnitus">Lärmbedingter Tinnitus</a>
+<a href="/stressbedingter-tinnitus">Stressbedingter Tinnitus</a>
+<a href="/medikamente-gifte-tinnitus">Medikamenten-/Gift-Tinnitus</a>
+</div>
+</div>
+<a href="/mein-loesungsansatz">Lösungsansatz</a>
+<a href="/produkte">Meine Produkte</a>
+<a href="/wissenschaftliche-quellen">Quellen</a>
+<a href="/erfahrungsberichte">Erfahrungsberichte</a>
+<a href="/kontakt">Kontakt</a>
+<div class="tb-navlangs">
+<p class="tb-navlangs-label"><svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"></path></svg>Sprache</p>
+<div class="tb-navlangs-list">
+<a href="/" hreflang="de" lang="de" aria-current="page" class="is-current"><span class="tb-langcode">DE</span><span class="tb-langname">Deutsch</span></a>
+<a href="/en/" hreflang="en" lang="en"><span class="tb-langcode">EN</span><span class="tb-langname">English</span></a>
+<a href="/it/" hreflang="it" lang="it"><span class="tb-langcode">IT</span><span class="tb-langname">Italiano</span></a>
+<a href="/fr/" hreflang="fr" lang="fr"><span class="tb-langcode">FR</span><span class="tb-langname">Français</span></a>
+<a href="/nl/" hreflang="nl" lang="nl"><span class="tb-langcode">NL</span><span class="tb-langname">Nederlands</span></a>
+<a href="/es/" hreflang="es" lang="es"><span class="tb-langcode">ES</span><span class="tb-langname">Español</span></a>
+<a href="/tr/" hreflang="tr" lang="tr"><span class="tb-langcode">TR</span><span class="tb-langname">Türkçe</span></a>
+<a href="/pl/" hreflang="pl" lang="pl"><span class="tb-langcode">PL</span><span class="tb-langname">Polski</span></a>
+<a href="/ru/" hreflang="ru" lang="ru"><span class="tb-langcode">RU</span><span class="tb-langname">Русский</span></a>
+<a href="/cs/" hreflang="cs" lang="cs"><span class="tb-langcode">CS</span><span class="tb-langname">Čeština</span></a>
+<a href="/ja/" hreflang="ja" lang="ja"><span class="tb-langcode">JA</span><span class="tb-langname">日本語</span></a>
+<a href="/ko/" hreflang="ko" lang="ko"><span class="tb-langcode">KO</span><span class="tb-langname">한국어</span></a>
+<a href="/id/" hreflang="id" lang="id"><span class="tb-langcode">ID</span><span class="tb-langname">Bahasa Indonesia</span></a>
+<a href="/hi/" hreflang="hi" lang="hi"><span class="tb-langcode">HI</span><span class="tb-langname">हिंदी</span></a>
+<a href="/ar/" hreflang="ar" lang="ar"><span class="tb-langcode">AR</span><span class="tb-langname">العربية</span></a>
+<a href="/pt/" hreflang="pt-PT" lang="pt-PT"><span class="tb-langcode">PT</span><span class="tb-langname">Português (Portugal)</span></a>
+</div>
+</div>
+</nav>
+<div class="tb-tools">
+<button type="button" class="tb-iconbtn" data-theme-toggle aria-label="Ansicht wechseln" title="Ansicht wechseln">
+<svg class="tb-ico tb-ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"></path></svg>
+<svg class="tb-ico tb-ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"></path></svg>
+</button>
+<div class="tb-langgroup">
+<button type="button" class="tb-lang" aria-label="Sprache wählen, aktuell Deutsch" aria-expanded="false" aria-haspopup="true">DE <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<div class="tb-langmenu">
+<a href="/" hreflang="de" lang="de" aria-current="page" class="is-current"><span class="tb-langcode">DE</span><span class="tb-langname">Deutsch</span></a>
+<a href="/en/" hreflang="en" lang="en"><span class="tb-langcode">EN</span><span class="tb-langname">English</span></a>
+<a href="/it/" hreflang="it" lang="it"><span class="tb-langcode">IT</span><span class="tb-langname">Italiano</span></a>
+<a href="/fr/" hreflang="fr" lang="fr"><span class="tb-langcode">FR</span><span class="tb-langname">Français</span></a>
+<a href="/nl/" hreflang="nl" lang="nl"><span class="tb-langcode">NL</span><span class="tb-langname">Nederlands</span></a>
+<a href="/es/" hreflang="es" lang="es"><span class="tb-langcode">ES</span><span class="tb-langname">Español</span></a>
+<a href="/tr/" hreflang="tr" lang="tr"><span class="tb-langcode">TR</span><span class="tb-langname">Türkçe</span></a>
+<a href="/pl/" hreflang="pl" lang="pl"><span class="tb-langcode">PL</span><span class="tb-langname">Polski</span></a>
+<a href="/ru/" hreflang="ru" lang="ru"><span class="tb-langcode">RU</span><span class="tb-langname">Русский</span></a>
+<a href="/cs/" hreflang="cs" lang="cs"><span class="tb-langcode">CS</span><span class="tb-langname">Čeština</span></a>
+<a href="/ja/" hreflang="ja" lang="ja"><span class="tb-langcode">JA</span><span class="tb-langname">日本語</span></a>
+<a href="/ko/" hreflang="ko" lang="ko"><span class="tb-langcode">KO</span><span class="tb-langname">한국어</span></a>
+<a href="/id/" hreflang="id" lang="id"><span class="tb-langcode">ID</span><span class="tb-langname">Bahasa Indonesia</span></a>
+<a href="/hi/" hreflang="hi" lang="hi"><span class="tb-langcode">HI</span><span class="tb-langname">हिंदी</span></a>
+<a href="/ar/" hreflang="ar" lang="ar"><span class="tb-langcode">AR</span><span class="tb-langname">العربية</span></a>
+<a href="/pt/" hreflang="pt-PT" lang="pt-PT"><span class="tb-langcode">PT</span><span class="tb-langname">Português (Portugal)</span></a>
+</div>
+</div>
+<button type="button" class="tb-iconbtn tb-menubtn" aria-label="Menü öffnen" aria-expanded="false"><svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+</div>
+</div>
 </header>
 <script>
 (function () {
-  var header = document.getElementById('siteHeader');
-  var burger = document.getElementById('navBurger');
-  var onScroll = function () {
-    if (window.scrollY > 8) header.classList.add('is-scrolled');
-    else header.classList.remove('is-scrolled');
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-  if (burger) {
-    burger.addEventListener('click', function () {
-      var open = header.classList.toggle('is-menu-open');
-      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
+  var r = document.documentElement, h = document.querySelector('.tb-header-inner');
+  if (!h) return;
+  function fit() {
+    r.classList.remove('tb-navfit-no');
+    var nav = h.querySelector('.tb-nav'), tools = h.querySelector('.tb-tools');
+    if (!nav || !tools || getComputedStyle(nav).display === 'none') return;
+    var a = nav.getBoundingClientRect(), t = tools.getBoundingClientRect();
+    var over = h.scrollWidth > h.clientWidth + 1 || (r.dir === 'rtl' ? a.left < t.right - 1 : a.right > t.left + 1);
+    if (over) r.classList.add('tb-navfit-no');
+  }
+  fit();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  var raf = 0;
+  window.addEventListener('resize', function () { cancelAnimationFrame(raf); raf = requestAnimationFrame(fit); });
+})();
+</script>
+
+
+<main id="main-content">
+
+
+<section id="start" class="tb-wrap tb-hero">
+<div class="tb-hero-text">
+<h1 class="tb-h1">Chronischer Tinnitus: <em>zweimal gehabt, zweimal weg.</em></h1>
+<p class="tb-quote">Ich bin <strong>kein Arzt</strong>. Ich bin jemand, der die Hölle durchlebt hat – und auf dieser Seite erzähle ich, wie ich rausgekommen bin.</p>
+<p class="tb-jump">Du kannst direkt zu <a href="/tinnitus-geheilt-erfahrungsbericht">meiner Geschichte</a> springen – oder einfach hier weiterlesen.</p>
+<div class="tb-fresh neu">
+<svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v6"></path><path d="M12 16.4v.2"></path></svg>
+<p><strong>Gerade erst passiert?</strong> Dann geh bitte zuerst zu einem HNO-Arzt – das ist in der Akutphase das Wichtigste. Und meine bittere Lektion von damals: Auf ärztlichen Rat habe ich den Ton mit Musik und weißem Rauschen überdeckt – bei mir hat das alles schlimmer gemacht und sogar mein zweites Ohr erwischt. <a href="/laermbedingter-tinnitus#maskierung">Warum, erkläre ich hier</a></p>
+</div>
+</div>
+<figure class="tb-hero-media">
+<img src="/img/approach-hero.webp" alt="Ein junger Mann sitzt abends am Schreibtisch und hält sich mit geschlossenen Augen die Ohren zu.">
+</figure>
+</section>
+
+<section class="tb-wrap tb-intro" aria-label="Wer ich bin">
+<div class="tb-intro-grid">
+<p class="tb-mueller">Ich heiße Dustin Müller. Ich hatte zweimal chronischen Tinnitus – und zweimal ist er vollständig verschwunden. Dazu habe ich ein schweres <a href="/unterlagen#cfs">Chronisches Erschöpfungssyndrom (CFS)</a> überwunden, das mich über ein Jahr lang ans Bett gefesselt hat<span class="neu"> – dabei habe ich gelernt, wie man die Energie der Zellen wieder hochfährt, und genau das wurde später wichtig für meinen zweiten Tinnitus</span>. Alles dokumentiert. Alles messbar. Hier teile ich mein Wissen, meine Erfahrungen und die Ansätze, die bei mir funktioniert haben.</p>
+<nav class="tb-toc" aria-label="Was du auf dieser Seite findest">
+<p class="tb-eyebrow">Was du auf dieser Seite findest</p>
+<a class="tb-toc-item" href="#geschichte"><span class="tb-toc-num">I.</span><span>Meine vollständige Geschichte – vom ersten Hörsturz 2011 bis heute.</span><svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+<a class="tb-toc-item" href="#ursachen"><span class="tb-toc-num">II.</span><span>Die drei Hauptursachen: Lärm, Stress, Medikamente – und warum sie unterschiedlich behandelt gehören.</span><svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+<a class="tb-toc-item" href="#loesungsansatz"><span class="tb-toc-num">III.</span><span>Mein konkreter Lösungsansatz – Schritt für Schritt, mit Belegen.</span><svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+</nav>
+</div>
+</section>
+
+<section id="belege" class="tb-wrap tb-section">
+<div class="tb-belege-head">
+<p class="tb-eyebrow">Ärztliche Befunde und Messwerte</p>
+<h2 class="tb-h2">Dokumentierte Belege</h2>
+</div>
+
+<figure class="tb-forum neu-box">
+<div>
+<p class="tb-forum-label neu">Mein Forenbeitrag von damals</p>
+<blockquote class="tb-forum-quote">„mein tinnitus ist WEG!!“</blockquote>
+</div>
+<figcaption class="tb-forum-meta">
+<span class="tb-forum-who">Dustin Müller im Forum „Mein Tinnitus“ (mytinnitus.de)</span>
+<span>7. Februar 2012</span>
+<span class="neu">Geschrieben unter meinem echten Namen, Jahre bevor es diese Seite gab.</span>
+<a class="tb-link" href="https://forum.mytinnitus.de/de/viewtopic.php?id=416&amp;p=7" target="_blank" rel="noopener">Originalbeitrag ansehen <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6"></path><path d="M20 4l-9 9"></path><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"></path></svg></a>
+</figcaption>
+</figure>
+
+<div class="tb-audio">
+<figure class="tb-doc">
+<span class="tb-doc-tag">Vorher · 2011</span>
+<a class="tb-zoom" href="/img/audiometrie-1.webp" data-lightbox="Befund 1 – 02.09.2011, Erstmessung HNO-Gemeinschaftspraxis" aria-label="Audiometrie-Befund 1 vom 02.09.2011, Erstmessung HNO-Gemeinschaftspraxis – zum Vergrößern öffnen"><img src="/img/audiometrie-1.webp" alt="Tonaudiogramm vom 2. September 2011"></a>
+<figcaption>Tinnitus aktiv, Hörsturz dokumentiert</figcaption>
+</figure>
+<div class="tb-audio-arrow" aria-hidden="true"><svg class="tb-ico" viewBox="0 0 24 24"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></div>
+<figure class="tb-doc">
+<span class="tb-doc-tag">Später · Genesungsphase</span>
+<a class="tb-zoom" href="/img/audiometrie-3.webp" data-lightbox="Befund 3 – Tonaudiogramm aus dem Genesungsverlauf" aria-label="Audiometrie-Befund 3, Tonaudiogramm aus dem Genesungsverlauf – zum Vergrößern öffnen"><img src="/img/audiometrie-3.webp" alt="Tonaudiogramm aus der Genesungsphase"></a>
+<figcaption>Tinnitus zu ~80 % verschwunden</figcaption>
+</figure>
+</div>
+<p class="tb-audio-hint neu"><strong>Worauf du schauen musst:</strong> auf die hohen Töne bei 4 kHz. 2011 sackt die Linie dort auf beiden Ohren ab, links bis auf 30 dB – später liegt sie wieder weit oben, rechts bei 5 und links bei 15 dB.</p>
+
+<div class="tb-atp">
+<div class="tb-atp-text neu">
+<h3 class="tb-h3">Warum ich so auf die Energie der Zellen schaue</h3>
+<p>Nach allem, was ich recherchiert und selbst erlebt habe, ist die Energie der Zellen bei einem Tinnitus aus dem Innenohr der Engpass: Ohne genug davon können sich die geschädigten Hörzellen nicht reparieren. Diese Energie heißt ATP – der Treibstoff, mit dem jede einzelne Zelle arbeitet.</p>
+</div>
+<div class="tb-atp-fig">
+<p class="tb-atp-label">ATP-Wert während meiner CFS-Zeit</p>
+<p class="tb-atp-num"><strong>0,37</strong><span class="tb-atp-unit neu">nmol/10⁶ Zellen</span></p>
+<div class="tb-scale neu-box" role="img" aria-label="Skala: Mein Wert 0,37 liegt unter der Grenze von 0,4. Eine sehr gute Energieversorgung beginnt bei 1,0.">
+<span class="tb-scale-dot"></span>
+<span class="tb-scale-tick" style="left: 33.3%;"><strong>0,4</strong><br>Grenze</span>
+<span class="tb-scale-tick" style="left: 83.3%;"><strong>1,0</strong><br>sehr gut</span>
+</div>
+<p class="tb-atp-note neu">Normal ist laut Labor alles über 0,4 – von sehr guter Energieversorgung spricht der Befund erst ab 1,0.</p>
+<a class="tb-link" href="/unterlagen#atp">Laborbefund ansehen <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+</div>
+</div>
+
+<div class="tb-belege-foot">
+<a class="tb-btn-ghost neu" href="/unterlagen">Alle meine Unterlagen ansehen <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+<p class="tb-small">Dies sind meine persönlichen, ärztlich dokumentierten Messwerte. Sie stellen kein Wirkversprechen für andere dar.</p>
+</div>
+</section>
+
+<section id="warum" class="tb-section tb-section-end tb-story">
+<div class="tb-wrap tb-story-grid">
+<div class="tb-story-side">
+<h2 class="tb-h2">Warum diese Seite existiert</h2>
+<figure class="tb-story-img">
+<img src="/img/hno-zimmer.webp" alt="Ein junger Mann sitzt im Flur einer HNO-Praxis und blickt auf ein Tonaudiogramm. An der Wand hängt ein Plakat: „Tinnitus? Lernen Sie, damit zu leben.“">
+</figure>
+</div>
+<div class="tb-story-text">
+<p class="tb-story-lead">Ich weiß genau, wie es sich anfühlt, nachts wach zu liegen und diesen Ton nicht abstellen zu können. Ich weiß, wie es ist, wenn ein Arzt dir sagt: „Lernen Sie, damit zu leben." Und ich weiß, wie es ist, sich komplett allein zu fühlen mit einem Problem, das niemand sehen kann.</p>
+<p>Herbst 2011, meine erste Disco überhaupt. Mein Cousin hatte mich überredet – „die ist nicht so voll wie andere, das macht mega Spaß". Schon auf der Treppe nach unten, gut 40 Meter vor dem Raum, war der Bass heftig zu spüren. Naiv, wie ich war, stellte ich mich auf den besten freien Platz: knapp sechs bis acht Meter vor den Boxen. Vier Stunden. Am nächsten Morgen kippte ich beim Aufstehen nach links weg, und drei Tage später hörte ich auf dem linken Ohr Töne, die es nicht gab.</p>
+<p>Der erste HNO schaute kurz rein, sagte „jaa, hören Sie da nicht hin – hören Sie etwas Musik" und lief aus dem Zimmer. Der zweite verschrieb Ginkgo. Der vierte war Tinnitus-Spezialist und erklärte mir, das Geräusch sei jetzt Kopfsache. Sechs HNO-Ärzte – vier in Praxen, zwei in der Uniklinik. Keiner konnte mir helfen.</p>
+<p>Also fing ich an, selbst zu lesen. Nachts im Forum tinnitus.de, später mit dem Laptop im Krankenhausbett. Tausende Stunden, über Jahre – Zellbiologie, Cochlea-Physiologie, Neurologie, Nährstoffbiochemie. Nicht, weil ich das spannend fand. Sondern weil mir kein Arzt sagen konnte, was da in meinem Ohr eigentlich passiert.</p>
+<p>Gefunden habe ich die Lösung nicht im Labor, sondern im Wohnzimmer. Mein Vater spritzte sich damals wegen einer Nervenkrankheit Vitamin B12 – eine kleine Ampulle mit roter Flüssigkeit. Mein B12-Wert lag nur knapp über der Mangelschwelle, mein Hausarzt wollte trotzdem nichts spritzen. Also ließ ich mir abends von meinem Vater eine geben, mit echt mulmigem Gefühl. Und was soll ich sagen: Am nächsten Morgen war der Ton um gut 40 Prozent leiser. Von da an war es Detektivarbeit – Lecithin, der komplette B-Komplex, monatelange Stille. Nach gut anderthalb Jahren waren 80 Prozent weg, irgendwann war nichts mehr da. Nichts. <span class="neu">Das Audiogramm „Später“ oben</span> ist aus der Zeit der 80 Prozent.</p>
+<p>Jahre später habe ich mir den Tinnitus absichtlich ein zweites Mal geholt – Kopfhörer, wochenlang aufgedreht –, um zu prüfen, ob mein Modell stimmt. Ich weiß, wie sich das liest. Es stimmte: Diesmal war er in drei bis vier Monaten weg.</p>
+<p>Diese Seite gibt es, weil ich damals genau so eine gebraucht hätte. Nicht jeder Weg passt für jeden. Aber alles, was ich in den Jahren herausgefunden habe, steht hier – mit Befunden, mit allen Sackgassen. Und wenn meine Erfahrungen und Recherchen auch nur einem einzigen Betroffenen helfen, wieder Hoffnung zu schöpfen, dann hat sich jede Stunde Arbeit an dieser Seite gelohnt.</p>
+</div>
+</div>
+</section>
+
+
+
+
+<section class="tb-hope neu-box" aria-label="Ein Gedanke, der Hoffnung macht">
+<div class="tb-wrap tb-hope-inner">
+<div class="tb-hope-left">
+<p class="tb-hope-statement">Gerade weil der Ton DA ist, muss die Zelle noch leben.</p>
+<div class="tb-hope-links">
+<a class="tb-btn" href="/laermbedingter-tinnitus">Verstehen, was im Ohr passiert <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+<a class="tb-btn-ghost" href="/mein-loesungsansatz">Sehen, was ich konkret gemacht habe <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+</div>
+</div>
+<div class="tb-hope-text">
+<p>Wenn nach einem Lärmtrauma ein chronischer Tinnitus entsteht, denken viele Betroffene, dass die Haarzellen im Ohr – die feinen Sinneszellen, die den Schall in Nervensignale übersetzen – unwiderruflich zerstört seien. Nach meiner Überzeugung greift das zu kurz. Denn eine tote Haarzelle sendet kein Signal mehr, sie ist stumm. Der Tinnitus ist nicht das Zeichen einer toten Zelle, sondern das Zeichen einer Zelle, die im Überlebenskampf steckt.</p>
+<p>Die gute Nachricht – nach allem, was ich erlebt und recherchiert habe, sehe ich es so: Solange die Zelle lebt, besitzt sie auch noch den Bauplan und die Fähigkeit zur Reparatur. Sie braucht dafür allerdings genug Energie, Baumaterial, Schutz und Ruhe.</p>
+</div>
+</div>
+</section>
+
+<section id="geschichte" class="tb-wrap tb-section">
+<div class="tb-expect-head">
+<h2 class="tb-h2">Was dich auf dieser Seite erwartet</h2>
+<div>
+<h3 class="tb-h3">Meine vollständige Geschichte</h3>
+<p>Mein Weg vom ersten Hörsturz über sechs erfolglose HNO-Besuche, den Absturz ins CFS und schließlich die Rückkehr ins Leben – komplett, unzensiert und mit allen Rückschlägen.</p>
+</div>
+</div>
+<div class="tb-stories">
+<a class="tb-story-card is-first neu-box" href="/tinnitus-geheilt-erfahrungsbericht">
+<span class="tb-story-meta">Kurzversion · rund 15 Minuten</span>
+<span class="tb-story-title">Mein Weg aus der Tinnitus-Hölle (Die Kurzversion)</span>
+<span class="tb-story-go">Lesen <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></span>
+</a>
+<a class="tb-story-card" href="/meine-geschichte-teil-1">
+<span class="tb-story-meta neu">Ausführlich · rund 35 Minuten</span>
+<span class="tb-story-title">Biografie Teil 1: Der erste Tinnitus und wie ich mich selbst herausholte</span>
+<span class="tb-story-go">Lesen <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></span>
+</a>
+<a class="tb-story-card" href="/meine-geschichte-teil-2">
+<span class="tb-story-meta neu">Ausführlich · rund 25 Minuten</span>
+<span class="tb-story-title">Biografie Teil 2: Der System-Crash, CFS und der bewusste zweite Tinnitus</span>
+<span class="tb-story-go">Lesen <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></span>
+</a>
+</div>
+</section>
+
+<section id="ursachen" class="tb-wrap tb-section">
+<div class="tb-causes-head">
+<h2 class="tb-h2">Tinnitus verstehen: Die drei Hauptursachen</h2>
+<div>
+<p>Tinnitus ist nicht gleich Tinnitus. Nach meiner Erfahrung und Recherche gibt es drei grundlegend verschiedene Auslöser – und jeder erfordert einen anderen Ansatz.</p>
+<p class="tb-wegweiser neu">Wann und wie fing es bei dir an?</p>
+</div>
+</div>
+<div class="tb-causes">
+<a class="tb-cause" href="/laermbedingter-tinnitus">
+<img src="/img/laerm-hero.webp" alt="">
+<span class="tb-cause-body">
+<span class="tb-cause-q neu">Nach lauter Musik, einem Konzert oder einem Knall?</span>
+<span class="tb-cause-title">Lärmbedingter Tinnitus</span>
+<span class="tb-cause-text">Disco, Konzert, Knalltrauma, chronische Lärmbelastung – wenn das Ohr mechanisch überlastet wurde, stecken die Haarzellen in einem energetischen Notbetrieb fest. Hier erkläre ich die komplette zelluläre Mechanik: Was passiert auf molekularer Ebene, warum bleibt der Ton, und warum die klassische Maskierungs-Therapie zwar kurzfristig entlasten kann, der eigentlichen Regeneration des Ohrs nach meinem Verständnis aber entgegenwirkt.</span>
+<span class="tb-cause-go">Zur Erklärungsseite: Lärmbedingter Tinnitus <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></span>
+</span>
+</a>
+<a class="tb-cause" href="/stressbedingter-tinnitus">
+<img src="/img/stress-hero.webp" alt="">
+<span class="tb-cause-body">
+<span class="tb-cause-q neu">In einer harten Stressphase – ganz ohne Lärm?</span>
+<span class="tb-cause-title">Stressbedingter / psychosomatischer Tinnitus</span>
+<span class="tb-cause-text">Nicht jeder Tinnitus kommt aus dem Ohr. Chronisch ungelöste innere Konflikte können elektrische Dauerspannungen im Nervensystem erzeugen, die das Hörsystem von innen reizen. Hier beschreibe ich, wie dieses Modell funktioniert. Außerdem erkläre ich, wie mir die Aufarbeitung dieser Konflikte während einer separaten Phase mit CFS und psychosomatischen Symptomen geholfen hat. Ich selbst hatte nie stressbedingten Tinnitus.</span>
+<span class="tb-cause-go">Zur Erklärungsseite: Stressbedingter Tinnitus <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></span>
+</span>
+</a>
+<a class="tb-cause" href="/medikamente-gifte-tinnitus">
+<img src="/img/gift-hero.webp" alt="">
+<span class="tb-cause-body">
+<span class="tb-cause-q neu">Nach einem neuen Medikament oder Kontakt mit Giften?</span>
+<span class="tb-cause-title">Medikamenten- &amp; giftbedingter Tinnitus (Ototoxizität)</span>
+<span class="tb-cause-text">Bestimmte Medikamente, Schwermetalle und Umweltgifte können die Haarzellen und den Hörnerv von innen chemisch angreifen. Hier erkläre ich die Mechanismen der wichtigsten ototoxischen Substanzen und warum diese Art von Tinnitus oft besonders hartnäckig ist.</span>
+<span class="tb-cause-go">Zur Erklärungsseite: Medikamenten- &amp; giftbedingter Tinnitus <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></span>
+</span>
+</a>
+</div>
+</section>
+
+<section id="loesungsansatz" class="tb-wrap tb-section">
+<div class="tb-solution">
+<figure class="tb-solution-img">
+<img src="/img/geschafft.webp" alt="Ein junger Mann steht lächelnd im Flur einer HNO-Praxis und hält ein Tonaudiogramm in der Hand.">
+</figure>
+<div class="tb-solution-text">
+<h2 class="tb-h2">Mein konkreter Lösungsansatz</h2>
+<p>Was habe ich beim chronischen, lärmbedingten Tinnitus konkret getan? Welche drei Säulen waren entscheidend? Und warum deckt sich mein Ansatz mit aktueller Pharma-Forschung (AC102) und der Low-Level-Lasertherapie? Hier beschreibe ich meinen exakten Ablauf – Schritt für Schritt.</p>
+<a class="tb-btn" href="/mein-loesungsansatz">Zum Lösungsansatz: Was ich konkret getan habe <svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+</div>
+</div>
+</section>
+
+<section class="tb-wrap" style="padding-top: 56px;" aria-label="Wissenschaftliche Quellen">
+<div class="tb-sources-row">
+<div>
+<h2 class="tb-h3">Wissenschaftliche Quellen &amp; Belege</h2>
+<p>86 wissenschaftliche Studien zu allen Mechanismen, Therapie-Spuren und klinischen Anwendungen, die ich auf dieser Seite beschreibe. Wer sich tiefer mit der Forschungslage auseinandersetzen will, findet hier den vollständigen wissenschaftlichen Unterbau.</p>
+</div>
+<a class="tb-link" href="/wissenschaftliche-quellen">Zur Quellenseite: Wissenschaftliche Belege <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+</div>
+</section>
+
+<aside class="tb-wrap" style="padding-top: 24px;" aria-label="Wichtiger Hinweis">
+<div class="tb-notice">
+<svg class="tb-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5.5"></path><path d="M12 7.6v.2"></path></svg>
+<p><strong>Wichtiger Hinweis:</strong> Bei Tinnitus oder Hörproblemen, insbesondere wenn akut aufgetreten, suche bitte einen HNO-Arzt auf, um organische Ursachen abklären zu lassen.</p>
+</div>
+</aside>
+
+<section id="kontakt" class="tb-wrap tb-section tb-section-end">
+<div class="tb-contact">
+<div>
+<h2 class="tb-h2">Kontakt</h2>
+<p>Schreib mir. Ich lese jede Mail selbst – hab nur etwas Geduld, ich antworte, so schnell ich kann.</p>
+</div>
+<div class="tb-mail">
+<span class="tb-mail-label">E-Mail</span>
+<a class="tb-mail-link" href="mailto:Dustin5.mueller87@gmail.com">Dustin5.mueller87@gmail.com</a>
+<a class="tb-link" href="/kontakt">Zur Kontaktseite <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+</div>
+</div>
+</section>
+
+
+</main>
+
+
+<footer class="tb-footer">
+<div class="tb-wrap tb-footer-inner">
+<nav aria-label="Rechtliches"><a href="/impressum">Impressum</a><a href="/datenschutz">Datenschutz</a></nav>
+<p>©<script>document.write(new Date().getFullYear());</script> Tinnitus Bioregulation – Dustin Müller</p>
+</div>
+</footer>
+
+
+</div>
+<script>
+(function () {
+  var root = document.documentElement;
+  function save(v) { try { localStorage.setItem('tb-ansicht', v); } catch (e) {} }
+  function isDark() {
+    var a = root.getAttribute('data-theme');
+    if (a === 'dark') return true;
+    if (a === 'light') return false;
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+  function labels() {
+    var t = isDark() ? 'Zur hellen Ansicht wechseln' : 'Zur dunklen Ansicht wechseln';
+    document.querySelectorAll('[data-theme-toggle]').forEach(function (b) { b.setAttribute('aria-label', t); b.setAttribute('title', t); });
+  }
+  labels();
+  try { window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', labels); } catch (e) {}
+  function closeMenu() {
+    var h = document.querySelector('.tb-header.is-open');
+    if (!h) return;
+    h.classList.remove('is-open');
+    var mb = h.querySelector('.tb-menubtn');
+    if (mb) { mb.setAttribute('aria-expanded', 'false'); mb.setAttribute('aria-label', 'Menü öffnen'); }
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+    var tog = t.closest('[data-theme-toggle]');
+    if (tog) { var next = isDark() ? 'light' : 'dark'; root.setAttribute('data-theme', next); save(next); labels(); return; }
+    var menu = t.closest('.tb-menubtn');
+    if (menu) {
+      var h = menu.closest('.tb-header');
+      var open = !h.classList.contains('is-open');
+      h.classList.toggle('is-open', open);
+      menu.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menu.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+      return;
+    }
+    if (t.closest('[data-spaeter]')) { e.preventDefault(); return; }
+    if (t.closest('.tb-nav a')) { closeMenu(); }
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeMenu(); } });
+  var bar = document.querySelector('.tb-progress span');
+  if (bar) {
+    var queued = false;
+    var update = function () {
+      queued = false;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      bar.style.width = (p * 100).toFixed(1) + '%';
+    };
+    window.addEventListener('scroll', function () { if (!queued) { queued = true; window.requestAnimationFrame(update); } }, { passive: true });
+    window.addEventListener('resize', update);
+    update();
   }
 })();
 </script>
-
-<main id="main-content" tabindex="-1">
-  <div class="eyebrow">Startseite</div>
-  <h1>Chronischer Tinnitus: <br>zweimal gehabt, zweimal weg.</h1>
-
-  <p class="lede">Ich bin <strong>kein Arzt</strong>. Ich bin jemand, der die Hölle durchlebt hat – und auf dieser Seite erzähle ich, wie ich rausgekommen bin.</p>
-
-  <p class="quick-jump">Du kannst direkt zu <a href="/tinnitus-geheilt-erfahrungsbericht">meiner Geschichte</a> oder zum <a href="/mein-loesungsansatz">Lösungsansatz</a> springen – oder einfach hier weiterlesen.</p>
-
-  <div class="callout intro-card">
-    <p>Ich heiße Dustin Müller. Ich hatte zweimal chronischen Tinnitus – und zweimal ist er vollständig verschwunden. Dazu habe ich ein schweres Chronisches Erschöpfungssyndrom (CFS) überwunden, das mich über ein Jahr lang ans Bett gefesselt hat. Alles dokumentiert. Alles messbar. Hier teile ich mein Wissen, meine Erfahrungen und die Ansätze, die bei mir funktioniert haben.</p>
-  </div>
-
-  <div class="toc-card">
-    <div class="toc-eyebrow">Was du auf dieser Seite findest</div>
-    <ul class="toc-list">
-      <li><span class="toc-num">I.</span><span>Meine vollständige Geschichte – vom ersten Hörsturz 2011 bis heute.</span></li>
-      <li><span class="toc-num">II.</span><span>Die drei Hauptursachen: Lärm, Stress, Medikamente – und warum sie unterschiedlich behandelt gehören.</span></li>
-      <li><span class="toc-num">III.</span><span>Mein konkreter Lösungsansatz – Schritt für Schritt, mit Belegen.</span></li>
-    </ul>
-  </div>
-
-  <div class="eyebrow" style="margin-top:48px;">Ärztliche Befunde und Messwerte</div>
-
-  <div class="evidence-card">
-    <h2 class="evidence-eyebrow">Dokumentierte Belege</h2>
-    <div class="evidence-row">Audiogramme aus meinem ersten Tinnitus-Verlauf</div>
-    <div class="evidence-row">ATP-Wert während meiner CFS-Zeit: 0,37</div>
-  </div>
-
-  <div class="compare-grid wide">
-    <div class="compare-card">
-      <div class="compare-eyebrow">Vorher · 2011</div>
-      <a href="img/audiometrie-1.webp" data-lightbox="Befund 1 – 02.09.2011, Erstmessung HNO-Gemeinschaftspraxis" aria-label="Audiometrie-Befund 1 vom 02.09.2011, Erstmessung HNO-Gemeinschaftspraxis – zum Vergrößern öffnen" style="display: block; cursor: zoom-in;">
-        <div class="compare-thumb" style="background-image:url('img/audiometrie-1.webp');"></div>
-      </a>
-      <div class="compare-label">Tinnitus aktiv, Hörsturz dokumentiert</div>
-    </div>
-    <div class="compare-arrow">→</div>
-    <div class="compare-card">
-      <div class="compare-eyebrow">Später · Genesungsphase</div>
-      <a href="img/audiometrie-3.webp" data-lightbox="Befund 3 – Tonaudiogramm aus dem Genesungsverlauf" aria-label="Audiometrie-Befund 3, Tonaudiogramm aus dem Genesungsverlauf – zum Vergrößern öffnen" style="display: block; cursor: zoom-in;">
-        <div class="compare-thumb" style="background-image:url('img/audiometrie-3.webp');"></div>
-      </a>
-      <div class="compare-label">Tinnitus zu ~80 % verschwunden</div>
-    </div>
-  </div>
-
-  <div class="doc-grid wide">
-    <a class="doc-card" href="img/audiometrie-1.webp" data-lightbox="Befund 1 – 02.09.2011, Erstmessung HNO-Gemeinschaftspraxis">
-      <div class="doc-thumb" style="background-image:url('img/audiometrie-1.webp');background-size:cover;background-position:center;"></div>
-      <h3>Audiometrie 1</h3>
-      <p>02.09.2011 – Erstmessung HNO-Gemeinschaftspraxis.</p>
-      <span class="arrow-link">Zum Vergrößern öffnen</span>
-    </a>
-    <a class="doc-card" href="img/audiometrie-2.webp" data-lightbox="Befund 2 – HNO-Facharzt, Schlafmedizin">
-      <div class="doc-thumb" style="background-image:url('img/audiometrie-2.webp');background-size:cover;background-position:center;"></div>
-      <h3>Audiometrie 2</h3>
-      <p>HNO-Facharzt / Schlafmedizin – Kontrollmessung im Verlauf.</p>
-      <span class="arrow-link">Zum Vergrößern öffnen</span>
-    </a>
-    <a class="doc-card" href="img/audiometrie-3.webp" data-lightbox="Befund 3 – Tonaudiogramm. Wichtig: Die hier angegebene Tinnitus-Frequenz (rechts 1060 Hz, links 8000 Hz) entspricht NICHT meinem damaligen Zustand. Der Tinnitus war zu diesem Zeitpunkt bereits zu ~80 % weg. Ich habe diese Werte nur deshalb so angegeben, damit der HNO die Audiometrie auf Kassenleistung durchführt – sonst hätte er bei „Tinnitus fast weg“ vermutlich abgelehnt.">
-      <div class="doc-thumb" style="background-image:url('img/audiometrie-3.webp');background-size:cover;background-position:center;"></div>
-      <h3>Audiometrie 3</h3>
-      <p>Tonaudiogramm aus dem Genesungsverlauf.</p>
-      <span class="arrow-link">Zum Vergrößern öffnen</span>
-    </a>
-  </div>
-
-  <p style="margin-top:24px;font-size:15px;opacity:.8;">Wie Hörverlust, Audiometrie und Tinnitus zusammenhängen, habe ich auf meiner <a href="/wissenschaftliche-quellen">Quellenseite</a> ausführlich zusammengetragen.</p>
-
-  <aside class="term-note">
-    <div class="term-note-icon" aria-hidden="true">i</div>
-    <div class="term-note-body">
-      <div class="term-note-label">Kurz erklärt: Was ist ATP?</div>
-      <p>ATP ist – einfach gesagt – die <strong>Energie deiner Zellen</strong>: der Treibstoff, mit dem jede einzelne Zelle arbeitet. Je niedriger der Wert, desto „leerer“ arbeiten die Zellen. Mein Laborwert lag mit <strong>0,37</strong> tief im Keller – meine körperliche Energie war damals entsprechend am Boden.</p>
-    </div>
-  </aside>
-
-  <div class="doc-grid wide" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
-    <a class="doc-card" href="img/atp-befund-1.webp" data-lightbox="ATP-Profil – Laborärztlicher Befundbericht (Seite 1): ATP-Wert 0,37 nmol/10⁶ Zellen — verminderte ATP-Bildung, Hinweis auf mitochondriale Dysfunktion. MVZ Labor Dr. Kirkamm und Partner.">
-      <div class="doc-thumb" style="background-image:url('img/atp-befund-1.webp');background-size:cover;background-position:top;"></div>
-      <h3>ATP-Wert (0,37)</h3>
-      <p>Laborbefund: massiv reduzierte intrazelluläre Energieproduktion.</p>
-      <span class="arrow-link">Zum Vergrößern öffnen</span>
-    </a>
-    <a class="doc-card" href="img/atp-befund-2.webp" data-lightbox="ATP-Profil – Laborärztlicher Befundbericht (Seite 2): vertiefende Befundinterpretation und Ursachen verminderter ATP-Bereitstellung.">
-      <div class="doc-thumb" style="background-image:url('img/atp-befund-2.webp');background-size:cover;background-position:top;"></div>
-      <h3>Vertiefte ATP-Analyse</h3>
-      <p>Befundinterpretation und Ursachen der ATP-Defizite.</p>
-      <span class="arrow-link">Zum Vergrößern öffnen</span>
-    </a>
-  </div>
-
-  <p style="font-size:18px;color:var(--muted);margin-top:18px;">Dies sind meine persönlichen, ärztlich dokumentierten Messwerte. Sie stellen kein Wirkversprechen für andere dar.</p>
-
-  <div class="eyebrow" style="margin-top:64px;">01 Abschnitt</div>
-  <h2 class="section-title">Warum diese Seite existiert</h2>
-
-  <p>Ich weiß genau, wie es sich anfühlt, nachts wach zu liegen und diesen Ton nicht abstellen zu können. Ich weiß, wie es ist, wenn ein Arzt dir sagt: „Lernen Sie, damit zu leben." Und ich weiß, wie es ist, sich komplett allein zu fühlen mit einem Problem, das niemand sehen kann.</p>
-
-  <p>Herbst 2011, meine erste Disco überhaupt. Mein Cousin hatte mich überredet – „die ist nicht so voll wie andere, das macht mega Spaß". Schon auf der Treppe nach unten, gut 40 Meter vor dem Raum, war der Bass heftig zu spüren. Naiv, wie ich war, stellte ich mich auf den besten freien Platz: knapp sechs bis acht Meter vor den Boxen. Vier Stunden. Am nächsten Morgen kippte ich beim Aufstehen nach links weg, und drei Tage später hörte ich auf dem linken Ohr Töne, die es nicht gab.</p>
-
-  <p>Der erste HNO schaute kurz rein, sagte „jaa, hören Sie da nicht hin – hören Sie etwas Musik" und lief aus dem Zimmer. Der zweite verschrieb Ginkgo. Der vierte war Tinnitus-Spezialist und erklärte mir, das Geräusch sei jetzt Kopfsache. Sechs HNO-Ärzte – vier in Praxen, zwei in der Uniklinik. Keiner konnte mir helfen.</p>
-
-  <p>Also fing ich an, selbst zu lesen. Nachts im Forum tinnitus.de, später mit dem Laptop im Krankenhausbett. Tausende Stunden, über Jahre – Zellbiologie, Cochlea-Physiologie, Neurologie, Nährstoffbiochemie. Nicht, weil ich das spannend fand. Sondern weil mir kein Arzt sagen konnte, was da in meinem Ohr eigentlich passiert.</p>
-
-  <p>Gefunden habe ich die Lösung nicht im Labor, sondern im Wohnzimmer. Mein Vater spritzte sich damals wegen einer Nervenkrankheit Vitamin B12 – eine kleine Ampulle mit roter Flüssigkeit. Mein B12-Wert lag nur knapp über der Mangelschwelle, mein Hausarzt wollte trotzdem nichts spritzen. Also ließ ich mir abends von meinem Vater eine geben, mit echt mulmigem Gefühl. Und was soll ich sagen: Am nächsten Morgen war der Ton um gut 40 Prozent leiser. Von da an war es Detektivarbeit – Lecithin, der komplette B-Komplex, monatelange Stille. Nach gut anderthalb Jahren waren 80 Prozent weg, irgendwann war nichts mehr da. Nichts. Das dritte Audiogramm oben ist aus der Zeit der 80 Prozent.</p>
-
-  <p>Jahre später habe ich mir den Tinnitus absichtlich ein zweites Mal geholt – Kopfhörer, wochenlang aufgedreht –, um zu prüfen, ob mein Modell stimmt. Ich weiß, wie sich das liest. Es stimmte: Diesmal war er in drei bis vier Monaten weg.</p>
-
-  <p>Diese Seite gibt es, weil ich damals genau so eine gebraucht hätte. Nicht jeder Weg passt für jeden. Aber alles, was ich in den Jahren herausgefunden habe, steht hier – mit Befunden, mit allen Sackgassen. Und wenn meine Erfahrungen und Recherchen auch nur einem einzigen Betroffenen helfen, wieder Hoffnung zu schöpfen, dann hat sich jede Stunde Arbeit an dieser Seite gelohnt.</p>
-
-  <h2 class="section-title" style="margin-top:64px;">Was dich auf dieser Seite erwartet</h2>
-
-  <h3>Meine vollständige Geschichte</h3>
-  <p>Mein Weg vom ersten Hörsturz über sechs erfolglose HNO-Besuche, den Absturz ins CFS und schließlich die Rückkehr ins Leben – komplett, unzensiert und mit allen Rückschlägen.</p>
-  <a class="arrow-link" href="/meine-geschichte-teil-1">→ Biografie Teil 1: Der erste Tinnitus und wie ich mich selbst herausholte →</a><br>
-  <a class="arrow-link" href="/meine-geschichte-teil-2">→ Biografie Teil 2: Der System-Crash, CFS und der bewusste zweite Tinnitus →</a>
-
-  <h2 class="section-title" style="margin-top:48px;">Tinnitus verstehen: Die drei Hauptursachen</h2>
-  <p>Tinnitus ist nicht gleich Tinnitus. Nach meiner Erfahrung und Recherche gibt es drei grundlegend verschiedene Auslöser – und jeder erfordert einen anderen Ansatz.</p>
-
-  <div class="preview-block">
-    <h3>Lärmbedingter Tinnitus</h3>
-    <p>Disco, Konzert, Knalltrauma, chronische Lärmbelastung – wenn das Ohr mechanisch überlastet wurde, stecken die Haarzellen in einem energetischen Notbetrieb fest. Hier erkläre ich die komplette zelluläre Mechanik: Was passiert auf molekularer Ebene, warum bleibt der Ton, und warum die klassische Maskierungs-Therapie zwar kurzfristig entlasten kann, der eigentlichen Regeneration des Ohrs nach meinem Verständnis aber entgegenwirkt.</p>
-    <a class="arrow-link" href="/laermbedingter-tinnitus">→ Zur Erklärungsseite: Lärmbedingter Tinnitus →</a>
-  </div>
-
-  <div class="preview-block" data-nosnippet>
-    <h3>Stressbedingter / psychosomatischer Tinnitus</h3>
-    <p>Nicht jeder Tinnitus kommt aus dem Ohr. Chronisch ungelöste innere Konflikte können elektrische Dauerspannungen im Nervensystem erzeugen, die das Hörsystem von innen reizen. Hier beschreibe ich, wie dieses Modell funktioniert. Außerdem erkläre ich, wie mir die Aufarbeitung dieser Konflikte während einer separaten Phase mit CFS und psychosomatischen Symptomen geholfen hat. Ich selbst hatte nie stressbedingten Tinnitus.</p>
-    <a class="arrow-link" href="/stressbedingter-tinnitus">→ Zur Erklärungsseite: Stressbedingter Tinnitus →</a>
-  </div>
-
-  <div class="preview-block">
-    <h3>Medikamenten- &amp; giftbedingter Tinnitus (Ototoxizität)</h3>
-    <p>Bestimmte Medikamente, Schwermetalle und Umweltgifte können die Haarzellen und den Hörnerv von innen chemisch angreifen. Hier erkläre ich die Mechanismen der wichtigsten ototoxischen Substanzen und warum diese Art von Tinnitus oft besonders hartnäckig ist.</p>
-    <a class="arrow-link" href="/medikamente-gifte-tinnitus">→ Zur Erklärungsseite: Medikamenten- &amp; giftbedingter Tinnitus →</a>
-  </div>
-
-  <h2 class="section-title" style="margin-top:48px;">Wissenschaftliche Quellen &amp; Belege</h2>
-  <p>86 wissenschaftliche Studien zu allen Mechanismen, Therapie-Spuren und klinischen Anwendungen, die ich auf dieser Seite beschreibe. Wer sich tiefer mit der Forschungslage auseinandersetzen will, findet hier den vollständigen wissenschaftlichen Unterbau.</p>
-  <a class="arrow-link" href="/wissenschaftliche-quellen">→ Zur Quellenseite: Wissenschaftliche Belege →</a>
-
-  <h2 class="section-title" style="margin-top:48px;">Mein konkreter Lösungsansatz</h2>
-  <p>Was habe ich beim chronischen, lärmbedingten Tinnitus konkret getan? Welche drei Säulen waren entscheidend? Und warum deckt sich mein Ansatz mit aktueller Pharma-Forschung (AC102) und der Low-Level-Lasertherapie? Hier beschreibe ich meinen exakten Ablauf – Schritt für Schritt.</p>
-  <a class="arrow-link" href="/mein-loesungsansatz">→ Zum Lösungsansatz: Was ich konkret getan habe →</a>
-
-  <div class="callout callout-warn" style="margin-top:36px;">
-    <p><strong>Wichtiger Hinweis:</strong> Bei Tinnitus oder Hörproblemen, insbesondere wenn akut aufgetreten, suche bitte einen HNO-Arzt auf, um organische Ursachen abklären zu lassen.</p>
-  </div>
-
-  <div class="eyebrow" style="margin-top:64px;">02 Abschnitt</div>
-  <h2 class="section-title">Kontakt</h2>
-  <p>Schreib mir. Ich lese jede Mail selbst – hab nur etwas Geduld, ich antworte, so schnell ich kann.</p>
-  <p>E-Mail: <a class="arrow-link" href="mailto:Dustin5.mueller87@gmail.com">Dustin5.mueller87@gmail.com</a></p>
-  <p style="margin-top:14px;"><a class="arrow-link" href="/kontakt">→ Zur Kontaktseite →</a></p>
-</main>
-
-<footer class="site-footer">
-  <div class="footer-links">
-    <a href="/impressum">Impressum</a>
-    <a href="/datenschutz">Datenschutz</a>
-  </div>
-  <div>©<script>document.write(new Date().getFullYear());</script> Tinnitus Bioregulation – Dustin Müller</div>
-</footer>
-
-<button class="back-to-top" id="backToTop" type="button" aria-label="Nach oben scrollen">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-</button>
 <script>
 (function () {
-  var btn = document.getElementById('backToTop');
-  if (!btn) return;
-  var onScroll = function () {
-    if (window.scrollY > 600) btn.classList.add('is-visible');
-    else btn.classList.remove('is-visible');
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  btn.addEventListener('click', function () {
-    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  var G = '.tb-navgroup, .tb-langgroup', B = '.tb-navbtn, .tb-lang';
+  function closeGroups(except) {
+    document.querySelectorAll('.tb-navgroup.is-open, .tb-langgroup.is-open').forEach(function (g) {
+      if (g === except) return;
+      g.classList.remove('is-open');
+      var b = g.querySelector(B);
+      if (b) b.setAttribute('aria-expanded', 'false');
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (!t || !t.closest) return;
+    var btn = t.closest(B);
+    if (btn) {
+      var g = btn.closest(G);
+      var open = !g.classList.contains('is-open');
+      closeGroups(g);
+      g.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      return;
+    }
+    if (!t.closest(G)) closeGroups(null);
   });
-  onScroll();
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeGroups(null); });
 })();
 </script>
-
-<script src="site.js"></script>
+<script src="/site.js"></script>
 </body>
 </html>
