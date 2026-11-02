@@ -722,9 +722,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .tb-bio-hero-inner { max-width: 1200px; margin: 0 auto; padding-top: 64px; padding-bottom: 60px; padding-left: max(48px, env(safe-area-inset-left, 0px)); padding-right: max(48px, env(safe-area-inset-right, 0px)); display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 56px; align-items: center; }
 .tb-bio-eyebrow { display: flex; align-items: center; gap: 12px; margin: 0 0 22px; font-size: 13px; line-height: 1.2; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--arc); }
 .tb-bio-eyebrow::before { content: ""; width: 28px; height: 1.5px; background: var(--arc); display: block; }
-.tb-bio-h1 { margin: 0; font-family: "Oswald", "Arial Narrow", Impact, sans-serif; font-weight: 600; text-transform: uppercase; color: var(--cut-ink); text-wrap: balance; }
+.tb-bio-h1 { margin: 0; font-family: "Oswald", "Arial Narrow", Impact, sans-serif; font-weight: 600; text-transform: uppercase; color: var(--cut-ink); text-wrap: balance; container-type: inline-size; }
 .tb-bio-h1-pre { display: block; font-size: 24px; line-height: 1.25; letter-spacing: 0.04em; font-weight: 500; color: var(--cut-muted); }
-.tb-bio-h1-main { display: block; margin-top: 10px; font-size: 104px; line-height: 1.06; letter-spacing: 0.005em; }
+.tb-bio-h1-main { display: block; margin-top: 10px; font-size: 104px; font-size: min(104px, 17cqw); line-height: 1.06; letter-spacing: 0.005em; }
 .tb-bio-hero .tb-ameta { margin-top: 30px; }
 .tb-bio-hero .tb-ameta span { border-color: rgba(246, 240, 230, 0.28); color: var(--cut-ink); }
 .tb-bio-hero .tb-ameta .tb-ico { color: var(--arc); }
@@ -822,7 +822,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .tb-bio-hero-inner { grid-template-columns: minmax(0, 1fr); gap: 32px; padding-left: max(36px, env(safe-area-inset-left, 0px)); padding-right: max(36px, env(safe-area-inset-right, 0px)); }
   .tb-bio-hero-media { order: -1; width: 100%; max-width: 520px; }
   .tb-bio-hero-media img { aspect-ratio: 1 / 1; object-position: 100% 50%; }
-  .tb-bio-h1-main { font-size: 84px; }
+  .tb-bio-h1-main { font-size: 84px; font-size: min(84px, 17cqw); }
   .tb-slip { transform: rotate(-0.6deg); margin-top: 10px; }
 }
 @media (max-width: 760px) {
@@ -830,7 +830,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .tb-bio-eyebrow { font-size: 12px; letter-spacing: 0.12em; gap: 10px; }
   .tb-bio-eyebrow::before { width: 20px; }
   .tb-bio-h1-pre { font-size: 17px; }
-  .tb-bio-h1-main { font-size: 62px; }
+  .tb-bio-h1-main { font-size: 62px; font-size: min(62px, 17cqw); }
   .tb-bio-intro { padding-top: 36px; }
   .tb-bio-intro p { font-size: 17.5px; }
   .tb-bio-intro p.tb-bio-lead { font-size: 20.5px; }
@@ -890,7 +890,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .tb-bio-hero-media img { object-position: var(--hero-pos, 74% 50%); }
 .tb-bio-h1-post { display: block; margin-top: 16px; font-size: 24px; line-height: 1.25; letter-spacing: 0.04em; font-weight: 500; color: var(--cut-muted); }
 .tb-bio-h1-main { line-height: 1.12; }
-.tb-bio-h1.is-long .tb-bio-h1-main { font-size: 80px; line-height: 1.08; }
+.tb-bio-h1.is-long .tb-bio-h1-main { font-size: 80px; font-size: min(80px, 14cqw); line-height: 1.08; }
 .tb-bio-num.is-mark::before { content: ""; display: inline-block; width: 18px; height: 3px; border-radius: 2px; background: var(--arc); vertical-align: middle; }
 .tb-cut-title .tb-cut-num { font-size: 18px; }
 .tb-cut-num { text-transform: uppercase; }
@@ -930,11 +930,11 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 @media (max-width: 1100px) {
   .tb-bio-hero-media img { object-position: var(--hero-pos-m, 100% 50%); }
-  .tb-bio-h1.is-long .tb-bio-h1-main { font-size: 66px; }
+  .tb-bio-h1.is-long .tb-bio-h1-main { font-size: 66px; font-size: min(66px, 14cqw); }
   .tb-bio-chap > .tb-slip.is-after-fig { grid-row: auto; }
 }
 @media (max-width: 760px) {
-  .tb-bio-h1.is-long .tb-bio-h1-main { font-size: 44px; line-height: 1.08; }
+  .tb-bio-h1.is-long .tb-bio-h1-main { font-size: 44px; font-size: min(44px, 14cqw); line-height: 1.08; }
   .tb-bio-h1-post { font-size: 17px; margin-top: 10px; }
   .tb-cut-title .tb-cut-num { font-size: 15px; }
   .tb-chap > p.tb-moment.is-long { font-size: 23px; }
@@ -1278,6 +1278,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .tb-page h1, .tb-page h2, .tb-page h3 { overflow-wrap: break-word; }
 @media (max-width: 760px) {
   .tb-page h1, .tb-page .tb-chap-title, .tb-page .tb-s-h2, .tb-page .tb-k-h2 { hyphens: auto; -webkit-hyphens: auto; }
+  .tb-page .tb-bio-h1 { hyphens: manual; -webkit-hyphens: manual; }
   .tb-s-hero .tb-s-h1 { font-size: 35px; }
 }
 .tb-s-hero .tb-s-intro { margin-top: 20px; max-width: 680px; font-size: 18.5px; line-height: 1.7; color: var(--text); }
