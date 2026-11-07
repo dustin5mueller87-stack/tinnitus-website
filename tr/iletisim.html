@@ -86,7 +86,7 @@
 <svg class="tb-ico tb-ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"></path></svg>
 </button>
 <div class="tb-langgroup">
-<button type="button" class="tb-lang" aria-label="Dil seçin, şu anki: Türkçe" aria-expanded="false" aria-haspopup="true">TR <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+<button type="button" class="tb-lang" aria-label="Dil seç, şu anki: Türkçe" aria-expanded="false" aria-haspopup="true">TR <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
 <div class="tb-langmenu">
 <a href="/kontakt" hreflang="de" lang="de"><span class="tb-langcode">DE</span><span class="tb-langname">Deutsch</span></a>
 <a href="/en/contact" hreflang="en" lang="en"><span class="tb-langcode">EN</span><span class="tb-langname">English</span></a>
@@ -132,17 +132,46 @@
 <section class="tb-wrap tb-wrap-read tb-s-hero">
 <p class="tb-eyebrow">İletişim</p>
 <h1 class="tb-ah1 tb-s-h1">Bana yaz</h1>
-<p class="tb-s-lede">İster hikâyemle ya da buradaki bir sayfayla ilgili bir soru sormak için, ister sadece şu anda ne yapacağını bilemediğin için olsun: Bana yaz. Her e-postayı kendim okuyorum.</p>
+<p class="tb-s-lede">İster hikâyemle ya da buradaki bir sayfayla ilgili bir soru sormak için, ister sadece şu anda ne yapacağını bilemediğin için olsun: Bana yaz. Her mesajı kendim okuyorum.</p>
 </section>
 <section class="tb-chap tb-s-chap">
-<div class="tb-s-contact is-single">
+<div class="tb-s-contact">
 <div class="contact-card">
 <span class="contact-label">E-posta</span>
 <a class="contact-email" href="mailto:Dustin5.mueller87@gmail.com">
 <svg fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24" width="26"><rect height="14" rx="2" width="18" x="3" y="5"></rect><path d="m3 7 9 6 9-6"></path></svg>
       Dustin5.mueller87@gmail.com
     </a>
-<p class="contact-note">Elimden geldiğince hızlı yanıt veriyorum — ancak her e-postayı kendim yanıtladığım için bazen birkaç gün sürebiliyor. Lütfen biraz sabırlı ol.</p>
+<p class="contact-note">Elimden geldiğince hızlı yanıt veriyorum — ancak her şeyi bizzat yanıtladığım için bazen birkaç gün sürebiliyor. Lütfen biraz sabırlı ol.</p>
+</div>
+<div class="contact-card">
+<span class="contact-label">İletişim formu</span>
+<p class="contact-form-intro">Tercih edersen bana buradan da yazabilirsin.</p>
+<p class="contact-form-success" hidden="" id="contactFormSuccess">Teşekkürler, mesajın bana ulaştı. Elimden geldiğince hızlı yanıt veriyorum.</p>
+<form action="/tr/iletisim?gesendet=1" class="contact-form" data-netlify="true" method="POST" name="kontakt" netlify-honeypot="bot-field">
+<input name="form-name" type="hidden" value="kontakt"/>
+<p aria-hidden="true" class="contact-honeypot">
+<label>Lütfen boş bırak <input autocomplete="off" name="bot-field" tabindex="-1" type="text"/></label>
+</p>
+<div class="contact-form-grid">
+<label>İsim
+          <input autocomplete="name" name="name" required="" type="text"/>
+</label>
+<label>E-posta
+          <input autocomplete="email" name="email" required="" type="email"/>
+</label>
+<label>Mesaj
+          <textarea name="message" required=""></textarea>
+</label>
+<label class="contact-form-check">
+<input name="privacy" required="" type="checkbox" value="accepted"/>
+<span><a href="/tr/gizlilik">Gizlilik politikasını</a> okudum ve mesajımın yanıtlanması için bilgilerimin işlenmesine onay veriyorum.</span>
+</label>
+<button class="contact-form-submit" type="submit">Mesajı gönder</button>
+</div>
+</form>
+<p aria-atomic="true" aria-live="polite" class="contact-note" hidden="" id="contactFormStatus" role="status"></p>
+<p class="contact-note">Elimden geldiğince hızlı yanıt veriyorum — ancak bazen birkaç gün sürebiliyor.</p>
 </div>
 </div>
 <p>Önce şunu söyleyeyim: Bu sitede yazanlarla ilgili soruları memnuniyetle yanıtlarım — kişiye özel tıbbi danışmanlık veremem; vermeye de yetkim yok. <strong>Tinnitusun veya işitme kaybın yeni başladıysa ya da aniden ortaya çıktıysa, lütfen önce bir KBB uzmanına başvur</strong>. Yanıtımı beklemek yerine bunu yap. Akut dönemde en önemli şey bu.</p>
@@ -241,5 +270,57 @@
 })();
 </script>
 <script src="/site.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('gesendet') === '1') {
+    var box = document.getElementById('contactFormSuccess');
+    if (box) {
+      box.hidden = false;
+      if (box.scrollIntoView) box.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+    }
+  }
+})();
+</script>
+<script>
+(function () {
+  var form = document.querySelector('form[name="kontakt"]');
+  var status = document.getElementById('contactFormStatus');
+  if (!form || !status || !window.fetch || !window.FormData || !window.URLSearchParams) return;
+  var button = form.querySelector('button[type="submit"]');
+  if (!button) return;
+  var submitting = false;
+  var buttonLabel = button.textContent;
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (submitting || !form.reportValidity()) return;
+    var body = new URLSearchParams(new FormData(form)).toString();
+    submitting = true;
+    button.disabled = true;
+    button.textContent = 'Gönderiliyor ...';
+    form.setAttribute('aria-busy', 'true');
+    var success = document.getElementById('contactFormSuccess');
+    if (success) success.hidden = true;
+    status.hidden = false;
+    status.textContent = 'Mesajın gönderiliyor ...';
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    }).then(function (response) {
+      if (!response.ok) throw new Error('Gönderim başarısız.');
+      window.location.assign(form.action);
+    }).catch(function () {
+      submitting = false;
+      button.disabled = false;
+      button.textContent = buttonLabel;
+      form.removeAttribute('aria-busy');
+      status.textContent = 'Gönderim sırasında bir hata oluştu. Girdiğin bilgiler hâlâ yerinde. Lütfen bir kez daha dene.';
+    });
+  });
+})();
+</script>
 </body>
 </html>
