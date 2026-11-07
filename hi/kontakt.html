@@ -132,20 +132,49 @@
 <section class="tb-wrap tb-wrap-read tb-s-hero">
 <p class="tb-eyebrow">संपर्क</p>
 <h1 class="tb-ah1 tb-s-h1">मुझे लिखें</h1>
-<p class="tb-s-lede">चाहे आपको मेरी कहानी या यहाँ किसी पेज के बारे में कोई सवाल हो, या आप इस समय बस यह न समझ पा रहे हों कि आगे क्या करें — मुझे लिखें। मैं हर ई-मेल खुद पढ़ता हूँ।</p>
+<p class="tb-s-lede">चाहे आपको मेरी कहानी या यहाँ किसी पेज के बारे में कोई सवाल हो, या आप इस समय बस यह न समझ पा रहे हों कि आगे क्या करें — मुझे लिखें। मैं हर संदेश खुद पढ़ता हूँ।</p>
 </section>
 <section class="tb-chap tb-s-chap">
-<div class="tb-s-contact is-single">
+<div class="tb-s-contact">
 <div class="contact-card">
 <span class="contact-label">ई-मेल</span>
 <a class="contact-email" href="mailto:Dustin5.mueller87@gmail.com">
 <svg fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24" width="26"><rect height="14" rx="2" width="18" x="3" y="5"></rect><path d="m3 7 9 6 9-6"></path></svg>
       Dustin5.mueller87@gmail.com
     </a>
-<p class="contact-note">मैं जितनी जल्दी जवाब दे सकता हूँ, देता हूँ— लेकिन कभी-कभी इसमें कुछ दिन लग जाते हैं, क्योंकि मैं हर ई-मेल का जवाब खुद देता हूँ। कृपया थोड़ा धैर्य रखें।</p>
+<p class="contact-note">मैं जितनी जल्दी जवाब दे सकता हूँ, देता हूँ— लेकिन कभी-कभी इसमें कुछ दिन लग जाते हैं, क्योंकि मैं हर चीज़ का जवाब खुद देता हूँ। कृपया थोड़ा धैर्य रखें।</p>
+</div>
+<div class="contact-card">
+<span class="contact-label">संपर्क फ़ॉर्म</span>
+<p class="contact-form-intro">अगर आपको यह तरीका ज़्यादा पसंद हो, तो आप मुझे यहाँ भी लिख सकते हैं।</p>
+<p class="contact-form-success" hidden="" id="contactFormSuccess">धन्यवाद, आपका संदेश मुझे मिल गया है। मैं जितनी जल्दी हो सके जवाब दूँगा।</p>
+<form action="/hi/kontakt?gesendet=1" class="contact-form" data-netlify="true" method="POST" name="kontakt" netlify-honeypot="bot-field">
+<input name="form-name" type="hidden" value="kontakt"/>
+<p aria-hidden="true" class="contact-honeypot">
+<label>कृपया इसे ख़ाली छोड़ दें <input autocomplete="off" name="bot-field" tabindex="-1" type="text"/></label>
+</p>
+<div class="contact-form-grid">
+<label>नाम
+          <input autocomplete="name" name="name" required="" type="text"/>
+</label>
+<label>ई-मेल
+          <input autocomplete="email" name="email" required="" type="email"/>
+</label>
+<label>संदेश
+          <textarea name="message" required=""></textarea>
+</label>
+<label class="contact-form-check">
+<input name="privacy" required="" type="checkbox" value="accepted"/>
+<span>मैंने <a href="/hi/datenschutz">डेटा सुरक्षा घोषणा</a> पढ़ ली है और मैं सहमत हूँ कि मेरे संदेश का जवाब देने के लिए मेरी दी गई जानकारी का प्रसंस्करण किया जाए।</span>
+</label>
+<button class="contact-form-submit" type="submit">संदेश भेजें</button>
+</div>
+</form>
+<p aria-atomic="true" aria-live="polite" class="contact-note" hidden="" id="contactFormStatus" role="status"></p>
+<p class="contact-note">मैं जितनी जल्दी हो सके जवाब देता हूँ — लेकिन कभी-कभी इसमें कुछ दिन लग जाते हैं।</p>
 </div>
 </div>
-<p>पहले एक बात: मैं इस पृष्ठ पर लिखी बातों के बारे में सवालों के जवाब खुशी से देता हूँ — व्यक्तिगत चिकित्सकीय सलाह न तो मैं दे सकता हूँ, न ही मुझे ऐसा करने की अनुमति है। <strong>अगर अभी-अभी या अचानक आपको टिनिटस शुरू हुआ है अथवा सुनने की क्षमता में कमी आई है, तो कृपया पहले किसी ईएनटी डॉक्टर के पास जाएँ</strong> — मेरे जवाब का इंतज़ार करने के बजाय। तीव्र चरण में यही सबसे महत्वपूर्ण है।</p>
+<p>पहले एक बात: मैं इस वेबसाइट पर लिखी बातों के बारे में सवालों के जवाब खुशी से देता हूँ — व्यक्तिगत चिकित्सकीय सलाह न तो मैं दे सकता हूँ, न ही मुझे ऐसा करने की अनुमति है। <strong>अगर अभी-अभी या अचानक आपको टिनिटस शुरू हुआ है या सुनने की क्षमता में कमी आई है, तो कृपया पहले किसी ईएनटी डॉक्टर के पास जाएँ</strong> — मेरे जवाब का इंतज़ार करने के बजाय। तीव्र फेज़ में यही सबसे ज़रूरी है।</p>
 <p>पूरी कानूनी जानकारी आपको <a href="/hi/impressum">इम्प्रेसुम</a> में मिलेगी।</p>
 </section>
 </main>
@@ -241,5 +270,57 @@
 })();
 </script>
 <script src="/site.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('gesendet') === '1') {
+    var box = document.getElementById('contactFormSuccess');
+    if (box) {
+      box.hidden = false;
+      if (box.scrollIntoView) box.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+    }
+  }
+})();
+</script>
+<script>
+(function () {
+  var form = document.querySelector('form[name="kontakt"]');
+  var status = document.getElementById('contactFormStatus');
+  if (!form || !status || !window.fetch || !window.FormData || !window.URLSearchParams) return;
+  var button = form.querySelector('button[type="submit"]');
+  if (!button) return;
+  var submitting = false;
+  var buttonLabel = button.textContent;
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (submitting || !form.reportValidity()) return;
+    var body = new URLSearchParams(new FormData(form)).toString();
+    submitting = true;
+    button.disabled = true;
+    button.textContent = 'भेजा जा रहा है …';
+    form.setAttribute('aria-busy', 'true');
+    var success = document.getElementById('contactFormSuccess');
+    if (success) success.hidden = true;
+    status.hidden = false;
+    status.textContent = 'आपका संदेश भेजा जा रहा है …';
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    }).then(function (response) {
+      if (!response.ok) throw new Error('Senden fehlgeschlagen.');
+      window.location.assign(form.action);
+    }).catch(function () {
+      submitting = false;
+      button.disabled = false;
+      button.textContent = buttonLabel;
+      form.removeAttribute('aria-busy');
+      status.textContent = 'भेजते समय कोई गड़बड़ी हो गई। आपकी लिखी बातें अभी भी यहीं हैं। कृपया फिर से कोशिश करें।';
+    });
+  });
+})();
+</script>
 </body>
 </html>
