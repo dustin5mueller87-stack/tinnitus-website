@@ -40,7 +40,7 @@
 <div class="tb-navgroup">
 <button type="button" class="tb-navbtn" aria-expanded="false" aria-haspopup="true">私の体験 <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
 <div class="tb-sub">
-<a href="/ja/tinnitus-geheilt-erfahrungsbericht">耳鳴りによる崩壊（短編）</a>
+<a href="/ja/tinnitus-geheilt-erfahrungsbericht">耳鳴りによる私の崩壊（短縮版）</a>
 <a href="/ja/meine-geschichte-teil-1">長編自伝・第1部：地獄のような道のり</a>
 <a href="/ja/meine-geschichte-teil-2">長編自伝・第2部：過酷なテスト</a>
 </div>
@@ -131,21 +131,50 @@
 <main id="main-content">
 <section class="tb-wrap tb-wrap-read tb-s-hero">
 <p class="tb-eyebrow">お問い合わせ</p>
-<h1 class="tb-ah1 tb-s-h1">私にメッセージを送ってください</h1>
-<p class="tb-s-lede">私の物語についての質問でも、ここにあるページについてでも、あるいは、ただ今どうしていいか分からないからでも。私にメッセージを送ってください。メールは一通一通、私自身が読んでいます。</p>
+<h1 class="tb-ah1 tb-s-h1">気軽にメッセージをください</h1>
+<p class="tb-s-lede">私の物語についての質問でも、ここにあるページについてでも、あるいは、ただ今どうしていいか分からないからでも。気軽に書いてください。メッセージは一通一通、私自身が読んでいます。</p>
 </section>
 <section class="tb-chap tb-s-chap">
-<div class="tb-s-contact is-single">
+<div class="tb-s-contact">
 <div class="contact-card">
 <span class="contact-label">メール</span>
 <a class="contact-email" href="mailto:Dustin5.mueller87@gmail.com">
 <svg fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24" width="26"><rect height="14" rx="2" width="18" x="3" y="5"></rect><path d="m3 7 9 6 9-6"></path></svg>
       Dustin5.mueller87@gmail.com
     </a>
-<p class="contact-note">できる限り早く返信します――ただ、すべてのメールに私自身で返信しているため、数日かかることもあります。少し気長に待ってください。</p>
+<p class="contact-note">できる限り早く返信します――ただ、すべてに私自身で返信しているため、数日かかることもあります。少し気長に待ってください。</p>
+</div>
+<div class="contact-card">
+<span class="contact-label">お問い合わせフォーム</span>
+<p class="contact-form-intro">そのほうがよければ、ここからメッセージを送ることもできます。</p>
+<p class="contact-form-success" hidden="" id="contactFormSuccess">ありがとうございます。メッセージは届きました。できる限り早く返信します。</p>
+<form action="/ja/kontakt?gesendet=1" class="contact-form" data-netlify="true" method="POST" name="kontakt" netlify-honeypot="bot-field">
+<input name="form-name" type="hidden" value="kontakt"/>
+<p aria-hidden="true" class="contact-honeypot">
+<label>空欄のままにしてください <input autocomplete="off" name="bot-field" tabindex="-1" type="text"/></label>
+</p>
+<div class="contact-form-grid">
+<label>お名前
+          <input autocomplete="name" name="name" required="" type="text"/>
+</label>
+<label>メールアドレス
+          <input autocomplete="email" name="email" required="" type="email"/>
+</label>
+<label>メッセージ
+          <textarea name="message" required=""></textarea>
+</label>
+<label class="contact-form-check">
+<input name="privacy" required="" type="checkbox" value="accepted"/>
+<span><a href="/ja/datenschutz">プライバシーポリシー</a>を読み、メッセージへの返信のために私が入力した情報が処理されることに同意します。</span>
+</label>
+<button class="contact-form-submit" type="submit">メッセージを送信</button>
+</div>
+</form>
+<p aria-atomic="true" aria-live="polite" class="contact-note" hidden="" id="contactFormStatus" role="status"></p>
+<p class="contact-note">できる限り早く返信します――ただ、数日かかることもあります。</p>
 </div>
 </div>
-<p>最初に一つ。このサイトに書いてあることへの質問には喜んで答えますが、個別の医学的な助言はできませんし、してもいけません。<strong>耳鳴りや聴力低下が起きたばかり、または突然現れた場合は、</strong>私の返事を待たずに、<strong>まず耳鼻咽喉科医を受診してください</strong>。急性期には、それが最も大切です。</p>
+<p>最初に一つ言っておきます。このサイトに書いてあることへの質問には喜んで答えますが、個別の医学的な助言はできませんし、してもいけません。<strong>耳鳴りや聴力低下が起きたばかり、または突然現れた場合は、</strong>私の返事を待たずに、<strong>まず耳鼻咽喉科医を受診してください</strong>。急性期には、それが最も大切です。</p>
 <p>すべての法的情報は、<a href="/ja/impressum">運営者情報</a>で確認できます。</p>
 </section>
 </main>
@@ -241,5 +270,57 @@
 })();
 </script>
 <script src="/site.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('gesendet') === '1') {
+    var box = document.getElementById('contactFormSuccess');
+    if (box) {
+      box.hidden = false;
+      if (box.scrollIntoView) box.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+    }
+  }
+})();
+</script>
+<script>
+(function () {
+  var form = document.querySelector('form[name="kontakt"]');
+  var status = document.getElementById('contactFormStatus');
+  if (!form || !status || !window.fetch || !window.FormData || !window.URLSearchParams) return;
+  var button = form.querySelector('button[type="submit"]');
+  if (!button) return;
+  var submitting = false;
+  var buttonLabel = button.textContent;
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (submitting || !form.reportValidity()) return;
+    var body = new URLSearchParams(new FormData(form)).toString();
+    submitting = true;
+    button.disabled = true;
+    button.textContent = '送信中…';
+    form.setAttribute('aria-busy', 'true');
+    var success = document.getElementById('contactFormSuccess');
+    if (success) success.hidden = true;
+    status.hidden = false;
+    status.textContent = 'メッセージを送信しています…';
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    }).then(function (response) {
+      if (!response.ok) throw new Error('送信に失敗しました。');
+      window.location.assign(form.action);
+    }).catch(function () {
+      submitting = false;
+      button.disabled = false;
+      button.textContent = buttonLabel;
+      form.removeAttribute('aria-busy');
+      status.textContent = '送信中にエラーが起きました。入力した内容はそのまま残っています。もう一度お試しください。';
+    });
+  });
+})();
+</script>
 </body>
 </html>
