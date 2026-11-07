@@ -135,13 +135,42 @@
 <p class="tb-s-lede">Неважно, хочешь ли ты спросить о моей истории, об одной из страниц здесь или просто сейчас не знаешь, как быть дальше: напиши мне. Каждое сообщение я читаю сам.</p>
 </section>
 <section class="tb-chap tb-s-chap">
-<div class="tb-s-contact is-single">
+<div class="tb-s-contact">
 <div class="contact-card">
 <span class="contact-label">Электронная почта</span>
 <a class="contact-email" href="mailto:Dustin5.mueller87@gmail.com"><svg fill="none" height="26" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" viewbox="0 0 24 24" width="26"><rect height="14" rx="2" width="18" x="3" y="5"></rect><path d="m3 7 9 6 9-6"></path></svg>
       Dustin5.mueller87@gmail.com
     </a>
 <p class="contact-note">Я отвечаю так быстро, как могу, — но иногда мне требуется несколько дней, потому что на каждое письмо я отвечаю сам. Пожалуйста, наберись немного терпения.</p>
+</div>
+<div class="contact-card">
+<span class="contact-label">Форма обратной связи</span>
+<p class="contact-form-intro">Если тебе так удобнее, можешь написать мне и здесь.</p>
+<p class="contact-form-success" hidden="" id="contactFormSuccess">Спасибо, твоё сообщение дошло. Я отвечу, как только смогу.</p>
+<form action="/ru/kontakty/?gesendet=1" class="contact-form" data-netlify="true" method="POST" name="kontakt" netlify-honeypot="bot-field">
+<input name="form-name" type="hidden" value="kontakt"/>
+<p aria-hidden="true" class="contact-honeypot">
+<label>Оставь это поле пустым <input autocomplete="off" name="bot-field" tabindex="-1" type="text"/></label>
+</p>
+<div class="contact-form-grid">
+<label>Имя
+          <input autocomplete="name" name="name" required="" type="text"/>
+</label>
+<label>Электронная почта
+          <input autocomplete="email" name="email" required="" type="email"/>
+</label>
+<label>Сообщение
+          <textarea name="message" required=""></textarea>
+</label>
+<label class="contact-form-check">
+<input name="privacy" required="" type="checkbox" value="accepted"/>
+<span>Я прочитал(а) <a href="/ru/politika-konfidentsialnosti/">политику конфиденциальности</a> и даю согласие на обработку моих данных для ответа на сообщение.</span>
+</label>
+<button class="contact-form-submit" type="submit">Отправить сообщение</button>
+</div>
+</form>
+<p aria-atomic="true" aria-live="polite" class="contact-note" hidden="" id="contactFormStatus" role="status"></p>
+<p class="contact-note">Я отвечаю так быстро, как могу, — но иногда это занимает несколько дней.</p>
 </div>
 </div>
 <p>Сразу оговорюсь: я охотно отвечаю на вопросы о том, что написано на этом сайте, — но я не могу и не имею права давать индивидуальные медицинские консультации. <strong>Если тиннитус или потеря слуха появились у тебя недавно либо внезапно, пожалуйста, сначала обратись к ЛОР-врачу</strong>, а не жди моего ответа. В острой фазе это самое важное.</p>
@@ -240,5 +269,57 @@
 })();
 </script>
 <script src="/site.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('gesendet') === '1') {
+    var box = document.getElementById('contactFormSuccess');
+    if (box) {
+      box.hidden = false;
+      if (box.scrollIntoView) box.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+    }
+  }
+})();
+</script>
+<script>
+(function () {
+  var form = document.querySelector('form[name="kontakt"]');
+  var status = document.getElementById('contactFormStatus');
+  if (!form || !status || !window.fetch || !window.FormData || !window.URLSearchParams) return;
+  var button = form.querySelector('button[type="submit"]');
+  if (!button) return;
+  var submitting = false;
+  var buttonLabel = button.textContent;
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (submitting || !form.reportValidity()) return;
+    var body = new URLSearchParams(new FormData(form)).toString();
+    submitting = true;
+    button.disabled = true;
+    button.textContent = 'Отправляется...';
+    form.setAttribute('aria-busy', 'true');
+    var success = document.getElementById('contactFormSuccess');
+    if (success) success.hidden = true;
+    status.hidden = false;
+    status.textContent = 'Твоё сообщение отправляется...';
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    }).then(function (response) {
+      if (!response.ok) throw new Error('Не удалось отправить.');
+      window.location.assign(form.action);
+    }).catch(function () {
+      submitting = false;
+      button.disabled = false;
+      button.textContent = buttonLabel;
+      form.removeAttribute('aria-busy');
+      status.textContent = 'При отправке произошла ошибка. Твои данные остались в форме. Пожалуйста, попробуй ещё раз.';
+    });
+  });
+})();
+</script>
 </body>
 </html>
