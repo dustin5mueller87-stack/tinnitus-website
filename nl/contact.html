@@ -135,7 +135,7 @@
 <p class="tb-s-lede">Of je nu een vraag hebt over mijn verhaal, over een pagina hier of gewoon op dit moment niet weet hoe je verder moet: schrijf me. Ik lees elke mail zelf.</p>
 </section>
 <section class="tb-chap tb-s-chap">
-<div class="tb-s-contact is-single">
+<div class="tb-s-contact">
 <div class="contact-card">
 <span class="contact-label">E-mail</span>
 <a class="contact-email" href="mailto:Dustin5.mueller87@gmail.com">
@@ -143,6 +143,35 @@
       Dustin5.mueller87@gmail.com
     </a>
 <p class="contact-note">Ik antwoord zo snel als ik kan — maar soms duurt het een paar dagen, omdat ik alles persoonlijk beantwoord. Heb alsjeblieft even geduld.</p>
+</div>
+<div class="contact-card">
+<span class="contact-label">Contactformulier</span>
+<p class="contact-form-intro">Als je dat liever hebt, kun je me ook hier schrijven.</p>
+<p class="contact-form-success" hidden="" id="contactFormSuccess">Bedankt, je bericht is aangekomen. Ik antwoord zo snel als ik kan.</p>
+<form action="/nl/contact?gesendet=1" class="contact-form" data-netlify="true" method="POST" name="kontakt" netlify-honeypot="bot-field">
+<input name="form-name" type="hidden" value="kontakt"/>
+<p aria-hidden="true" class="contact-honeypot">
+<label>Laat dit veld leeg <input autocomplete="off" name="bot-field" tabindex="-1" type="text"/></label>
+</p>
+<div class="contact-form-grid">
+<label>Naam
+          <input autocomplete="name" name="name" required="" type="text"/>
+</label>
+<label>E-mail
+          <input autocomplete="email" name="email" required="" type="email"/>
+</label>
+<label>Bericht
+          <textarea name="message" required=""></textarea>
+</label>
+<label class="contact-form-check">
+<input name="privacy" required="" type="checkbox" value="accepted"/>
+<span>Ik heb de <a href="/nl/privacyverklaring">privacyverklaring</a> gelezen en geef toestemming voor de verwerking van mijn gegevens voor het beantwoorden van het bericht.</span>
+</label>
+<button class="contact-form-submit" type="submit">Bericht versturen</button>
+</div>
+</form>
+<p aria-atomic="true" aria-live="polite" class="contact-note" hidden="" id="contactFormStatus" role="status"></p>
+<p class="contact-note">Ik antwoord zo snel als ik kan — maar soms duurt het een paar dagen.</p>
 </div>
 </div>
 <p>Eén ding vooraf: ik beantwoord graag vragen over wat er op deze pagina staat — individueel medisch advies kan en mag ik niet geven. <strong>Is je tinnitus of gehoorverlies pas ontstaan of plotseling opgetreden, ga dan alsjeblieft eerst naar een kno-arts</strong> in plaats van op mijn antwoord te wachten. Dat is in de acute fase het belangrijkste.</p>
@@ -241,5 +270,57 @@
 })();
 </script>
 <script src="/site.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('gesendet') === '1') {
+    var box = document.getElementById('contactFormSuccess');
+    if (box) {
+      box.hidden = false;
+      if (box.scrollIntoView) box.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+    }
+  }
+})();
+</script>
+<script>
+(function () {
+  var form = document.querySelector('form[name="kontakt"]');
+  var status = document.getElementById('contactFormStatus');
+  if (!form || !status || !window.fetch || !window.FormData || !window.URLSearchParams) return;
+  var button = form.querySelector('button[type="submit"]');
+  if (!button) return;
+  var submitting = false;
+  var buttonLabel = button.textContent;
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (submitting || !form.reportValidity()) return;
+    var body = new URLSearchParams(new FormData(form)).toString();
+    submitting = true;
+    button.disabled = true;
+    button.textContent = 'Wordt verstuurd ...';
+    form.setAttribute('aria-busy', 'true');
+    var success = document.getElementById('contactFormSuccess');
+    if (success) success.hidden = true;
+    status.hidden = false;
+    status.textContent = 'Je bericht wordt verstuurd ...';
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    }).then(function (response) {
+      if (!response.ok) throw new Error('Versturen mislukt.');
+      window.location.assign(form.action);
+    }).catch(function () {
+      submitting = false;
+      button.disabled = false;
+      button.textContent = buttonLabel;
+      form.removeAttribute('aria-busy');
+      status.textContent = 'Bij het versturen is er een fout opgetreden. Wat je hebt ingevuld, staat er nog. Probeer het alsjeblieft nog een keer.';
+    });
+  });
+})();
+</script>
 </body>
 </html>
