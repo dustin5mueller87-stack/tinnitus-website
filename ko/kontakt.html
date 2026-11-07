@@ -132,10 +132,10 @@
 <section class="tb-wrap tb-wrap-read tb-s-hero">
 <p class="tb-eyebrow">문의</p>
 <h1 class="tb-ah1 tb-s-h1">제게 메시지를 보내 주세요</h1>
-<p class="tb-s-lede">제 이야기나 여기 있는 페이지에 관해 궁금한 점이 있어서든, 아니면 그저 지금 막막해서든 상관없습니다. 제게 메시지를 보내 주세요. 모든 이메일은 제가 직접 읽습니다.</p>
+<p class="tb-s-lede">제 이야기나 여기 있는 페이지에 관해 궁금한 점이 있어서든, 아니면 그저 지금 막막해서든 상관없습니다. 제게 메시지를 보내 주세요. 모든 메시지는 제가 직접 읽습니다.</p>
 </section>
 <section class="tb-chap tb-s-chap">
-<div class="tb-s-contact is-single">
+<div class="tb-s-contact">
 <div class="contact-card">
 <span class="contact-label">이메일</span>
 <a class="contact-email" href="mailto:Dustin5.mueller87@gmail.com">
@@ -143,6 +143,35 @@
       Dustin5.mueller87@gmail.com
     </a>
 <p class="contact-note">제가 할 수 있는 한 빨리 답합니다 — 하지만 모든 문의에 제가 직접 답하기 때문에 가끔 며칠이 걸립니다. 조금만 기다려 주세요.</p>
+</div>
+<div class="contact-card">
+<span class="contact-label">문의 양식</span>
+<p class="contact-form-intro">이쪽이 더 편하다면 여기서도 메시지를 보낼 수 있습니다.</p>
+<p class="contact-form-success" hidden="" id="contactFormSuccess">감사합니다. 메시지가 잘 도착했습니다. 제가 할 수 있는 한 빨리 답하겠습니다.</p>
+<form action="/ko/kontakt?gesendet=1" class="contact-form" data-netlify="true" method="POST" name="kontakt" netlify-honeypot="bot-field">
+<input name="form-name" type="hidden" value="kontakt"/>
+<p aria-hidden="true" class="contact-honeypot">
+<label>비워 두세요 <input autocomplete="off" name="bot-field" tabindex="-1" type="text"/></label>
+</p>
+<div class="contact-form-grid">
+<label>이름
+          <input autocomplete="name" name="name" required="" type="text"/>
+</label>
+<label>이메일
+          <input autocomplete="email" name="email" required="" type="email"/>
+</label>
+<label>메시지
+          <textarea name="message" required=""></textarea>
+</label>
+<label class="contact-form-check">
+<input name="privacy" required="" type="checkbox" value="accepted"/>
+<span><a href="/ko/datenschutz">개인정보 처리방침</a>을 읽었으며, 제가 입력한 정보를 메시지에 답변할 목적으로 처리하는 데 동의합니다.</span>
+</label>
+<button class="contact-form-submit" type="submit">메시지 보내기</button>
+</div>
+</form>
+<p aria-atomic="true" aria-live="polite" class="contact-note" hidden="" id="contactFormStatus" role="status"></p>
+<p class="contact-note">제가 할 수 있는 한 빨리 답합니다 — 하지만 가끔 며칠이 걸립니다.</p>
 </div>
 </div>
 <p>먼저 한 가지 말씀드리겠습니다. 이 사이트에 적힌 내용에 관한 질문에는 기꺼이 답하지만, 개인별 의료 상담은 해드릴 수도 없고 해드려서도 안 됩니다. <strong>이명이나 청력 손실이 지금 막 생겼거나 갑자기 나타났다면 제 답변을 기다리지 말고 먼저 이비인후과 의사에게 가세요</strong>. 급성기에는 그것이 가장 중요합니다.</p>
@@ -241,5 +270,57 @@
 })();
 </script>
 <script src="/site.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('gesendet') === '1') {
+    var box = document.getElementById('contactFormSuccess');
+    if (box) {
+      box.hidden = false;
+      if (box.scrollIntoView) box.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+    }
+  }
+})();
+</script>
+<script>
+(function () {
+  var form = document.querySelector('form[name="kontakt"]');
+  var status = document.getElementById('contactFormStatus');
+  if (!form || !status || !window.fetch || !window.FormData || !window.URLSearchParams) return;
+  var button = form.querySelector('button[type="submit"]');
+  if (!button) return;
+  var submitting = false;
+  var buttonLabel = button.textContent;
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (submitting || !form.reportValidity()) return;
+    var body = new URLSearchParams(new FormData(form)).toString();
+    submitting = true;
+    button.disabled = true;
+    button.textContent = '보내는 중...';
+    form.setAttribute('aria-busy', 'true');
+    var success = document.getElementById('contactFormSuccess');
+    if (success) success.hidden = true;
+    status.hidden = false;
+    status.textContent = '메시지를 보내는 중입니다...';
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    }).then(function (response) {
+      if (!response.ok) throw new Error('Senden fehlgeschlagen.');
+      window.location.assign(form.action);
+    }).catch(function () {
+      submitting = false;
+      button.disabled = false;
+      button.textContent = buttonLabel;
+      form.removeAttribute('aria-busy');
+      status.textContent = '보내는 중에 오류가 발생했습니다. 입력한 내용은 그대로 남아 있습니다. 다시 한번 시도해 주세요.';
+    });
+  });
+})();
+</script>
 </body>
 </html>
