@@ -40,7 +40,7 @@
 <div class="tb-navgroup">
 <button type="button" class="tb-navbtn" aria-expanded="false" aria-haspopup="true">Mi historia <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
 <div class="tb-sub">
-<a href="/es/mi-historia-con-los-acufenos">Mi colapso por los acúfenos (historia breve)</a>
+<a href="/es/mi-historia-con-los-acufenos">Mi colapso por los acúfenos (versión breve)</a>
 <a href="/es/mi-historia-parte-1">Biografía extensa, parte 1: la travesía del infierno</a>
 <a href="/es/mi-historia-parte-2">Biografía extensa, parte 2: la prueba de fuego</a>
 </div>
@@ -132,10 +132,10 @@
 <section class="tb-wrap tb-wrap-read tb-s-hero">
 <p class="tb-eyebrow">Contacto</p>
 <h1 class="tb-ah1 tb-s-h1">Escríbeme</h1>
-<p class="tb-s-lede">Ya sea por una pregunta sobre mi historia, sobre alguna de estas páginas o simplemente porque ahora mismo no sabes cómo seguir: escríbeme. Leo personalmente cada correo electrónico.</p>
+<p class="tb-s-lede">Ya sea por una pregunta sobre mi historia, sobre alguna de estas páginas o simplemente porque ahora mismo no sabes cómo seguir: escríbeme. Leo personalmente cada mensaje.</p>
 </section>
 <section class="tb-chap tb-s-chap">
-<div class="tb-s-contact is-single">
+<div class="tb-s-contact">
 <div class="contact-card">
 <span class="contact-label">Correo electrónico</span>
 <a class="contact-email" href="mailto:Dustin5.mueller87@gmail.com">
@@ -143,6 +143,35 @@
       Dustin5.mueller87@gmail.com
     </a>
 <p class="contact-note">Respondo tan pronto como puedo, pero a veces tardo unos días porque respondo personalmente a cada mensaje. Te pido un poco de paciencia.</p>
+</div>
+<div class="contact-card">
+<span class="contact-label">Formulario de contacto</span>
+<p class="contact-form-intro">Si lo prefieres, también puedes escribirme aquí.</p>
+<p class="contact-form-success" hidden="" id="contactFormSuccess">Gracias, tu mensaje ha llegado. Respondo tan pronto como puedo.</p>
+<form action="/es/contacto?enviado=1" class="contact-form" data-netlify="true" method="POST" name="contacto-es" netlify-honeypot="bot-field">
+<input name="form-name" type="hidden" value="contacto-es"/>
+<p aria-hidden="true" class="contact-honeypot">
+<label>Déjalo en blanco, por favor <input autocomplete="off" name="bot-field" tabindex="-1" type="text"/></label>
+</p>
+<div class="contact-form-grid">
+<label>Nombre
+          <input autocomplete="name" name="name" required="" type="text"/>
+</label>
+<label>Correo electrónico
+          <input autocomplete="email" name="email" required="" type="email"/>
+</label>
+<label>Mensaje
+          <textarea name="message" required=""></textarea>
+</label>
+<label class="contact-form-check">
+<input name="privacy" required="" type="checkbox" value="accepted"/>
+<span>He leído la <a href="/es/politica-de-privacidad">política de privacidad</a> y consiento el tratamiento de mis datos para responder a mi mensaje.</span>
+</label>
+<button class="contact-form-submit" type="submit">Enviar mensaje</button>
+</div>
+</form>
+<p aria-atomic="true" aria-live="polite" class="contact-note" hidden="" id="contactFormStatus" role="status"></p>
+<p class="contact-note">Respondo tan pronto como puedo, pero a veces tardo unos días.</p>
 </div>
 </div>
 <p>Una cosa antes de nada: respondo con gusto a preguntas sobre lo que aparece en este sitio, pero no puedo ni me está permitido ofrecer asesoramiento médico individual. <strong>Si tus acúfenos o una pérdida auditiva acaban de aparecer o han surgido de forma repentina, acude, por favor, primero a un otorrinolaringólogo</strong> en lugar de esperar mi respuesta. Eso es lo más importante en la fase aguda.</p>
@@ -241,6 +270,58 @@
 })();
 </script>
 <script src="/site.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('enviado') === '1') {
+    var box = document.getElementById('contactFormSuccess');
+    if (box) {
+      box.hidden = false;
+      if (box.scrollIntoView) box.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+    }
+  }
+})();
+</script>
+<script>
+(function () {
+  var form = document.querySelector('form[name="contacto-es"]');
+  var status = document.getElementById('contactFormStatus');
+  if (!form || !status || !window.fetch || !window.FormData || !window.URLSearchParams) return;
+  var button = form.querySelector('button[type="submit"]');
+  if (!button) return;
+  var submitting = false;
+  var buttonLabel = button.textContent;
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (submitting || !form.reportValidity()) return;
+    var body = new URLSearchParams(new FormData(form)).toString();
+    submitting = true;
+    button.disabled = true;
+    button.textContent = 'Enviando...';
+    form.setAttribute('aria-busy', 'true');
+    var success = document.getElementById('contactFormSuccess');
+    if (success) success.hidden = true;
+    status.hidden = false;
+    status.textContent = 'Enviando tu mensaje...';
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    }).then(function (response) {
+      if (!response.ok) throw new Error('Error al enviar.');
+      window.location.assign(form.action);
+    }).catch(function () {
+      submitting = false;
+      button.disabled = false;
+      button.textContent = buttonLabel;
+      form.removeAttribute('aria-busy');
+      status.textContent = 'Se ha producido un error al enviarlo. Lo que has escrito sigue aquí. Por favor, inténtalo de nuevo.';
+    });
+  });
+})();
+</script>
 <script>
 (function () {
   if (document.documentElement.lang.toLowerCase().indexOf('es') !== 0) return;
