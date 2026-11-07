@@ -21,12 +21,12 @@
   <meta property="og:image" content="https://tinnitusbioregulation.com/img/fr-og-comprendre-acouphenes-v2.webp">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Infographie « Comprendre les acouphènes » présentant quatre axes : comprendre, situer, le savoir et s’orienter.">
+  <meta property="og:image:alt" content="Infographie « Comprendre les acouphènes » présentant quatre axes : « Comprendre », « Situer », « Le savoir » et « S’orienter ».">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Contacter Dustin Müller">
   <meta name="twitter:description" content="Contacter Dustin Müller : n’hésitez pas à m’écrire si vous avez des questions sur mon histoire ou mes pistes de solution.">
   <meta name="twitter:image" content="https://tinnitusbioregulation.com/img/fr-og-comprendre-acouphenes-v2.webp">
-  <meta name="twitter:image:alt" content="Infographie « Comprendre les acouphènes » présentant quatre axes : comprendre, situer, le savoir et s’orienter.">
+  <meta name="twitter:image:alt" content="Infographie « Comprendre les acouphènes » présentant quatre axes : « Comprendre », « Situer », « Le savoir » et « S’orienter ».">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Aller au contenu principal</a>
@@ -50,7 +50,7 @@
 <div class="tb-navgroup">
 <button type="button" class="tb-navbtn" aria-expanded="false" aria-haspopup="true">Causes <svg class="tb-ico tb-ico-s" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
 <div class="tb-sub">
-<a href="/fr/acouphenes-et-bruit">Acouphènes causés par le bruit</a>
+<a href="/fr/acouphenes-et-bruit">Acouphènes dus au bruit</a>
 <a href="/fr/acouphenes-et-stress">Acouphènes dus au stress</a>
 <a href="/fr/acouphenes-et-medicaments">Acouphènes dus aux médicaments et aux substances toxiques</a>
 </div>
@@ -137,7 +137,7 @@
 <p class="tb-s-lede">Que ce soit pour une question sur mon histoire, sur une page de ce site, ou simplement parce que vous ne savez plus quoi faire en ce moment : écrivez-moi. Je lis moi-même chaque message.</p>
 </section>
 <section class="tb-chap tb-s-chap">
-<div class="tb-s-contact is-single">
+<div class="tb-s-contact">
 <div class="contact-card">
 <span class="contact-label">E-mail</span>
 <a class="contact-email" href="mailto:Dustin5.mueller87@gmail.com">
@@ -145,6 +145,35 @@
       Dustin5.mueller87@gmail.com
     </a>
 <p class="contact-note">Je réponds aussi vite que je le peux — mais cela prend parfois quelques jours, car je réponds à tout personnellement. Un peu de patience, s’il vous plaît.</p>
+</div>
+<div class="contact-card">
+<span class="contact-label">Formulaire de contact</span>
+<p class="contact-form-intro">Si vous préférez, vous pouvez aussi m’écrire ici.</p>
+<p class="contact-form-success" hidden="" id="contactFormSuccess">Merci, votre message est bien arrivé. Je réponds aussi vite que je le peux.</p>
+<form action="/fr/contact?gesendet=1" class="contact-form" data-netlify="true" method="POST" name="kontakt" netlify-honeypot="bot-field">
+<input name="form-name" type="hidden" value="kontakt"/>
+<p aria-hidden="true" class="contact-honeypot">
+<label>Merci de laisser ce champ vide <input autocomplete="off" name="bot-field" tabindex="-1" type="text"/></label>
+</p>
+<div class="contact-form-grid">
+<label>Nom
+          <input autocomplete="name" name="name" required="" type="text"/>
+</label>
+<label>E-mail
+          <input autocomplete="email" name="email" required="" type="email"/>
+</label>
+<label>Message
+          <textarea name="message" required=""></textarea>
+</label>
+<label class="contact-form-check">
+<input name="privacy" required="" type="checkbox" value="accepted"/>
+<span>J’ai lu la <a href="/fr/politique-de-confidentialite">politique de confidentialité</a> et je consens au traitement de mes données afin qu’il soit répondu à mon message.</span>
+</label>
+<button class="contact-form-submit" type="submit">Envoyer le message</button>
+</div>
+</form>
+<p aria-atomic="true" aria-live="polite" class="contact-note" hidden="" id="contactFormStatus" role="status"></p>
+<p class="contact-note">Je réponds aussi vite que je le peux — mais cela prend parfois quelques jours.</p>
 </div>
 </div>
 <p>Une chose d’abord : je réponds volontiers aux questions sur ce qui est écrit sur ce site — mais je ne peux pas donner de conseils médicaux personnalisés et je n’en ai pas non plus le droit. <strong>Si vos acouphènes ou une perte auditive sont apparus récemment ou soudainement, consultez d’abord un médecin ORL</strong> au lieu d’attendre ma réponse. C’est le plus important pendant la phase aiguë.</p>
@@ -243,5 +272,57 @@
 })();
 </script>
 <script src="/site.js"></script>
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('gesendet') === '1') {
+    var box = document.getElementById('contactFormSuccess');
+    if (box) {
+      box.hidden = false;
+      if (box.scrollIntoView) box.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+    }
+  }
+})();
+</script>
+<script>
+(function () {
+  var form = document.querySelector('form[name="kontakt"]');
+  var status = document.getElementById('contactFormStatus');
+  if (!form || !status || !window.fetch || !window.FormData || !window.URLSearchParams) return;
+  var button = form.querySelector('button[type="submit"]');
+  if (!button) return;
+  var submitting = false;
+  var buttonLabel = button.textContent;
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (submitting || !form.reportValidity()) return;
+    var body = new URLSearchParams(new FormData(form)).toString();
+    submitting = true;
+    button.disabled = true;
+    button.textContent = 'Envoi en cours…';
+    form.setAttribute('aria-busy', 'true');
+    var success = document.getElementById('contactFormSuccess');
+    if (success) success.hidden = true;
+    status.hidden = false;
+    status.textContent = 'Votre message est en cours d’envoi…';
+
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body
+    }).then(function (response) {
+      if (!response.ok) throw new Error('Échec de l’envoi.');
+      window.location.assign(form.action);
+    }).catch(function () {
+      submitting = false;
+      button.disabled = false;
+      button.textContent = buttonLabel;
+      form.removeAttribute('aria-busy');
+      status.textContent = 'Une erreur s’est produite lors de l’envoi. Vos saisies sont toujours là. Veuillez réessayer.';
+    });
+  });
+})();
+</script>
 </body>
 </html>
