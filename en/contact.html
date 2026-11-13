@@ -148,8 +148,8 @@
 <span class="contact-label">Contact form</span>
 <p class="contact-form-intro">If you prefer, you can also write to me here.</p>
 <p class="contact-form-success" hidden="" id="contactFormSuccess">Thanks, your message came through. I’ll reply as quickly as I can.</p>
-<form action="/en/contact?gesendet=1" class="contact-form" data-netlify="true" method="POST" name="kontakt-en" netlify-honeypot="bot-field">
-<input name="form-name" type="hidden" value="kontakt-en"/>
+<form action="/en/contact?gesendet=1" class="contact-form" data-netlify="true" method="POST" name="kontakt" netlify-honeypot="bot-field">
+<input name="form-name" type="hidden" value="kontakt"/>
 <p aria-hidden="true" class="contact-honeypot">
 <label>Please leave this empty <input autocomplete="off" name="bot-field" tabindex="-1" type="text"/></label>
 </p>
@@ -284,7 +284,7 @@
 </script>
 <script>
 (function () {
-  var form = document.querySelector('form[name="kontakt-en"]');
+  var form = document.querySelector('form[name="kontakt"]');
   var status = document.getElementById('contactFormStatus');
   if (!form || !status || !window.fetch || !window.FormData || !window.URLSearchParams) return;
   var button = form.querySelector('button[type="submit"]');
