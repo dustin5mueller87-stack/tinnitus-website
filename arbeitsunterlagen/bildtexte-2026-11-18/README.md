@@ -24,7 +24,7 @@ Mit dieser Datei kann man die Grafiken mit der Bild-KI neu machen, ohne noch ein
 2. ✏️ **Lärm-Zeichnung: die Härchen-Beschriftung.** Elf Sprachen brauchen ein neues Bild, vier sind schon richtig.
 3. 🇵🇹 **Die drei portugiesischen Bilder**, die auf den portugiesischen Seiten bisher noch deutsch sind.
 4. 🇯🇵 **Die japanischen Bilder.** Sieben Bilder sind geprüft. Fünf brauchen ein neues Bild, für zwei gibt es schon ein richtiges.
-5. 📌 **Weitere fertige Bild-Texte aus den Listen vom 3. November** für Französisch, Koreanisch, Indonesisch, Arabisch, Türkisch und Englisch.
+5. 📌 **Weitere fertige Bild-Texte aus den Listen vom 3. November** für Französisch, Spanisch, Koreanisch, Indonesisch, Arabisch, Türkisch und Englisch.
 
 Am Ende kommen noch 🔍 **Nebenbei aufgefallen**, 📚 **Woher die Texte kommen** und 📎 **Anhang**.
 
@@ -34,11 +34,11 @@ Am Ende kommen noch 🔍 **Nebenbei aufgefallen**, 📚 **Woher die Texte kommen
 - **Bei manchen Bildern besser:** das aktuelle deutsche Bild als Vorlage nehmen und die Texte der Sprache einsetzen. Das steht dann beim Bild dabei. Dann stimmen Zeichnung, Gesichter und Aufbau automatisch.
 - **Immer gleich:** Namen, Ziffern und Zeichen wie `Dr. Wilden`, `LLLT`, `ATP`, `K+`, `Ca2+`, `U60311` und `07:43` bleiben, wie sie sind. Kleingedrucktes, das im deutschen Bild unleserlich ist, bleibt unleserlich. Die Bild-KI soll nichts Lesbares dazuerfinden. Gesichter, Licht und Aufbau bleiben wie im Vorbild.
 - **Jedes neue Bild bekommt einen neuen Dateinamen**, zum Beispiel mit dem Datum hinten dran. Die Website sagt den Browsern nämlich, Bilder ein ganzes Jahr lang aufzuheben. Bekommt das neue Bild denselben Namen wie das alte, sehen viele Besucher weiter das alte Bild.
-- **Danach:** die fertigen Bilder an Claude geben. Dann werden sie auf allen Seiten ausgetauscht, wo das alte Bild steht, also beim Bild selbst und beim Link zur Vergrößerung.
+- **Danach:** die fertigen Bilder an Claude geben. Dann werden sie auf allen Seiten ausgetauscht, wo das alte Bild steht, also beim Bild selbst und beim Link zur Vergrößerung. Wo auf einer Seite eine lesbare Abschrift des Bildes steht, wird die gleich mit angepasst. Beim Indonesischen ist das zum Beispiel der Text hinter dem Knopf „Baca teks gambar“ (Bildtext lesen) unter dem Recherche-Bild.
 
 ## ✅ Arbeitsliste zum Abhaken
 
-Es sind vierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
+Es sind einundvierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
 
 **🇬🇧 Englisch**
 - [ ] Recherche-Bild (Gruppe eins)
@@ -60,6 +60,7 @@ Es sind vierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
 **🇪🇸 Spanisch**
 - [ ] Recherche-Bild (Gruppe eins)
 - [ ] Lärm-Zeichnung (Gruppe zwei)
+- [ ] Titelbild, eine gemeinsame Fassung für zwei Dateien (Gruppe fünf)
 
 **🇵🇱 Polnisch**
 - [ ] Recherche-Bild (Gruppe eins)
@@ -164,6 +165,7 @@ Es sind vierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
 - ➕ Außerdem im selben Bild:
   - Linker gelber Zettel: `3 PUENTES – UN RESULTADO: ¡ATP!` (3 Brücken – ein Ergebnis: ATP!) → `3 FUENTES – UN RESULTADO: ¡ATP!` (3 Quellen – ein Ergebnis: ATP!)
   - Bildschirm Dr. Wilden: `En primera línea, la LLLT aumenta la producción de ATP en las células.` (An vorderster Front steigert die LLLT die ATP-Produktion in den Zellen.) → `Ante todo, la LLLT aumenta la producción de ATP en las células.` (Vor allem steigert die LLLT die ATP-Produktion in den Zellen.)
+  - Heft, rechte Seite: `Vitaminas B (B1, B2, B3, B5, B8, B12)` → `Vitaminas B (B1, B2, B3, B5, B6, B12)` (B-Vitamine), denn aus B6 ist im spanischen Bild B8 geworden. Diesen dritten Punkt wusste der spanische Chat nicht mehr genau. Er steht in seiner Liste vom 20. Oktober.
 
 ### 🇵🇱 Polnisch
 - 🗂️ `img/pl-atp-wilden-forschung-20260916.webp`
@@ -194,6 +196,7 @@ Es sind vierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
   - Whiteboard, in der Liste (deutsch „bessere Funktion“): `лучшая работа клеток` (bessere Arbeit der Zellen) → `лучшее функционирование` (besseres Funktionieren)
   - Linker Bildschirm (Dr. Wilden), zweiter Satz, bisher mit Tippfehlern: `С помощью этой терапии мне мкуже уддалось помочь очень мнотим пациентам.` → `С её помощью мне уже удалось помочь очень многим пациентам.` (Damit konnte ich schon sehr vielen Patienten helfen.)
   - Rechter Bildschirm (Vitamin B12), zweiter Satz, bisher mit Tippfehlern: `Он награя рещающую роль в выработке АТФ.` → `Он имеет решающее значение для выработки АТФ.` (Es ist von entscheidender Bedeutung für die ATP-Produktion.)
+  - Heft, linke Seite: `Фосфоримрование` (Tippfehler) → `Фосфорилирование` (Phosphorylierung), so wie im deutschen Bild. Das hat der russische Chat am 17. November beim Nachlesen zusätzlich gefunden.
 
 ### 🇮🇩 Indonesisch
 - 🗂️ `img/id-atp-wilden-forschung-v1.webp`
@@ -210,6 +213,7 @@ Es sind vierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
 - ➕ Außerdem im selben Bild:
   - Bildschirm Dr. Wilden, Liste `LLLT – कोशिका-स्तर पर प्रभाव` (LLLT – Wirkung auf Zellebene), dritter Punkt: `टिनिटस का नियमन` (Regulierung des Tinnitus) → `सूजन में कमी` (Verringerung der Entzündung). Im Deutschen steht „Entzündungsreduktion“, die alte Fassung verstärkt.
   - Bildschirm Dr. Wilden, Absatz unter der Überschrift, bisher mit falschem Sinn und Tippfehler → `मुख्य रूप से LLLT कोशिकाओं में ATP उत्पादन बढ़ाती है। इससे मैं पहले ही बहुत-से रोगियों की मदद कर पाया हूँ।` (In erster Linie steigert LLLT in den Zellen die ATP-Produktion. Damit konnte ich schon vielen Patienten helfen.)
+  - Rechter Bildschirm (Vitamin B12): Das Wort für „Nerven“ sieht verschrieben aus, `तंशिकओं` statt `तंत्रिकाओं` (Nerven). Das hat der Hindi-Chat am 17. November beim Nachlesen zusätzlich gefunden. Die Stelle ist im Bild etwas unscharf.
 
 ### 🇹🇷 Türkisch
 - 🗂️ `img/tr-atp-wilden-forschung-originaltreue-v2.webp`
@@ -250,22 +254,22 @@ Es sind vierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
 
 📝 **Deutsches Vorbild** `img/de-laerm-kaskade-v3.webp`: `Einzelne Härchen` / `stehen schief`. Gezeichnet sind einzelne Härchen, die unterschiedlich schief stehen. Früher stand dort „Gekipptes Härchenbündel“, und das ganze Bündel war gekippt.
 
-❗ **Was hakt:** In elf Sprachen steht noch das gekippte Bündel als Beschriftung. In sechs davon ist auch die Zeichnung noch die alte: Das ganze Bündel ist gekippt, und rechts neben den Härchen steht ein kleiner Extra-Pfeil, den das deutsche Bild nicht hat. Das passt nicht mehr zur Bildunterschrift auf der Seite.
+❗ **Was hakt:** In elf Sprachen steht noch das gekippte Bündel als Beschriftung. Das passt nicht mehr zur Bildunterschrift auf der Seite. Die Härchen selbst sind überall schon so gezeichnet wie im deutschen Bild. In fünf Sprachen steht aber rechts neben den Härchen noch ein zweiter kleiner Zeigestrich, den das deutsche Bild nicht hat.
 
-✅ **Was zu tun ist:** die Beschriftung tauschen. Wo die Zeichnung noch alt ist, die Härchen wie im deutschen Bild zeichnen und den kleinen Extra-Pfeil weglassen. Am einfachsten geht das, wenn die Bild-KI das deutsche Bild als Vorlage nimmt.
+✅ **Was zu tun ist:** die Beschriftung tauschen und, wo es ihn gibt, den zweiten kleinen Zeigestrich weglassen. Die Zeichnung bleibt, wie sie ist.
 
 ### 🇬🇧 Englisch
 - 🗂️ `img/tinnitus-cascade.webp`
 - ❗ Jetzt: `Tilted hair bundle` (Gekipptes Härchenbündel)
-- ✅ Neu: `Individual hairs are tilted` (Einzelne Härchen sind schief)
-- 🎨 Zeichnung: noch alt, also wie im deutschen Bild zeichnen
+- ✅ Neu: `Individual hairs` / `are tilted` (Einzelne Härchen sind schief)
+- 🎨 Zeichnung: schon wie im deutschen Bild. Nur den zweiten kleinen Zeigestrich weglassen.
 - ➕ Sonst im Bild: nichts
 
 ### 🇫🇷 Französisch
 - 🗂️ `img/fr-bruit-acouphenes-cascade-v4.webp`
 - ❗ Jetzt: `Faisceau de stéréocils incliné` (Gekipptes Stereozilien-Bündel)
 - ✅ Neu: `Des cils isolés sont de travers` (Einzelne Härchen stehen schief), gleicher Wortlaut wie die neue Bildunterschrift auf der französischen Lärm-Seite
-- 🎨 Zeichnung: noch alt, also wie im deutschen Bild zeichnen
+- 🎨 Zeichnung: schon wie im deutschen Bild. Nur den zweiten kleinen Zeigestrich weglassen.
 - ➕ Außerdem im selben Bild:
   - Überschrift von Schritt 2: `2. L’ACTIVATION ERRONÉE` (2. Die fehlerhafte Aktivierung) → `2. LE RATÉ D’ALLUMAGE` (2. Die Fehlzündung). „raté“ ist auf den französischen Seiten das Wort für Fehlzündung. Allein könnte „LE RATÉ“ aber auch „der Versager“ heißen, deshalb mit „d’allumage“ (der Zündung).
   - Kasten unten rechts, flüssiger formuliert, der Sinn bleibt gleich und Dustins Überzeugung bleibt drin: `Je suis convaincu que le cerveau ne produit pas lui-même le son — il reçoit un signal réel de l’oreille et l’amplifie pour en faire les acouphènes que l’on entend.` (Ich bin überzeugt, dass das Gehirn den Ton nicht selbst erzeugt – es empfängt ein reales Signal aus dem Ohr und verstärkt es zu dem Tinnitus, den man hört.)
@@ -274,8 +278,8 @@ Es sind vierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
 ### 🇪🇸 Spanisch
 - 🗂️ `img/es-cascada-acufenos.webp`
 - ❗ Jetzt: `Haz de pelitos inclinado` (Gekipptes Härchenbündel)
-- ✅ Neu: `Algunos pelitos están inclinados` (Einige Härchen sind geneigt, also: Einzelne Härchen stehen schief)
-- 🎨 Zeichnung: noch alt, also wie im deutschen Bild zeichnen
+- ✅ Neu: `Algunos pelitos` / `están inclinados` (Einige Härchen sind geneigt, also: Einzelne Härchen stehen schief)
+- 🎨 Zeichnung: schon wie im deutschen Bild. Nur den zweiten kleinen Zeigestrich weglassen.
 - ➕ Sonst im Bild: nichts
 
 ### 🇵🇱 Polnisch
@@ -296,13 +300,13 @@ Es sind vierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
 - 🗂️ `img/ru/laerm-kaskade-20260916.webp`
 - ❗ Jetzt: `Наклонённый пучок стереоцилий` (Gekipptes Stereozilien-Bündel)
 - ✅ Neu: `Отдельные волоски стоят криво` (Einzelne Härchen stehen schief)
-- 🎨 Zeichnung: noch alt, also wie im deutschen Bild zeichnen
+- 🎨 Zeichnung: schon wie im deutschen Bild. Nur den zweiten kleinen Zeigestrich weglassen.
 - ➕ Außerdem im selben Bild: rechts an der Nervenfaser `Слабый сигнал идёт в мозг` (Schwaches Signal geht ins Gehirn) → `Маленький, слабый сигнал идёт в мозг` (Kleines, schwaches Signal geht ins Gehirn)
 
 ### 🇰🇷 Koreanisch
 - 🗂️ `img/ko-laerm-kaskade-v2.webp`
 - ❗ Jetzt: `기울어진 입체섬모 다발` (Gekipptes Stereozilien-Bündel)
-- ✅ Neu: `몇몇 감각모가 비뚤게 서 있음` (Einzelne Härchen stehen schief, wörtlich: Ein paar Sinneshärchen stehen schief)
+- ✅ Neu: `몇몇 감각모가` / `비뚤게 서 있음` (Einzelne Härchen stehen schief, wörtlich: Ein paar Sinneshärchen stehen schief)
 - 🎨 Zeichnung: schon wie im deutschen Bild
 - ➕ Außerdem im selben Bild:
   - Beschriftung am Ionenkanal: `이온 채널이 과도하게 열려 채 유지됨` (grammatisch kaputt) → `이온 채널이 과도하게 열린 채 유지됨` (Ionenkanal bleibt zu weit offen)
@@ -312,7 +316,7 @@ Es sind vierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
 ### 🇮🇳 Hindi
 - 🗂️ `img/hi-laerm-kaskade-v2-lossless.webp`
 - ❗ Jetzt: `झुका हुआ स्टीरियोसिलिया बंडल` (Gekipptes Stereozilien-Bündel)
-- ✅ Neu: `इक्का-दुक्का बाल टेढ़े खड़े हैं` (Vereinzelte Härchen stehen schief)
+- ✅ Neu: `इक्का-दुक्का बाल` / `टेढ़े खड़े हैं` (Vereinzelte Härchen stehen schief)
 - 🎨 Zeichnung: schon wie im deutschen Bild
 - ➕ Außerdem im selben Bild: Kasten unten rechts `मेरा व्याख्यात्मक मॉडल:` (Mein Erklärungsmodell:), Satzanfang `मेरी धारणा के अनुसार,` (nach meiner Vorstellung) → `मेरे विश्वास के अनुसार,` (nach meiner Überzeugung). Im Deutschen steht „Nach meiner Überzeugung“, die alte Fassung schwächt ab. So steht es auch viermal auf der Hindi-Lärm-Seite.
 
@@ -320,13 +324,13 @@ Es sind vierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
 - 🗂️ `img/tr-laerm-kaskade-originaltreue-v2.webp`
 - ❗ Jetzt: `Eğilmiş stereosilya demeti` (Gekipptes Stereozilien-Bündel)
 - ✅ Neu: `Tek tek tüyler` / `eğik duruyor` (Einzelne Härchen stehen schief), Wort für Wort wie die Bildunterschrift auf der türkischen Lärm-Seite
-- 🎨 Zeichnung: noch alt, also wie im deutschen Bild zeichnen. Den zweiten Hinweispfeil unter der Beschriftung weglassen, den hat das deutsche Bild nicht.
+- 🎨 Zeichnung: schon wie im deutschen Bild. Nur den zweiten kleinen Zeigestrich weglassen.
 
 ### 🇸🇦 Arabisch
 - 🗂️ `img/ar-laerm-kaskade-v2.webp`. Das arabische Bild ist gespiegelt, weil man Arabisch von rechts nach links liest. Das bleibt so.
 - ❗ Jetzt: `حزمة أهداب ساكنة مائلة` (Gekipptes Stereozilien-Bündel)
 - ✅ Neu: `بعض الأهداب المنفردة تقف مائلة` (Einige einzelne Härchen stehen schief)
-- 🎨 Zeichnung: noch alt, also einzelne, unterschiedlich schiefe Härchen wie im deutschen Bild zeichnen, nur gespiegelt
+- 🎨 Zeichnung: schon wie im deutschen Bild, nur gespiegelt. Der arabische Chat meinte, im arabischen Bild sei noch das ganze Bündel gekippt. Ich habe es vergrößert neben das gespiegelte deutsche Bild gelegt: Die Härchen sind gleich gezeichnet.
 - ➕ Außerdem im selben Bild: Das Wort `التضخيم` (Verstärkung) im Kopf ist dunkel auf hellen Wellen gesetzt und kaum lesbar. Gleicher Text, aber hell und gut lesbar, so wie „VERSTÄRKUNG“ im deutschen Bild.
 
 ### 🇯🇵 Japanisch
@@ -1157,6 +1161,14 @@ Das Vorschaubild ist das Bild, das erscheint, wenn jemand einen Link zu Dustins 
 - ❗ Jetzt: `Contexte, études et récit d’expérience` (Hintergrund, Studien und Erfahrungsbericht, Einzahl). Das klingt nach nur Dustins eigener Geschichte.
 - ✅ Neu: `Contexte, études et témoignages` (Hintergrund, Studien und Erfahrungsberichte). So heißt auch die französische Seite „Témoignages“. Alles andere im Bild bleibt.
 
+### 🇪🇸 Spanisch: Titelbild
+- 📍 **Wo:** ganz oben auf der Kurzgeschichte und ganz oben auf Lang-Bio Teil 1
+- 🗂️ `img/es-kurz-hero.webp` und `img/es-hero-bio1.webp`, beide Dateien sind gleich
+- 📝 Deutsches Vorbild: `Ein Clubbesuch. Eine Nacht.` und `Am Morgen danach: Druck auf den Ohren, Schwindel, ein Linksdrall.`
+- ❗ Jetzt im Bild: `Una visita al club. Una noche.` (Ein Besuch im Club. Eine Nacht.) In Spanien ist „club“ aber auch ein gängiges Wort für Bordelle, und das im ersten Bild, das ein Leser sieht. Im Text der spanischen Seiten steht überall „discoteca“. Außerdem `desviación hacia la izquierda` (Abweichung nach links), das klingt nach einem ärztlichen Befund.
+- ✅ Neu: `Una discoteca. Una noche.` (Eine Disco. Eine Nacht.) und `A la mañana siguiente: presión en los oídos, mareo, el cuerpo se me iba a la izquierda.` (Am Morgen danach: Druck auf den Ohren, Schwindel, der Körper kippte mir nach links weg.) Der Rest des Bildes bleibt.
+- Quelle: spanische Liste vom 20. Oktober, Eintrag K-29. Ich habe im Bild nachgesehen, die alten Sätze stehen noch da.
+
 ### 🇰🇷 Koreanisch: Quecksilber-Schaubild
 - 📍 **Wo:** Medikamente-Seite, Abschnitt „Mechanismus 2: Der Thiol-Hack“
 - 🗂️ `img/ko-gift-enzymblockade-quecksilber.webp`
@@ -1198,7 +1210,7 @@ Alle Texte stehen vollständig in [anhang-ar-liste-bild-3-bis-7.md](anhang-ar-li
 - Falls ja: in beiden Bildern dieselben Plakatzeilen, an der Tür `ENT OFFICE`, und `Left` statt des Tippfehlers `Letton`.
 
 ### Bei den anderen Sprachen
-Für Niederländisch, Italienisch, Spanisch, Polnisch, Tschechisch, Russisch und Hindi habe ich in den Listen vom 3. November keine weiteren offenen Bild-Punkte gefunden. Dort stehen nur die überholten Befund-Bilder und die Punkte zum Recherche-Bild und zur Lärm-Zeichnung, und die sind in Gruppe eins und zwei schon drin.
+Für Niederländisch, Italienisch, Polnisch, Tschechisch, Russisch und Hindi habe ich in den Listen vom 3. November keine weiteren offenen Bild-Punkte gefunden. Dort stehen nur die überholten Befund-Bilder und die Punkte zum Recherche-Bild und zur Lärm-Zeichnung, und die sind in Gruppe eins und zwei schon drin. Die älteren Listen vom Oktober habe ich nicht für jede Sprache noch einmal komplett durchsucht. Beim Spanischen hat das zwei Punkte gebracht, die oben stehen.
 
 ---
 
@@ -1211,7 +1223,7 @@ Es sind sechs Punkte, keiner davon ist dringend.
    - Geschafft-Bild `img/geschafft.webp` (dasselbe Bild heißt auch `img/kurz-erste-heilung.webp`): Ohr-Plakat `OHREGERÄUSCHE` statt „OHRENGERÄUSCHE“.
    - Für die Fremdsprachen spielt das keine Rolle, dort stehen die richtigen Wörter. Das deutsche Bild könnte man bei Gelegenheit mit ausbessern.
 2. 🇯🇵 **Japanisch, Härchen-Vergleich und Quecksilber-Schaubild:** Die richtigen japanischen Bilder gibt es schon (siehe Gruppe vier). Die könnten sofort auf die japanischen Seiten, ganz ohne Bild-KI.
-3. 👤 **Dr. Wilden auf dem Recherche-Bild:** Auf dem mittleren Bildschirm stehen ein Porträt und ein Satz in Ich-Form. Dazu gibt es einen älteren Hinweis aus dem Rechts-Check im Projekt, dort unter „FIX-04“. Falls Dustin daran je etwas ändern will, wäre jetzt der günstigste Moment, weil sowieso alle Recherche-Bilder neu gemacht werden. Geändert habe ich daran nichts.
+3. 👤 **Dr. Wilden auf dem Recherche-Bild:** Auf dem mittleren Bildschirm stehen ein Porträt und ein Satz in Ich-Form. Dazu gibt es einen älteren Hinweis aus dem Rechts-Check im Projekt, dort unter „FIX-04“. Der niederländische und der arabische Chat haben die Stelle auch angesprochen. Falls Dustin daran etwas ändern will, wäre jetzt der günstigste Moment, weil sowieso alle Recherche-Bilder neu gemacht werden. Geändert habe ich daran nichts.
 4. 🇨🇿 **Tschechische Startseite, Geschafft-Bild:** erledigt am 17. November. Die Startseite zeigt jetzt die tschechische Fassung `img/kurz-erste-heilung-cs.webp`. Ich habe die Texte im Bild mit der tschechischen Liste verglichen, sie stimmen.
 5. 📄 **Befunde und Hörtests:** Übersetzte Befund-Bilder braucht es nicht mehr. In fast allen Listen vom 3. November stehen noch Abschnitte für eigene Befund-Bilder je Sprache, die sind überholt. Seit dem 18. November zeigen alle fünfzehn Sprachen beim ATP-Laborbefund den deutschen Scan mit Übersetzungsknopf, also einem Knopf, der die Übersetzung als Text einblendet. Bei den Hörtests reicht das deutsche Original.
 6. 🇬🇧 **Englische Befund-Übersetzung, kein Bild:** In der englischen Übersetzung des ATP-Laborbefunds heißt die kleine Notiz „> 1,0 sehr gute Energiebereitstellung“ `Scale note` (Anmerkung zur Skala). Im Scan steht sie aber in der Spalte mit dem Referenzwert. Beim Tschechischen ist genau das am 18. November korrigiert worden. Ein Mini-Punkt für den englischen Chat.
@@ -1225,7 +1237,8 @@ Es sind sechs Punkte, keiner davon ist dringend.
 - **Türkisch:** Entwurf des türkischen Chats vom 17. November. Seine fertige Antwort ist am Nutzungslimit abgebrochen. Die beiden Wörter standen im Entwurf schon fest, mit Begründung.
 - **Französisch und Tschechisch:** Listen vom 3. November. Die Antworten vom 17. November sind am Nutzungslimit abgebrochen. Die französischen Wörter hat am 7. November ein Prüfer bestätigt.
 - **Japanisch und Portugiesisch:** vollständige Listen vom 17. November.
-- **Gruppe fünf:** Listen vom 3. November von Französisch, Koreanisch, Indonesisch, Arabisch, Türkisch und Englisch.
+- **Gruppe fünf:** Listen vom 3. November von Französisch, Koreanisch, Indonesisch, Arabisch, Türkisch und Englisch, dazu die spanische Liste vom 20. Oktober.
+- **Zusätzlich aus den Antworten vom 17. November:** Der Hindi-Chat und der russische Chat haben beim Nachlesen je einen weiteren Tippfehler im Recherche-Bild gefunden, der nicht in ihren Listen stand. Der englische Chat hat bemerkt, dass die Härchen schon richtig gezeichnet sind. Der indonesische Chat hat auf die Abschrift unter dem Bild hingewiesen. Das ist alles oben eingearbeitet.
 - Beim Kopieren aus den Chats habe ich jedes Stück mit einer Prüfsumme abgeglichen. Eine Prüfsumme ist eine Art digitaler Fingerabdruck: Ändert sich auch nur ein Zeichen, passt sie nicht mehr. Alle Stücke sind Zeichen für Zeichen gleich wie in den Chats.
 
 ## 📎 Anhang in diesem Ordner
