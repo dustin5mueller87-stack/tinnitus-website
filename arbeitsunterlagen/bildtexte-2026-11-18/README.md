@@ -1,6 +1,6 @@
 # 🖼️ Bild-Texte für die Bild-KI
 
-**Stand: 18. November 2026** · gesammelt aus den fünfzehn Sprach-Chats im Projekt „Tinnitus-Homepage“
+**Stand: 19. November 2026** · gesammelt aus den fünfzehn Sprach-Chats im Projekt „Tinnitus-Homepage“
 
 ---
 
@@ -23,7 +23,7 @@ Mit dieser Datei kann man die Grafiken mit der Bild-KI neu machen, ohne noch ein
 1. ⚠️ **Recherche-Bild: das Whiteboard-Wort „Erholung“.** Das ist die heikle Gruppe, weil dort in den meisten Sprachen noch das alte Wort „Heilung“ steht statt Dustins neuem Wort „Erholung“. Alle fünfzehn Sprachen brauchen ein neues Recherche-Bild.
 2. ✏️ **Lärm-Zeichnung: die Härchen-Beschriftung.** Elf Sprachen brauchen ein neues Bild, vier sind schon richtig.
 3. 🇵🇹 **Die drei portugiesischen Bilder**, die auf den portugiesischen Seiten bisher noch deutsch sind.
-4. 🇯🇵 **Die japanischen Bilder.** Sieben Bilder sind geprüft. Fünf brauchen ein neues Bild, für zwei gibt es schon ein richtiges.
+4. 🇯🇵 **Die japanischen Bilder.** Sieben Bilder sind geprüft. Fünf brauchen ein neues Bild, für zwei gibt es schon ein richtiges. Die zwei richtigen setzt das Paket vom 19. November auf den japanischen Seiten ein.
 5. 📌 **Weitere fertige Bild-Texte aus den Listen vom 3. November** für Französisch, Spanisch, Koreanisch, Indonesisch, Arabisch, Türkisch und Englisch.
 
 Am Ende kommen noch 🔍 **Nebenbei aufgefallen**, 📚 **Woher die Texte kommen** und 📎 **Anhang**.
@@ -38,7 +38,11 @@ Am Ende kommen noch 🔍 **Nebenbei aufgefallen**, 📚 **Woher die Texte kommen
 
 ## ✅ Arbeitsliste zum Abhaken
 
-Es sind einundvierzig Bilder, die neu gemacht werden müssen, und sechs freiwillige.
+Es sind einundvierzig Bilder, die neu gemacht werden müssen, und acht freiwillige.
+
+**🇩🇪 Deutsch** (nur, wenn das Bild dabei nicht schlechter wird, Dustins Entscheidung vom 19. November)
+- [ ] freiwillig: Recherche-Bild, drei Tippfehler (siehe „Nebenbei aufgefallen“, Punkt eins)
+- [ ] freiwillig: Geschafft-Bild, ein Tippfehler auf dem Ohr-Plakat (siehe „Nebenbei aufgefallen“, Punkt eins)
 
 **🇬🇧 Englisch**
 - [ ] Recherche-Bild (Gruppe eins)
@@ -876,7 +880,7 @@ Mitocôndrias
 📍 **Wichtig vorweg:** Die japanischen Seiten zeigen im Moment an allen sieben Stellen die deutschen Bilder. Es gibt zwar japanische Fassungen, aber die meisten haben Fehler.
 
 - **Bild 1 bis 5** brauchen ein neues japanisches Bild. Vorlage ist jeweils das aktuelle deutsche Bild.
-- **Bild 6 (Härchen-Vergleich) und Bild 7 (Quecksilber-Schaubild):** Die vorhandenen japanischen Bilder `img/ja-laerm-geometrie-vergleich.webp` und `img/ja-gift-enzymblockade-quecksilber.webp` sind richtig. Dafür braucht es keine Bild-KI, sie müssen nur auf den japanischen Seiten eingesetzt werden.
+- **Bild 6 (Härchen-Vergleich) und Bild 7 (Quecksilber-Schaubild):** Die vorhandenen japanischen Bilder `img/ja-laerm-geometrie-vergleich.webp` und `img/ja-gift-enzymblockade-quecksilber.webp` sind richtig. Dafür braucht es keine Bild-KI. Das Paket vom 19. November setzt sie auf den japanischen Seiten ein.
 
 Der japanische Chat hat am 17. November alle sieben Bilder Text für Text mit den heutigen deutschen Bildern abgeglichen. Hier steht seine Liste vollständig und unverändert, nur die Überschriften sind eine Stufe kleiner gemacht.
 
@@ -1221,9 +1225,10 @@ Es sind sechs Punkte, keiner davon ist dringend.
 1. ✍️ **Tippfehler in deutschen Bildern.** Der portugiesische Chat hat sie entdeckt, ich habe sie im Bild nachgesehen, sie stimmen:
    - Recherche-Bild `img/atp-wilden-forschung-v2.webp`: Whiteboard `Regeneration förderm` statt „fördern“, Heft links `Enbgiftung` statt „Entgiftung“, Zettel rechts unten `ZELL-Syntkese:` statt „ZELL-Synthese:“.
    - Geschafft-Bild `img/geschafft.webp` (dasselbe Bild heißt auch `img/kurz-erste-heilung.webp`): Ohr-Plakat `OHREGERÄUSCHE` statt „OHRENGERÄUSCHE“.
-   - Für die Fremdsprachen spielt das keine Rolle, dort stehen die richtigen Wörter. Das deutsche Bild könnte man bei Gelegenheit mit ausbessern.
-2. 🇯🇵 **Japanisch, Härchen-Vergleich und Quecksilber-Schaubild:** Die richtigen japanischen Bilder gibt es schon (siehe Gruppe vier). Die könnten sofort auf die japanischen Seiten, ganz ohne Bild-KI.
-3. 👤 **Dr. Wilden auf dem Recherche-Bild:** Auf dem mittleren Bildschirm stehen ein Porträt und ein Satz in Ich-Form. Dazu gibt es einen älteren Hinweis aus dem Rechts-Check im Projekt, dort unter „FIX-04“. Der niederländische und der arabische Chat haben die Stelle auch angesprochen. Falls Dustin daran etwas ändern will, wäre jetzt der günstigste Moment, weil sowieso alle Recherche-Bilder neu gemacht werden. Geändert habe ich daran nichts.
+   - Für die Fremdsprachen spielt das keine Rolle, dort stehen die richtigen Wörter.
+   - Dustin hat am 19. November entschieden: bei der Bild-Runde mit ausbessern, aber nur, wenn das Bild dabei nicht schlechter wird. Deshalb stehen die zwei deutschen Bilder jetzt auch als freiwillige Punkte in der Arbeitsliste.
+2. 🇯🇵 **Japanisch, Härchen-Vergleich und Quecksilber-Schaubild:** Die richtigen japanischen Bilder gibt es schon (siehe Gruppe vier). Das Paket vom 19. November setzt sie auf den japanischen Seiten ein, ganz ohne Bild-KI.
+3. 👤 **Dr. Wilden auf dem Recherche-Bild:** Auf dem mittleren Bildschirm stehen ein Porträt und ein Satz in Ich-Form. Der niederländische und der arabische Chat haben die Stelle angesprochen. Das ist entschieden: Porträt und Satz bleiben, so hat Dustin es schon am 29. Juni festgelegt. Die neuen Recherche-Bilder übernehmen den mittleren Bildschirm deshalb so wie im deutschen Vorbild.
 4. 🇨🇿 **Tschechische Startseite, Geschafft-Bild:** erledigt am 17. November. Die Startseite zeigt jetzt die tschechische Fassung `img/kurz-erste-heilung-cs.webp`. Ich habe die Texte im Bild mit der tschechischen Liste verglichen, sie stimmen.
 5. 📄 **Befunde und Hörtests:** Übersetzte Befund-Bilder braucht es nicht mehr. In fast allen Listen vom 3. November stehen noch Abschnitte für eigene Befund-Bilder je Sprache, die sind überholt. Seit dem 18. November zeigen alle fünfzehn Sprachen beim ATP-Laborbefund den deutschen Scan mit Übersetzungsknopf, also einem Knopf, der die Übersetzung als Text einblendet. Bei den Hörtests reicht das deutsche Original.
 6. 🇬🇧 **Englische Befund-Übersetzung, kein Bild:** In der englischen Übersetzung des ATP-Laborbefunds heißt die kleine Notiz „> 1,0 sehr gute Energiebereitstellung“ `Scale note` (Anmerkung zur Skala). Im Scan steht sie aber in der Spalte mit dem Referenzwert. Beim Tschechischen ist genau das am 18. November korrigiert worden. Ein Mini-Punkt für den englischen Chat.
