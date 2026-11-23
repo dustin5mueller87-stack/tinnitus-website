@@ -1797,3 +1797,5 @@ figure > figcaption.tb-ki a:hover { color: var(--ink); }
   .tb-solution-img > figcaption.tb-ki { padding: 10px 18px 0; }
 }
 figure > figcaption.tb-ki { font-size: 15px; line-height: 1.8; }
+/* Geöffnetes Bild (große Ansicht): Diese liegt außerhalb von .tb-page, deshalb auch hier keine Kursivschrift */
+.lightbox-overlay, .lightbox-overlay * { font-style: normal !important; }
