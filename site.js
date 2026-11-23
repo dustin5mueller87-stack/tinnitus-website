@@ -612,11 +612,30 @@
       return preview ? (preview.getAttribute('alt') || '') : '';
     }
 
+    function getTriggerNote(trigger) {
+      // KI-Hinweis aus der Zeile unter dem Bild (figcaption.tb-ki) auch in der großen Ansicht zeigen
+      var figure = trigger && trigger.closest ? trigger.closest('figure') : null;
+      var note = figure ? figure.querySelector('figcaption.tb-ki') : null;
+      if (!note) return '';
+      return note.getAttribute('data-lightbox-note') || note.textContent.replace(/\s+/g, ' ').trim();
+    }
+
+    function setCaption(text, trigger) {
+      cap.textContent = text || '';
+      var note = getTriggerNote(trigger);
+      if (!note) return;
+      var line = document.createElement('span');
+      line.className = 'lightbox-caption-note';
+      line.style.cssText = 'display: block; margin-top: 6px; font-family: var(--sans); font-style: normal; font-size: 13px; line-height: 1.5; opacity: 0.85;';
+      line.textContent = note;
+      cap.appendChild(line);
+    }
+
     function open(href, caption, trigger) {
       lastFocusedElement = trigger || document.activeElement;
       img.src = href;
       img.alt = getTriggerAlt(trigger);
-      cap.textContent = caption || '';
+      setCaption(caption, trigger);
       prepareTranslation(trigger);
       overlay.classList.add('is-open');
       setBackgroundInert(true);
@@ -657,7 +676,7 @@
       var trigger = uniqueTriggers[currentIdx];
       img.src = trigger.getAttribute('href');
       img.alt = getTriggerAlt(trigger);
-      cap.textContent = trigger.getAttribute('data-lightbox') || '';
+      setCaption(trigger.getAttribute('data-lightbox'), trigger);
       prepareTranslation(trigger);
       resetZoom();
     }
