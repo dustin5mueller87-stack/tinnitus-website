@@ -1781,3 +1781,19 @@ html.tb-navfit-no .tb-page .tb-header.is-open .tb-nav > a { line-height: 1.2; }
 /* Bestätigung nach dem Absenden des Kontaktformulars */
 .tb-chap .contact-card p.contact-form-success { margin: 0; padding: 12px 14px; border-inline-start: 3px solid var(--gold); border-radius: 10px;
   background: var(--gold-soft); color: var(--ink); font-weight: 500; }
+/* KI-Hinweis unter den fotoechten Szenenbildern: dezente Zeile im Stil der Seite */
+figure > figcaption.tb-ki { display: block; max-width: 680px; margin: 10px 0 0; padding: 0; border: 0; background: none; font-family: inherit; font-style: normal; font-weight: 400; font-size: 14px; line-height: 1.55; letter-spacing: 0; color: var(--muted); text-align: start; }
+figure > figcaption.tb-ki strong { font-weight: 600; color: inherit; }
+figure > figcaption.tb-ki a { color: inherit; font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+figure > figcaption.tb-ki a:hover { color: var(--ink); }
+.tb-bio-hero-media > figcaption.tb-ki { margin-top: 12px; color: var(--cut-muted); }
+.tb-bio-hero-media > figcaption.tb-ki a:hover { color: var(--cut-ink); }
+/* Startseite: Das Bild im Lösungs-Kasten füllt weiter die ganze Höhe, die Zeile steht darunter */
+.tb-solution-img { display: flex; flex-direction: column; }
+.tb-solution-img img { flex: 1 1 auto; height: auto; }
+.tb-solution-img > figcaption.tb-ki { margin: 0; padding: 12px 24px 14px; max-width: none; }
+@media (max-width: 760px) {
+  .tb-solution-img img { flex: none; }
+  .tb-solution-img > figcaption.tb-ki { padding: 10px 18px 0; }
+}
+figure > figcaption.tb-ki { font-size: 15px; line-height: 1.8; }
