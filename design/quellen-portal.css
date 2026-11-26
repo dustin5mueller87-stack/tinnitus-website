@@ -858,6 +858,54 @@ img {
   white-space: nowrap;
 }
 
+/* Klickbare Studienverweise im Fließtext + Ziel-Aufleuchten */
+.qp-prose a.qp-zitat {
+  color: inherit;
+  text-decoration: underline dotted var(--p-accent-border);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  border-radius: 3px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease, background-color 0.15s ease;
+}
+.qp-prose a.qp-zitat:hover,
+.qp-prose a.qp-zitat:focus-visible {
+  color: var(--p-accent);
+  text-decoration-color: var(--p-accent);
+  background-color: var(--p-accent-soft);
+}
+
+@keyframes qp-zitat-flash {
+  0% {
+    background-color: #F4E6C5;
+    box-shadow: 0 0 0 4px #F4E6C5;
+  }
+  28% {
+    background-color: var(--p-ochre-soft);
+    box-shadow: 0 0 0 4px var(--p-ochre-soft);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.qp-prose .evidence-card p[id^="q-"] {
+  scroll-margin-top: 136px;
+  border-radius: 6px;
+}
+
+.qp-prose .evidence-card p[id^="q-"]:target {
+  animation: qp-zitat-flash 2.4s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qp-prose .evidence-card p[id^="q-"]:target {
+    animation: none;
+    background-color: var(--p-ochre-soft);
+    box-shadow: 0 0 0 4px var(--p-ochre-soft);
+  }
+}
+
 /* Note / Randnotiz Cards (.tb-note & .tb-k-box.is-thought) */
 .qp-prose aside.tb-note,
 .qp-prose .tb-k-box {
@@ -1372,6 +1420,9 @@ img {
   }
   .qp-prose .evidence-card a {
     white-space: normal;
+  }
+  .qp-prose .evidence-card p[id^="q-"] {
+    scroll-margin-top: 114px;
   }
   .qp-prose .audiogram-quad {
     grid-template-columns: minmax(0, 1fr);
